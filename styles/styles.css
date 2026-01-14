@@ -812,6 +812,9 @@ a{
     text-align: center;
     span{
       display: block;
+      /* color: var(--grey-500); */
+    }
+    .total-spend{
       color: var(--grey-500);
     }
   }
@@ -823,10 +826,15 @@ a{
   border-radius: 50%;
   background: radial-gradient(circle at center, #fff 45%, rgba(255, 255, 255, 0.2) 45% 55%, transparent 55%),
     conic-gradient(
-      var(--secondary-green) 24deg,
+      /* var(--secondary-green) 24deg,
       var(--secondary-cyan) 24deg 235deg,
       var(--secondary-yellow) 235deg 295deg,
-      var(--secondary-navy) 295deg 360deg
+      var(--secondary-navy) 295deg 360deg */
+
+      var(--secondary-green) 6%,
+      var(--secondary-cyan) 6% 65%,
+      var(--secondary-yellow) 65% 82%,
+      var(--secondary-navy) 82% 100%
     );
 }
 
