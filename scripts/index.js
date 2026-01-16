@@ -32,6 +32,10 @@ function feedIndexPage(data){
     }
 
 
+
+
+
+
     /* POTS */
      
     const potsTotalSaved = document.querySelector('.total-saved .text');
@@ -46,6 +50,8 @@ function feedIndexPage(data){
         potsElements[i].querySelector('.text').textContent = data.pots[i].name;
         potsElements[i].querySelector('span').textContent = `$${data.pots[i].total}`;
     }
+
+
 
 
 
@@ -82,17 +88,187 @@ function feedIndexPage(data){
     
 
 
+
+
+
+
+
+
+
     /* BUDGETS */
 
-    //chart
+    const budgetAmountbyCategory = new Map();
+
+    data.budgets.forEach( (budget) => {
+        budgetAmountbyCategory.set(budget.category, 0);
+    });
+
+    data.transactions.forEach( (transaction) => {
+        if(budgetAmountbyCategory.has(transaction.category)){
+            const currentAmount = budgetAmountbyCategory.get(transaction.category);
+            budgetAmountbyCategory.set(transaction.category, currentAmount + Math.abs(transaction.amount));
+        }
+    });
+
+
+    console.log(budgetAmountbyCategory);
     
 
+    //chart create SVG
 
+    function createCircle(r, colorStroke, dashArray, dashOffset){
+
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", 'circle');
+        circle.setAttribute('cx', '50');
+        circle.setAttribute('cy', '50');
+        circle.setAttribute('r', r);
+        circle.setAttribute('fill', 'none');
+        circle.setAttribute('stroke', colorStroke);
+        circle.setAttribute('stroke-width', r === 40 ? '16' : '8');
+        circle.setAttribute('stroke-dasharray', dashArray);
+        circle.setAttribute('stroke-dashoffset', dashOffset);
+
+        return circle;
+
+    }
+
+
+    const chart = document.querySelector('.chart');
+
+    const maxBudget = data.budgets.reduce( (acc, budget) => {
+        return acc + budget.maximum;
+    }, 0)
+    // console.log(maxBudget);
+
+
+    //circonference of the circle color 40 et opacity 35
+    const circonference40 = Math.ceil(2 * Math.PI * 40);
+    const circonference35 = Math.ceil(2 * Math.PI * 35);
+
+    // offset used to when start the next ring
+    let dashOffset40 = 0;
+    let dashOffset35 = 0;
+
+
+
+    const chartHover = document.querySelector('.chart-hover');
+
+    const chartHoverIcon = chartHover.querySelector('.chart-icon');
+    const chartHoverCategory = chartHover.querySelector('.category');
+    const chartHoverCategoryAmount = chartHover.querySelector('.category-amount');
+    const chartHoverCategoryTotal = chartHover.querySelector('.category-total-amount');
+
+
+
+    // const budgetChartHover = document.querySelector('.budget-chart');
+
+
+    
+
+    data.budgets.forEach( (budget) => {
+
+        const g = document.createElementNS("http://www.w3.org/2000/svg", 'g');
+        g.classList.add('segment');
+
+        //create className with category
+        g.classList.add(`${(budget.category).replace(' ', '-').toLowerCase()}`);
+
+        const percentBudget = budget.maximum / maxBudget * 100;
+
+        //length of the color ring and opacity
+        const strokeDasharray40 = ((percentBudget / 100) * circonference40).toFixed(2);
+        const strokeDasharray35 = ((percentBudget / 100) * circonference35).toFixed(2);
+
+        //length of the ring and the transparent ring transform into text
+        const strokeDasharray40Text = `${strokeDasharray40} ${(circonference40 - strokeDasharray40).toFixed(2)}`;
+        const strokeDasharray35Text = `${strokeDasharray35} ${(circonference35 - strokeDasharray35).toFixed(2)}`;
+
+        //offset used in the function
+        const dashOffset40Text = `-${dashOffset40.toFixed(2)}`;
+        const dashOffset35Text = `-${dashOffset35.toFixed(2)}`;
+
+        //creating circle
+        g.appendChild(createCircle(40, budget.theme, strokeDasharray40Text, dashOffset40Text));
+        g.appendChild(createCircle(35, "rgba(255, 255, 255, 0.3)", strokeDasharray35Text, dashOffset35Text));
+        chart.insertAdjacentElement('beforeend', g);        
+
+        //calculation for the next offset where to start the next ring
+        dashOffset40 += Number(strokeDasharray40);
+        dashOffset35 += Number(strokeDasharray35);
+
+
+
+        //hover
+        
+        g.addEventListener('mousemove', (event) => {
+
+            const rect = g.getBoundingClientRect();
+
+            // const budgetChartHover = document.querySelector('.budget-chart');
+            // const rect = budgetChartHover.getBoundingClientRect();
+
+            const mouseXRelative = event.clientX - rect.left;
+            const mouseYRelative = event.clientY - rect.top;
+
+            chartHover.style.display = 'flex';
+
+            chartHover.style.left = `${mouseXRelative + 15}px`;
+            chartHover.style.top = `${mouseYRelative + 15}px`;
+
+            chartHoverIcon.style.backgroundColor = budget.theme
+            chartHoverCategory.textContent = budget.category;
+            chartHoverCategoryAmount.textContent = `Budget Spent: $${budgetAmountbyCategory.get(budget.category)}`;
+            chartHoverCategoryTotal.textContent = `Budget Maximum: $${budget.maximum}`;
+
+        });
+
+        // g.addEventListener('mouseenter', (event) => {
+
+        //     chartHover.style.display = 'flex';
+
+        //     // console.log(event.clientX);
+        //     // console.log(event.clientY);
+
+        //     const rect = document.querySelector('.chart-hover').getBoundingClientRect();
+        //     console.log('rect', rect);
+
+        //     const mouseXRelative = event.clientX - rect.left;
+        //     const mouseYRelative = event.clientY - rect.top;
+        //     console.log('mouseXRelative :', mouseXRelative);
+        //     console.log('mouseYRelative :', mouseYRelative);
+
+        //     chartHover.style.left = `${mouseXRelative + 15}px`;
+        //     chartHover.style.top = `${mouseYRelative + 15}px`;
+
+        //     chartHoverIcon.style.backgroundColor = budget.theme
+        //     chartHoverCategory.textContent = budget.category;
+        //     chartHoverCategoryAmount.textContent = `Budget Spent: $${budgetAmountbyCategory.get(budget.category)}`;
+        //     chartHoverCategoryTotal.textContent = `Budget Maximum: $${budget.maximum}`;
+
+        // });
+
+        g.addEventListener('mouseleave', () => {
+            chartHover.style.display = 'none';
+        });
+        
+
+
+    });
+
+
+
+
+
+
+
+    
     //list
 
-
     const budgetCategories = data.budgets.map(budget => budget.category);
+    // console.log('budgetCategories: ', budgetCategories );
     const categorySet = new Set(budgetCategories);
+    // console.log(categorySet);    
+
     const amountByCategory = data.transactions.reduce( (acc, transaction) => {
 
         if (categorySet.has(transaction.category)) {
@@ -122,7 +298,11 @@ function feedIndexPage(data){
         budgetsLiElements[i].querySelector('span').textContent = `$${data.budgets[i].maximum.toFixed(2)}`;
     }
 
+    
 
+
+
+    
 
     /* RECURRING */
 
