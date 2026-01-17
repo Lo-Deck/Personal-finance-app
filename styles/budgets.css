@@ -192,7 +192,7 @@
                 .color-tag{
                     width: 1rem;
                     height: 1rem;
-                    background: var(--secondary-green);
+                    background: var(--beige-100);
                     border-radius: 50%;
                     margin-right: 1rem;
                 }
@@ -221,6 +221,11 @@
                     width: 50%;
                     height: 100%;
                     border-radius: 0.2rem;
+                }
+            }
+            .list-pots{
+                .border{
+                    background: var(--beige-100);
                 }
             }
         }
@@ -256,8 +261,15 @@
                     margin-right: var(--space-16px);
                 }
                 .details{
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    align-items: flex-end;
                     span{
                         display: block;
+                    }
+                    .date{
+                        color: var(--beige-500);
                     }
                 }
                 &:not(:last-of-type){

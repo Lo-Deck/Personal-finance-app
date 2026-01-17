@@ -23,7 +23,6 @@ function feedbudgetPage(data){
 
 
 
-
     /* BUDGETS */
 
     const budgetAmountbyCategory = new Map();
@@ -175,6 +174,18 @@ function feedbudgetPage(data){
 
 
 
+
+
+
+
+
+
+
+
+
+
+    /* ARTICLE */
+
     const fragment = document.createDocumentFragment();
     const templateLiPots = document.querySelector('#template-li-pots');
 
@@ -199,27 +210,29 @@ function feedbudgetPage(data){
 
     budgetsList.appendChild(fragment);
 
-
-
     const containerArticle = document.querySelector('.display-container-article');
-
     const fragmentArticleBudget = document.createDocumentFragment();
-
     const templateArticleBudget = document.querySelector('#template-latest-spending');
-
-    // const templateLiSpending = document.querySelector('#template-li-spending');
 
 
     data.budgets.forEach( (budget) => {
 
         const clone = templateArticleBudget.content.cloneNode(true);
-        clone.querySelector(`.article-title`).textContent = budget.category;
+        const header = clone.querySelector('.container-header-title');
+
+        header.querySelector(`.article-title`).textContent = budget.category;
+        header.querySelector(`.color-tag`).style.backgroundColor = budget.theme;
 
         const containerGraph = clone.querySelector('.container-graph');
-
-
         containerGraph.querySelector('.amount-spent').textContent = budget.maximum;
-        containerGraph.querySelector('.line-graph').style.width = '50%';//calcul graph a faire
+
+        // console.log('budget.category :', budgetAmountbyCategory.get(budget.category));
+        // console.log('budget.maximum :', budget.maximum);
+
+        const lengthGraph =  Math.floor(( budgetAmountbyCategory.get(budget.category) / budget.maximum ) * 100) >= 100 ? 100 : Math.floor(( budgetAmountbyCategory.get(budget.category) / budget.maximum ) * 100);
+        containerGraph.querySelector('.line-graph').style.width = `${lengthGraph}%`;
+
+        containerGraph.querySelector('.line-graph').style.backgroundColor = budget.theme;
         containerGraph.querySelector('.border').style.backgroundColor = budget.theme;
 
         const spent = budgetAmountbyCategory.get(budget.category) || 0;
@@ -228,15 +241,13 @@ function feedbudgetPage(data){
 
 
         const spendingList = clone.querySelector('.list-spending');
-              
         const innerTemplate = clone.querySelector('#template-li-spending');
-        const cloneLi = innerTemplate.content.cloneNode(true);
+
 
 
         const lastThreeTransactions = data.transactions.filter(t => t.category === budget.category)
                                                         .sort((a, b) => new Date(b.date) - new Date(a.date))                                                
                                                         .slice(0, 3);
-
 
 
         console.log('lastThreeTransactions : ', lastThreeTransactions);
@@ -250,12 +261,11 @@ function feedbudgetPage(data){
                 cloneLi.querySelector('.logo-spending').alt = `Avatar de ${transaction.name}`;
             }            
 
-            cloneLi.querySelector('.category').textContent = transaction.category;
+            cloneLi.querySelector('.category').textContent = transaction.name;
+            cloneLi.querySelector('.price').textContent = `-$${Math.abs(transaction.amount).toFixed(2)}`;
 
-            cloneLi.querySelector('.price').textContent = `-$${Math.abs(transaction.amount)}`;
-
-            cloneLi.querySelector('.date').textContent = transaction.date;  
-            
+            const formattedDate = new Date(transaction.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+            cloneLi.querySelector('.date').textContent = formattedDate;  
             
             spendingList.appendChild(cloneLi);
 
@@ -264,11 +274,9 @@ function feedbudgetPage(data){
         
         fragmentArticleBudget.appendChild(clone);
 
-
     })
 
     containerArticle.appendChild(fragmentArticleBudget);
-
 
 
 }
