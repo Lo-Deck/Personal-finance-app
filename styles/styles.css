@@ -872,6 +872,12 @@ a{
   position: absolute;
     top: 0; left: 0;
 
+  /* A AJOUTER SUR SAFARI PPOUR EST UN COMPORTEMENT SMOOTH */
+  pointer-events: none;
+  /* will-change: transform; Indique au navigateur d'isoler cet élément sur sa propre couche attention a utilisation */
+
+  
+
   .container-title{
     display: flex;
     justify-content: flex-start;

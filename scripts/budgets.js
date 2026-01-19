@@ -125,8 +125,12 @@ function feedbudgetPage(data){
             const mouseXRelative = event.clientX - rect.left;
             const mouseYRelative = event.clientY - rect.top;
             chartHover.style.display = 'flex';
-            chartHover.style.left = `${mouseXRelative + 15}px`;
-            chartHover.style.top = `${mouseYRelative + 15}px`;
+
+            // chartHover.style.left = `${mouseXRelative + 15}px`;ATTENTION SUR SAFARI REGARDER PPUR LE RECALCUL DE LAYOUT
+            // chartHover.style.top = `${mouseYRelative + 15}px`;   utiliser transform economise des resources
+
+            chartHover.style.transform = `translate3d(${mouseXRelative + 50}px, ${mouseYRelative + 50}px, 0)`;//VOIR POUR UTILISER TRANSLATE AU LIEU DE TRANSLATE3D
+
             chartHoverIcon.style.backgroundColor = budget.theme
             chartHoverCategory.textContent = budget.category;
             chartHoverCategoryAmount.textContent = `Budget Spent: $${budgetAmountbyCategory.get(budget.category)}`;
