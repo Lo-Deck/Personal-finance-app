@@ -341,7 +341,7 @@ function feedIndexPage(data){
             }
         }
 
-    })
+    });
 
     // console.log('paidBills', paidBills);
     // console.log('totalUpcoming', totalUpcoming);

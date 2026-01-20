@@ -38,14 +38,12 @@ function feedbudgetPage(data){
         }
     });
 
-
-    console.log(budgetAmountbyCategory);
+    // console.log(budgetAmountbyCategory);
     
 
     //chart create SVG
 
     function createCircle(r, colorStroke, dashArray, dashOffset){
-
         const circle = document.createElementNS("http://www.w3.org/2000/svg", 'circle');
         circle.setAttribute('cx', '50');
         circle.setAttribute('cy', '50');
@@ -55,9 +53,7 @@ function feedbudgetPage(data){
         circle.setAttribute('stroke-width', r === 40 ? '16' : '8');
         circle.setAttribute('stroke-dasharray', dashArray);
         circle.setAttribute('stroke-dashoffset', dashOffset);
-
         return circle;
-
     }
 
 
@@ -68,7 +64,6 @@ function feedbudgetPage(data){
     }, 0)
     // console.log(maxBudget);
 
-
     //circonference of the circle color 40 et opacity 35
     const circonference40 = Math.ceil(2 * Math.PI * 40);
     const circonference35 = Math.ceil(2 * Math.PI * 35);
@@ -76,7 +71,6 @@ function feedbudgetPage(data){
     // offset used to when start the next ring
     let dashOffset40 = 0;
     let dashOffset35 = 0;
-
 
     const chartHover = document.querySelector('.chart-hover');
     const chartHoverIcon = chartHover.querySelector('.chart-icon');
@@ -92,7 +86,6 @@ function feedbudgetPage(data){
 
         //create className with category
         g.classList.add(`${(budget.category).replace(' ', '-').toLowerCase()}`);
-
         const percentBudget = budget.maximum / maxBudget * 100;
 
         //length of the color ring and opacity
@@ -118,28 +111,27 @@ function feedbudgetPage(data){
 
 
         //hover
-        
-        g.addEventListener('mousemove', (event) => {
 
-            const rect = g.getBoundingClientRect();
-            const mouseXRelative = event.clientX - rect.left;
-            const mouseYRelative = event.clientY - rect.top;
-            chartHover.style.display = 'flex';
-
-            // chartHover.style.left = `${mouseXRelative + 15}px`;ATTENTION SUR SAFARI REGARDER PPUR LE RECALCUL DE LAYOUT
-            // chartHover.style.top = `${mouseYRelative + 15}px`;   utiliser transform economise des resources
-
-            chartHover.style.transform = `translate3d(${mouseXRelative + 50}px, ${mouseYRelative + 50}px, 0)`;//VOIR POUR UTILISER TRANSLATE AU LIEU DE TRANSLATE3D
-
+        g.addEventListener('mouseenter', () => {
+            chartHover.style.opacity = 1;
+            chartHover.style.visibility = 'visible';
             chartHoverIcon.style.backgroundColor = budget.theme
             chartHoverCategory.textContent = budget.category;
             chartHoverCategoryAmount.textContent = `Budget Spent: $${budgetAmountbyCategory.get(budget.category)}`;
             chartHoverCategoryTotal.textContent = `Budget Maximum: $${budget.maximum}`;
 
         });
+        
+        g.addEventListener('mousemove', (event) => {
+            const rect = g.getBoundingClientRect();
+            const mouseXRelative = event.clientX - rect.left;
+            const mouseYRelative = event.clientY - rect.top;
+            chartHover.style.transform = `translate3d(${mouseXRelative + 25}px, ${mouseYRelative + 25}px, 0)`;//VOIR POUR UTILISER TRANSLATE AU LIEU DE TRANSLATE3D
+        });
 
         g.addEventListener('mouseleave', () => {
-            chartHover.style.display = 'none';
+            chartHover.style.opacity = 0;
+            chartHover.style.visibility = 'hidden';
         });
         
     });
@@ -151,7 +143,7 @@ function feedbudgetPage(data){
 
     const budgetCategories = data.budgets.map(budget => budget.category);
     const categorySet = new Set(budgetCategories);
-  
+
     const amountByCategory = data.transactions.reduce( (acc, transaction) => {
 
         if (categorySet.has(transaction.category)) {
@@ -180,14 +172,6 @@ function feedbudgetPage(data){
 
 
 
-
-
-
-
-
-
-
-
     /* ARTICLE */
 
     const fragment = document.createDocumentFragment();
@@ -201,10 +185,9 @@ function feedbudgetPage(data){
 
         li.querySelector('.border').style.backgroundColor = budget.theme;
         li.querySelector('.budget-category').textContent = budget.category;
-
         const spent = budgetAmountbyCategory.get(budget.category) || 0;
-        li.querySelector('.budget-spent').textContent = `$${spent.toFixed(2)}`;
 
+        li.querySelector('.budget-spent').textContent = `$${spent.toFixed(2)}`;
         li.querySelector('.budget-amount-max').textContent = `$${budget.maximum.toFixed(2)}`;
 
         // budgetsList.appendChild(clone);
@@ -233,9 +216,12 @@ function feedbudgetPage(data){
         // console.log('budget.category :', budgetAmountbyCategory.get(budget.category));
         // console.log('budget.maximum :', budget.maximum);
 
-        const lengthGraph =  Math.floor(( budgetAmountbyCategory.get(budget.category) / budget.maximum ) * 100) >= 100 ? 100 : Math.floor(( budgetAmountbyCategory.get(budget.category) / budget.maximum ) * 100);
-        containerGraph.querySelector('.line-graph').style.width = `${lengthGraph}%`;
 
+        // const lengthGraph =  Math.floor(( budgetAmountbyCategory.get(budget.category) / budget.maximum ) * 100) >= 100 ? 100 : Math.floor(( budgetAmountbyCategory.get(budget.category) / budget.maximum ) * 100);
+        const lengthGraph =  Math.min((budgetAmountbyCategory.get(budget.category) / budget.maximum ) * 100, 100);
+
+
+        containerGraph.querySelector('.line-graph').style.width = `${lengthGraph}%`;
         containerGraph.querySelector('.line-graph').style.backgroundColor = budget.theme;
         containerGraph.querySelector('.border').style.backgroundColor = budget.theme;
 
@@ -243,16 +229,12 @@ function feedbudgetPage(data){
         containerGraph.querySelector('.list-pots .total-spent').textContent = `$${spent.toFixed(2)}`;
         containerGraph.querySelector('.list-pots .free').textContent = `$${budget.maximum}`;
 
-
         const spendingList = clone.querySelector('.list-spending');
         const innerTemplate = clone.querySelector('#template-li-spending');
-
-
 
         const lastThreeTransactions = data.transactions.filter(t => t.category === budget.category)
                                                         .sort((a, b) => new Date(b.date) - new Date(a.date))                                                
                                                         .slice(0, 3);
-
 
         console.log('lastThreeTransactions : ', lastThreeTransactions);
 

@@ -72,7 +72,10 @@
 
 body{
   min-width: 17.5rem;
+
   min-height: 100vh;
+  min-height: 100dvh;/*  mobile size  */
+
   font-size: 1rem;
   color: var(--grey-900);
   background: var(--beige-100);
@@ -854,7 +857,10 @@ a{
 
 .chart-hover{
 
-  display: none;
+  /* display: none; */
+
+
+  display: flex;
 
   flex-direction: column;
   justify-content: space-between;
@@ -869,14 +875,27 @@ a{
 
   padding: var(--space-16px);
 
+
   position: absolute;
     top: 0; left: 0;
 
+
   /* A AJOUTER SUR SAFARI PPOUR EST UN COMPORTEMENT SMOOTH */
   pointer-events: none;
-  /* will-change: transform; Indique au navigateur d'isoler cet élément sur sa propre couche attention a utilisation */
+  opacity: 0;/* Play with element for hover, use the composite only */
+  visibility: hidden;    
+  /* will-change: transform; Indique au navigateur d'isoler cet élément sur sa propre couche attention a utilisation
+  Autiliser pour animation ou element qui ont probleme de performance */
 
-  
+  transition: opacity 0.5s ease-out;
+
+
+  /* Spécifique à Safari/Webkit */
+  /* -webkit-backface-visibility: hidden; 
+  backface-visibility: hidden; */
+  /* Cela indique à Safari de ne jamais essayer de calculer le "dos" de l'élément (même s'il n'y a pas de rotation 3D),
+   ce qui stabilise souvent le rendu des calques en absolute. */
+
 
   .container-title{
     display: flex;
@@ -907,6 +926,7 @@ a{
 
   &:hover{
     /* display: flex; */
+
   }
 
 }

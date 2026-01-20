@@ -5,15 +5,12 @@
       <meta name="description" content="Exercise Frontend Mentor, exercise Personal finance app">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <link rel="icon" type="image/png" sizes="32x32" href="../assets/images/favicon-32x32.png">
-
       <link href="../styles/styles.css" rel="stylesheet" type="text/css">
       <link href="../styles/pots.css" rel="stylesheet" type="text/css">
-
-
       <title>Frontend Mentor | Personal finance app - Pots</title>
-
     </head>
     <body class="pots-page">
+
 
       <header class="container-header reduce">
         <div class="container-logo">
@@ -49,10 +46,47 @@
           <h1 class="title public-sans-bold text-preset-1">Pots</h1> 
           <button class="button add-pot public-sans-bold text-preset-4">+ Add New Pot</button>         
         </div>
-        
 
-        <article class="container-article">
 
+        <template id="template-pot">
+
+          <article class="container-article">
+            <header class="container-header-title">
+              <div class="container-title">
+                <div class="color-tag"></div>
+                <h2 class="article-title public-sans-bold text-preset-2"></h2>
+              </div>
+              <div class="container-edit">
+                <button class="button button-edit"><img src="../assets/images/icon-ellipsis.svg" alt="three dots"></button>
+                  <div class="dropdown public-sans-regular text-preset-4">
+                    <button class="button button-edit-budget">Edit Pot</button>
+                    <button  class="button button-delete-budget">Delete Pot</button>
+                  </div>
+              </div>
+            </header>
+            <div class="amount-saved">
+              <p class="text public-sans-regular text-preset-4">Total Saved<span class="saved public-sans-bold text-preset-1"></span></p>
+              <div class="graph">
+                <div class="line-graph"></div>
+              </div>
+              <p class="text public-sans-bold text-preset-5"><span class="percent"></span><span class="public-sans-regular text-preset-5">Target of <span class="amount">$2,000</span></span></p>
+              <div class="container-button">
+                <button class="button public-sans-bold text-preset-4">+ Add Money</button>
+                <button class="button public-sans-bold text-preset-4">Withdraw</button>
+              </div>
+            </div>
+          </article>
+
+
+        </template>
+
+
+        <!-- <div class="container-article-pots">
+
+        </div> -->
+
+
+        <!-- <article class="container-article">
           <header class="container-header-title">
             <div class="container-title">
               <div class="color-tag"></div>
@@ -66,169 +100,32 @@
                 </div>
             </div>
           </header>
-
           <div class="amount-saved">
             <p class="text public-sans-regular text-preset-4">Total Saved<span class="public-sans-bold text-preset-1">$159.00</span></p>
             <div class="graph">
               <div class="line-graph"></div>
             </div>
-            <p class="text public-sans-bold text-preset-5">7.95%<span class="public-sans-regular text-preset-5">Target of $2,000</span></p>
+            <p class="text public-sans-bold text-preset-5"><span class="percent">7.95%</span><span class="public-sans-regular text-preset-5">Target of <span class="amount">$2,000</span></span></p>
             <div class="container-button">
               <button class="button public-sans-bold text-preset-4">+ Add Money</button>
               <button class="button public-sans-bold text-preset-4">Withdraw</button>
             </div>
           </div>
-
-        </article>
-
-
-        <article class="container-article">
-
-          <header class="container-header-title">
-            <div class="container-title">
-              <div class="color-tag"></div>
-              <h2 class="article-title public-sans-bold text-preset-2">Savings</h2>
-            </div>
-            <div class="container-edit">
-              <button class="button button-edit"><img src="../assets/images/icon-ellipsis.svg" alt="three dots"></button>
-              <div class="dropdown public-sans-regular text-preset-4">
-                <button class="button button-edit-budget">Edit Pot</button>
-                <button  class="button button-delete-budget">Delete Pot</button>
-              </div>
-            </div>
-          </header>
-
-          <div class="amount-saved">
-            <p class="text public-sans-regular text-preset-4">Total Saved<span class="public-sans-bold text-preset-1">$159.00</span></p>
-            <div class="graph">
-              <div class="line-graph"></div>
-            </div>
-            <p class="text public-sans-bold text-preset-5">7.95%<span class="public-sans-regular text-preset-5">Target of $2,000</span></p>
-            <div class="container-button">
-              <button class="button public-sans-bold text-preset-4">+ Add Money</button>
-              <button class="button public-sans-bold text-preset-4">Withdraw</button>
-            </div>
-          </div>
-
-        </article>
-
-
-
-
-        <article class="container-article">
-
-          <header class="container-header-title">
-            <div class="container-title">
-              <div class="color-tag"></div>
-              <h2 class="article-title public-sans-bold text-preset-2">Savings</h2>
-            </div>
-            <div class="container-edit">
-              <button class="button button-edit"><img src="../assets/images/icon-ellipsis.svg" alt="three dots"></button>
-              <div class="dropdown public-sans-regular text-preset-4">
-                <button class="button button-edit-budget">Edit Pot</button>
-                <button  class="button button-delete-budget">Delete Pot</button>
-              </div>
-            </div>
-          </header>
-
-          <div class="amount-saved">
-            <p class="text public-sans-regular text-preset-4">Total Saved<span class="public-sans-bold text-preset-1">$159.00</span></p>
-            <div class="graph">
-              <div class="line-graph"></div>
-            </div>
-            <p class="text public-sans-bold text-preset-5">7.95%<span class="public-sans-regular text-preset-5">Target of $2,000</span></p>
-            <div class="container-button">
-              <button class="button public-sans-bold text-preset-4">+ Add Money</button>
-              <button class="button public-sans-bold text-preset-4">Withdraw</button>
-            </div>
-          </div>
-
-        </article>
-
-
-        <article class="container-article">
-
-          <header class="container-header-title">
-            <div class="container-title">
-              <div class="color-tag"></div>
-              <h2 class="article-title public-sans-bold text-preset-2">Savings</h2>
-            </div>
-            <div class="container-edit">
-              <button class="button button-edit"><img src="../assets/images/icon-ellipsis.svg" alt="three dots"></button>
-              <div class="dropdown public-sans-regular text-preset-4">
-                <button class="button button-edit-budget">Edit Pot</button>
-                <button  class="button button-delete-budget">Delete Pot</button>
-              </div>
-            </div>
-          </header>
-
-          <div class="amount-saved">
-            <p class="text public-sans-regular text-preset-4">Total Saved<span class="public-sans-bold text-preset-1">$159.00</span></p>
-            <div class="graph">
-              <div class="line-graph"></div>
-            </div>
-            <p class="text public-sans-bold text-preset-5">7.95%<span class="public-sans-regular text-preset-5">Target of $2,000</span></p>
-            <div class="container-button">
-              <button class="button public-sans-bold text-preset-4">+ Add Money</button>
-              <button class="button public-sans-bold text-preset-4">Withdraw</button>
-            </div>
-          </div>
-
-        </article>
-
-
-        <article class="container-article">
-
-          <header class="container-header-title">
-            <div class="container-title">
-              <div class="color-tag"></div>
-              <h2 class="article-title public-sans-bold text-preset-2">Savings</h2>
-            </div>
-            <div class="container-edit">
-              <button class="button button-edit"><img src="../assets/images/icon-ellipsis.svg" alt="three dots"></button>
-              <div class="dropdown public-sans-regular text-preset-4">
-                <button class="button button-edit-budget">Edit Pot</button>
-                <button  class="button button-delete-budget">Delete Pot</button>
-              </div>
-            </div>
-          </header>
-
-          <div class="amount-saved">
-            <p class="text public-sans-regular text-preset-4">Total Saved<span class="public-sans-bold text-preset-1">$159.00</span></p>
-            <div class="graph">
-              <div class="line-graph"></div>
-            </div>
-            <p class="text public-sans-bold text-preset-5">7.95%<span class="public-sans-regular text-preset-5">Target of $2,000</span></p>
-            <div class="container-button">
-              <button class="button public-sans-bold text-preset-4">+ Add Money</button>
-              <button class="button public-sans-bold text-preset-4">Withdraw</button>
-            </div>
-          </div>
-
-        </article>
-
-          
+        </article> -->
 
       </main>
 
 
 
-
-      
-      
       <dialog class="modal modal-add">
-
         <div class="container-title">
           <h3 class="title public-sans-bold text-preset-1 text-preset-2"></h3>
           <form method="dialog">
             <button type="submit" class="button close-modal"><img src="../assets/images/icon-close-modal.svg" alt=""></button>   
           </form>
         </div>
-
         <p class="text public-sans-regular text-preset-4"></p>
-
         <form method="dialog" class="search-field">
-        
           <div class="container-sort">
             <label for="category" class="sr-only"><span>Pot Name</span></label>
             <select name="category" id="category" class="sr-only">
@@ -252,11 +149,9 @@
               <li class="li-sort">Education</li>
             </ul>
           </div>
-
           <label for="maxspend"><span class="text public-sans-bold text-preset-5">Target</span>
             <input type="text" name="maxspend" id="maxspend" placeholder="e.g. 2000" class="public-sans-regular">
           </label>
-
           <div class="container-sort">
             <label for="color" class="sr-only"><span>Color Tag</span></label>
             <select name="color" id="color" class="sr-only">
@@ -296,14 +191,9 @@
               <li class="li-sort"><span class="color-tag orange"></span>Orange</li>
             </ul>
           </div>
-
           <button type="submit" class="button button-modal public-sans-bold text-preset-4"></button>
-
         </form>
-
       </dialog>
-
-
 
 
 
@@ -325,97 +215,62 @@
 
 
 
-
-
-
-
-
-
-
       <dialog class="modal modal-withdraw-money">
-
         <div class="container-title">
           <h3 class="title public-sans-bold text-preset-1 text-preset-2"></h3>
           <form method="dialog">
             <button type="submit" class="button close-modal"><img src="../assets/images/icon-close-modal.svg" alt=""></button>   
           </form>
         </div>
-
         <p class="text public-sans-regular text-preset-4">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Phasellus  hendrerit. Pellentesque aliquet nibh nec urna. In nisi neque, aliquet.</p>
-
         <div class="amount-saved">
           <p class="text public-sans-regular text-preset-4">New Amount<span class="public-sans-bold text-preset-1">$139.00</span></p>
           <div class="graph">
             <div class="line-graph"></div>
           </div>
           <p class="text public-sans-bold text-preset-5">5.95%<span class="public-sans-regular text-preset-5">Target of $2,000</span></p>
-
           <div class="container-withdraw">
-
-
-
-            <!-- <button class="button public-sans-bold text-preset-4">Confirm Withdraw</button> -->
-
             <form method="dialog" class="search-field">
-
               <label for="amountToWithdraw"><span class="text public-sans-bold text-preset-5">Amount to Withdraw</span>
                 <input type="text" name="maxspend" id="amountToWithdraw" placeholder="e.g. 2000" class="public-sans-regular">
               </label>
-
               <button type="submit" class="button button-modal public-sans-bold text-preset-4">Confirm Withdraw</button>
-
             </form>
-
-
           </div>
-
         </div>
-
       </dialog>
-
-
 
 
 
       <dialog class="modal modal-add-money">
-
         <div class="container-title">
           <h3 class="title public-sans-bold text-preset-1 text-preset-2"></h3>
           <form method="dialog">
             <button type="submit" class="button close-modal"><img src="../assets/images/icon-close-modal.svg" alt=""></button>   
           </form>
         </div>
-
         <p class="text public-sans-regular text-preset-4">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Phasellus  hendrerit. Pellentesque aliquet nibh nec urna. In nisi neque, aliquet.</p>
-
         <div class="amount-saved">
           <p class="text public-sans-regular text-preset-4">New Amount<span class="public-sans-bold text-preset-1">$139.00</span></p>
           <div class="graph">
             <div class="line-graph"></div>
           </div>
           <p class="text public-sans-bold text-preset-5">5.95%<span class="public-sans-regular text-preset-5">Target of $2,000</span></p>
-
           <div class="container-withdraw">
-
-            <!-- <button class="button public-sans-bold text-preset-4">Confirm Addition</button> -->
-
             <form method="dialog" class="search-field">
-
               <label for="amountToWithdraw"><span class="text public-sans-bold text-preset-5">Amount to Add</span>
                 <input type="text" name="maxspend" id="amountToWithdraw" placeholder="e.g. 2000" class="public-sans-regular">
               </label>
-
               <button type="submit" class="button button-modal public-sans-bold text-preset-4">Confirm Addition</button>
-
             </form>
-
           </div>
-
         </div>
-
       </dialog>
 
+
     <script src="../scripts/script.js"></script>
+    <script src="../scripts/pots.js"></script>
+
 
     </body>
 </html>

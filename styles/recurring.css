@@ -216,18 +216,23 @@
         .cell-amount{
             grid-column: 3;
             grid-row: 2;
+            
             @media screen and (min-width: 37.5rem){
                 grid-column: 4;
                 grid-row: 1;
             }
+
         }
         .cell-date{
             grid-column: 1 / 3;
             grid-row: 2;
             display: flex;
             time{
-                color: var(--secondary-green);
+                /* color: var(--secondary-green); */
                 margin-right: var(--space-08px);
+                &.green{
+                    color: var(--secondary-green);
+                }
             }            
             @media screen and (min-width: 37.5rem){
                 grid-column: 3;
@@ -236,10 +241,12 @@
                     display: inline-block;
                 }
             }
-
         }
-    }
+        .red{
+            color: var(--secondary-red);
+        } 
 
+    }
 
 }
 
