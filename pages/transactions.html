@@ -135,7 +135,35 @@
             </div>
 
 
-            <div class="transactions" role="row">
+            <template id="template-transaction">
+
+              <div class="transactions" role="row">
+                <div class="container-avatar">
+                  <img src="" alt="avatar" class="avatar">
+                </div>
+                <div class="cell-name" role="cell">  
+                  <p class="text public-sans-bold text-preset-4"></p>
+                </div>
+                <div class="cell-category" role="cell">
+                  <p class="text public-sans-regular text-preset-5"></p>
+                </div>
+                <div class="cell-amount" role="cell">
+                  <p class="text public-sans-bold text-preset-4 plus"></p>
+                </div>
+                <div class="cell-date" role="cell">
+                  <time datetime="2024-08-19" class="text public-sans-regular text-preset-5"></time>
+                </div>
+              </div>    
+
+            </template>
+
+
+            <div class="container-template-transactions">
+
+            </div>
+
+
+            <!-- <div class="transactions" role="row">
               <div class="container-avatar">
                 <img src="../assets/images/avatars/emma-richardson.jpg" alt="avatar" class="avatar">
               </div>
@@ -151,10 +179,10 @@
               <div class="cell-date" role="cell">
                 <time datetime="2024-08-19" class="text public-sans-regular text-preset-5">19 Aug 2024</time>
               </div>
-            </div>
+            </div> -->
 
 
-            <div class="transactions" role="row">
+            <!-- <div class="transactions" role="row">
               <div class="container-avatar">
                 <img src="../assets/images/avatars/savory-bites-bistro.jpg" alt="avatar" class="avatar">
               </div>
@@ -170,9 +198,9 @@
               <div class="cell-date" role="cell">
                 <time datetime="2024-08-19" class="text public-sans-regular text-preset-5">19 Aug 2024</time>
               </div>
-            </div>
+            </div> -->
 
-
+          <!-- 
             <div class="transactions" role="row">
               <div class="container-avatar">
                 <img src="../assets/images/avatars/daniel-carter.jpg" alt="avatar" class="avatar">
@@ -189,10 +217,10 @@
               <div class="cell-date" role="cell">
                 <time datetime="2024-08-18" class="text public-sans-regular text-preset-5">18 Aug 2024</time>
               </div>
-            </div>
+            </div> -->
 
 
-            <div class="transactions" role="row">
+            <!-- <div class="transactions" role="row">
               <div class="container-avatar">
                 <img src="../assets/images/avatars/sun-park.jpg" alt="avatar" class="avatar">
               </div>
@@ -208,9 +236,9 @@
               <div class="cell-date" role="cell">
                 <time datetime="2024-08-17" class="text public-sans-regular text-preset-5">17 Aug 2024</time>
               </div>
-            </div>
+            </div> -->
 
-
+            <!-- 
             <div class="transactions" role="row">
               <div class="container-avatar">
                 <img src="../assets/images/avatars/urban-services-hub.jpg" alt="avatar" class="avatar">
@@ -227,9 +255,9 @@
               <div class="cell-date" role="cell">
                 <time datetime="2024-08-17" class="text public-sans-regular text-preset-5">17 Aug 2024</time>
               </div>
-            </div>
+            </div> -->
 
-
+            <!-- 
             <div class="transactions" role="row">
               <div class="container-avatar">
                 <img src="../assets/images/avatars/emma-richardson.jpg" alt="avatar" class="avatar">
@@ -246,10 +274,10 @@
               <div class="cell-date" role="cell">
                 <time datetime="2024-08-19" class="text public-sans-regular text-preset-5">19 Aug 2024</time>
               </div>
-            </div>
+            </div> -->
 
 
-            <div class="transactions" role="row">
+            <!-- <div class="transactions" role="row">
               <div class="container-avatar">
                 <img src="../assets/images/avatars/savory-bites-bistro.jpg" alt="avatar" class="avatar">
               </div>
@@ -265,10 +293,10 @@
               <div class="cell-date" role="cell">
                 <time datetime="2024-08-19" class="text public-sans-regular text-preset-5">19 Aug 2024</time>
               </div>
-            </div>
+            </div> -->
 
 
-            <div class="transactions" role="row">
+            <!-- <div class="transactions" role="row">
               <div class="container-avatar">
                 <img src="../assets/images/avatars/daniel-carter.jpg" alt="avatar" class="avatar">
               </div>
@@ -284,9 +312,9 @@
               <div class="cell-date" role="cell">
                 <time datetime="2024-08-18" class="text public-sans-regular text-preset-5">18 Aug 2024</time>
               </div>
-            </div>
+            </div> -->
 
-
+            <!-- 
             <div class="transactions" role="row">
               <div class="container-avatar">
                 <img src="../assets/images/avatars/sun-park.jpg" alt="avatar" class="avatar">
@@ -303,9 +331,9 @@
               <div class="cell-date" role="cell">
                 <time datetime="2024-08-17" class="text public-sans-regular text-preset-5">17 Aug 2024</time>
               </div>
-            </div>
+            </div> -->
 
-
+            <!-- 
             <div class="transactions" role="row">
               <div class="container-avatar">
                 <img src="../assets/images/avatars/urban-services-hub.jpg" alt="avatar" class="avatar">
@@ -322,10 +350,11 @@
               <div class="cell-date" role="cell">
                 <time datetime="2024-08-17" class="text public-sans-regular text-preset-5">17 Aug 2024</time>
               </div>
-            </div>
+            </div> -->
+
           </div>
 
-          <nav class="pages" aria-label="pagination">
+          <!-- <nav class="pages" aria-label="pagination">
 
             <ul class="list list-pages public-sans-regular">
               <li class="li-page previous"><button type="button" class="button previous" disabled><svg fill="none" height="11" viewBox="0 0 6 11" width="6" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -341,13 +370,14 @@
                                                                                                         </svg></button></li>
             </ul>
 
-          </nav>
+          </nav> -->
 
         </div>
 
       </main>
 
     <script src="../scripts/script.js"></script>
+    <script src="../scripts/transactions.js"></script>
 
     </body>
 </html>

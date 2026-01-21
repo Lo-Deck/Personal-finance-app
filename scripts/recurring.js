@@ -27,9 +27,7 @@ function feedRecurringPage(data){
     let dueSoon = 0;
     let soon = 0;
 
-
     const recurringBill = new Map();
-
 
     data.transactions.sort( (a, b) => {
         const dayA = new Date(a.date).getDate();
@@ -41,15 +39,7 @@ function feedRecurringPage(data){
             }
     });
 
-
-
-    console.log(recurringBill);
-
-    // recurringBill.forEach( (bill) => {
-    //     console.log('bill :', bill);
-    // });
-
-    // console.log(Array.from(recurringBill.values()));
+    // console.log(recurringBill);
 
     const totalBill = Array.from(recurringBill.values()).reduce( (acc, transaction) => {
         return acc + Math.abs(transaction.amount);
@@ -58,7 +48,6 @@ function feedRecurringPage(data){
     // console.log('totalBill: ', totalBill); 
     
     const currentDate = new Date('2024-08-19T00:00:00');
-    // console.log('currentDate: ', currentDate);
     const today = currentDate.getDate();
     const referenceDate = new Date(currentDate);
     const dayPlusFive = new Date(referenceDate);
@@ -85,34 +74,23 @@ function feedRecurringPage(data){
 
     });
 
-    // console.log('paidBills: ', paidBills);
-    // console.log('totalUpcoming: ', totalUpcoming);
-    // console.log('dueSoon: ', dueSoon);
-    
     const articleHeader = document.querySelector('.article-header');
-    articleHeader.querySelector('.total-bill').textContent = `$${totalBill.toFixed(2)}`;
-
-    // console.log(articleHeader.querySelector('.paid .price'));
-    
+    articleHeader.querySelector('.total-bill').textContent = `$${totalBill.toFixed(2)}`;    
     articleHeader.querySelector('.paid .price').textContent = `${paid}($${paidBills.toFixed(2)})`;
     articleHeader.querySelector('.upcoming .price').textContent = `${upcoming}($${totalUpcoming.toFixed(2)})`;
     articleHeader.querySelector('.due .price').textContent = `${soon}($${dueSoon.toFixed(2)})`;
 
 
-    
 
+
+    
     const fragmentBill = document.createDocumentFragment();
     const templateBill = document.querySelector('#template-transaction');
-
     const containerTransactions = document.querySelector('.container-transactions');
-
 
     recurringBill.forEach( (transaction) => {
 
         const clone = templateBill.content.cloneNode(true);
-
-        // console.log(transaction);
-        // console.log(clone);
 
         if(transaction.avatar && transaction.avatar.startsWith('../')){
             clone.querySelector('.avatar').src = transaction.avatar;            
@@ -146,31 +124,20 @@ function feedRecurringPage(data){
 
         }
 
-        // console.log('billDate', billDate);
-
         clone.querySelector('.cell-date time').textContent = textDate;        
 
         if(billDate <= today){
             clone.querySelector('.logo-paid').src = "../assets/images/icon-bill-paid.svg";
-
-            console.log(clone.querySelector('.cell-date time'));
-            
+            // console.log(clone.querySelector('.cell-date time'));
             clone.querySelector('.cell-date time').classList.add('green');
-            //text vert
-
         } 
         else if(billDate <= daydueSoon){
-            clone.querySelector('.logo-paid').src="../assets/images/icon-bill-due.svg";                
-            // text rouge     
+            clone.querySelector('.logo-paid').src="../assets/images/icon-bill-due.svg";                   
             clone.querySelector('.cell-amount .text').classList.add('red');
         }        
         
         else {
-
-            // clone.querySelector('.logo-paid').src="../assets/images/icon-bill-due.svg";
-            
             clone.querySelector('.logo-paid').style.display = "none";
-            
         }
 
         fragmentBill.appendChild(clone);

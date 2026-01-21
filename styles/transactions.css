@@ -47,6 +47,9 @@
     }
 
     .pages{
+
+        display: block;  /* AJOUT ICI POUT FAIRE JS */
+
         width: 100%;
         margin-top: var(--space-48px);
     }
