@@ -1,8 +1,14 @@
 
 
+import { getData } from './data-service.js';
+import { setupSideMenu, addWithrawMoney, openSortListModal, setupDropdownMenu } from './ui-utils.js';
+
+
 ( async () => {
 
     try{
+
+        setupSideMenu()//ajout ici 
 
         const data = await getData.fetchData('../data.json');
         console.log(data);
@@ -10,11 +16,20 @@
 
     } catch(error) {
 
-        console.error('Error download data :', error.message);
-        // document.body.innerHTML += "<p>Erreur de chargement</p>";
+        console.error('CRITICAL APP ERROR:', error.message);
+        document.querySelector('.container-main').innerHTML = `
+            <div class="error-message">
+                <p>Oups ! Impossible de charger vos données.</p>
+                <button onclick="location.reload()">Réessayer</button>
+            </div>`; 
+
+            //****************************ATTENTION INNER HTML******************
+
     }
 
 })()
+
+
 
 
 
@@ -54,5 +69,69 @@ function feedPotsPage(data){
 
     // containerPots.appendChild(fragmentPot);
     containerMain.appendChild(fragmentPot);
+
+
+
+
+
+
+
+    /* ADD NEW POT */
+
+    const btnAddPot = document.querySelector('.add-pot');
+
+    const modalAddPot = document.querySelector('.modal-add');
+    const modalTitle = modalAddPot.querySelector('.title');
+    const modalText = modalAddPot.querySelector('.text:nth-of-type(1)');
+    const modalButton = modalAddPot.querySelector('.button-submit-modal');
+        
+    btnAddPot.addEventListener('click', () => {
+        modalTitle.textContent = 'Add New Pot';
+        modalText.textContent = 'Create a pot to set savings targets. These can help keep you on track as you save for special purchases.';
+        modalButton.textContent = 'Add Pot';
+        modalAddPot.showModal();
+    }) 
+
+
+
+
+    /* OPEN ADD WIHDRAW BUTTON */
+
+    const modalAddMoney = document.querySelector('.modal-add-money');
+    const modalWithdrawMoney = document.querySelector('.modal-withdraw-money');
+
+    containerMain.addEventListener('click', (event) => {
+
+        const btnAdd = event.target.closest('.button-add-money');
+        const btnWithdraw = event.target.closest('.button-withdraw-money');
+
+        if(btnAdd){
+            addWithrawMoney(event, btnAdd, modalAddMoney);
+        } 
+
+        if(btnWithdraw){
+            addWithrawMoney(event, btnWithdraw, modalWithdrawMoney);
+        }
+
+    });
+
+
+
+    /* OPEN ADD LIST BUTTON MODAL */
+
+    const btnSort = document.querySelectorAll('.button-sort');
+    const listSort = document.querySelectorAll('.list-sort');
+
+    openSortListModal(btnSort, listSort);
+
+
+
+
+    /* OPEN CLOSE DROPDOWN MENU */
+
+    setupDropdownMenu();
+
+
+
 
 }

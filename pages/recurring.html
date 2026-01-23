@@ -5,16 +5,9 @@
       <meta name="description" content="Exercise Frontend Mentor, exercise Personal finance app">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <link rel="icon" type="image/png" sizes="32x32" href="../assets/images/favicon-32x32.png">
-
       <link href="../styles/styles.css" rel="stylesheet" type="text/css">
       <link href="../styles/recurring.css" rel="stylesheet" type="text/css">
-
-      <!-- <link href="../styles/transactions.css" rel="stylesheet" type="text/css"> -->
-
-
-
       <title>Frontend Mentor | Personal finance app - Recurring</title>
-
     </head>
     <body class="recurring-page">
 
@@ -53,52 +46,38 @@
         </div>
 
         <article class="article-header">
-
           <div class="section-bills">
             <img src="../assets/images/icon-recurring-bills.svg" alt="">
             <h2 class="title public-sans-regular text-preset-4">Total bills</h2>
             <p class="text total-bill public-sans-bold text-preset-1">$384.98</p>
           </div>
-
           <section class="section-summary">
-
             <h2 class="title public-sans-bold text-preset-3">Summary</h2>
-
             <ul class="list list-spending">
-
               <li class="li-spending paid">
                   <p class="text public-sans-regular text-preset-5">Paid Bills</p>                  
                   <p class="price public-sans-bold text-preset-5">2 ($320.00)</p>
               </li>
-
               <li class="li-spending upcoming">
                 <p class="text public-sans-regular text-preset-5">Total Upcoming</p>
                 <p class="price  public-sans-bold text-preset-5">6 ($1,230.00)</p>
               </li>
-
               <li class="li-spending due">
                 <p class="text public-sans-regular text-preset-5">Due Soon</p>
                 <p class="price public-sans-bold text-preset-5">2 ($40.00)</p>
               </li>
-
             </ul>
-
           </section>
-
         </article>
 
 
         <div class="form-and-transaction">
 
-          <!-- <search class="transactions-form"> -->
           <search class="search-field">
-        
             <label><span>Search bills</span>
                 <input type="search" name="transaction" id="transaction" placeholder="Search bills" class="public-sans-regular">
             </label>
-
             <div class="container-sort">
-
               <label for="sort" class="sr-only"><span>Sort by</span></label> 
               <select name="sort" id="sort" class="sr-only">
                   <option value="latest" selected>Latest</option>
@@ -108,10 +87,8 @@
                   <option value="highest">Highest</option>
                   <option value="lowest">Lowest</option>
               </select>
-
               <p class="text public-sans-regular text-preset-4">Sort by</p>
               <button class="button button-sort"><img src="../assets/images/icon-sort-mobile.svg" alt="" class="mobile"><span class="public-sans-regular text-preset-4">Latest</span><img src="../assets/images/icon-caret-down.svg" alt="" class="desktop"></button>
-
               <ul class="list list-sort sort text-preset-4 public-sans-regular">
                 <li class="li-sort selected">Latest</li>
                 <li class="li-sort">Oldest</li>
@@ -120,14 +97,10 @@
                 <li class="li-sort">Highest</li>
                 <li class="li-sort">Lowest</li>
               </ul>
-
             </div>
-
           </search>
 
-
           <div class="container-transactions table" role="table" aria-label="Transactions">
-
             <div class="transactions transactions-header hide-mobile" role="row">
               <div class="cell-name" role="cell">  
                 <p class="text  public-sans-regular text-preset-5">Bill Title</p>
@@ -139,9 +112,7 @@
                 <p class="text public-sans-regular text-preset-5">Due <span>Date</span></p>
               </div>
             </div>
-
             <template id="template-transaction">
-
               <div class="transactions" role="row">
                 <div class="container-avatar">
                   <img src="" alt="avatar" class="avatar">
@@ -157,35 +128,14 @@
                   <img class="logo-paid" src="" alt="paid">
                 </div>
               </div>
-
             </template>
-
-
-            <!-- <div class="transactions" role="row">
-              <div class="container-avatar">
-                <img src="../assets/images/avatars/spark-electric-solutions.jpg" alt="avatar" class="avatar">
-              </div>
-              <div class="cell-name" role="cell">  
-                <p class="text public-sans-bold text-preset-4">Spark Electric Solutions</p>
-              </div>
-              <div class="cell-amount" role="cell">
-                <p class="text public-sans-bold text-preset-4 plus">$100.00</p>
-              </div>
-              <div class="cell-date" role="cell">
-                <time datetime="--02" class="text public-sans-regular text-preset-5">Monthly - 2nd</time>
-                <img src="../assets/images/icon-bill-paid.svg" alt="paid">
-              </div>
-            </div> -->
-
-            
           </div>
 
         </div>
         
       </main>
 
-    <script src="../scripts/script.js"></script>
-    <script src="../scripts/recurring.js"></script>
+    <script src="../scripts/recurring.js" type="module"></script>
 
     </body>
 </html>

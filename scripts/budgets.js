@@ -1,9 +1,17 @@
 
 
+import { getData } from './data-service.js';
+
+import { setupSideMenu, openSortListModal, setupDropdownMenu } from './ui-utils.js';
+
+
+
 
 ( async () => {
 
     try{
+
+        setupSideMenu();
 
         const data = await getData.fetchData('../data.json');
         console.log(data);
@@ -11,8 +19,15 @@
 
     } catch(error) {
 
-        console.error('Error download data :', error.message);
-        // document.body.innerHTML += "<p>Erreur de chargement</p>";
+        console.error('CRITICAL APP ERROR:', error.message);
+        document.querySelector('.container-main').innerHTML = `
+            <div class="error-message">
+                <p>Oups ! Impossible de charger vos données.</p>
+                <button onclick="location.reload()">Réessayer</button>
+            </div>`; 
+
+            //****************************ATTENTION INNER HTML******************
+
     }
 
 })()
@@ -22,8 +37,9 @@
 function feedbudgetPage(data){
 
 
-
     /* BUDGETS */
+
+    //Extract Budget
 
     const budgetAmountbyCategory = new Map();
 
@@ -38,8 +54,6 @@ function feedbudgetPage(data){
         }
     });
 
-    // console.log(budgetAmountbyCategory);
-    
 
     //chart create SVG
 
@@ -62,7 +76,6 @@ function feedbudgetPage(data){
     const maxBudget = data.budgets.reduce( (acc, budget) => {
         return acc + budget.maximum;
     }, 0)
-    // console.log(maxBudget);
 
     //circonference of the circle color 40 et opacity 35
     const circonference40 = Math.ceil(2 * Math.PI * 40);
@@ -77,7 +90,6 @@ function feedbudgetPage(data){
     const chartHoverCategory = chartHover.querySelector('.category');
     const chartHoverCategoryAmount = chartHover.querySelector('.category-amount');
     const chartHoverCategoryTotal = chartHover.querySelector('.category-total-amount');
-
 
     data.budgets.forEach( (budget) => {
 
@@ -109,8 +121,7 @@ function feedbudgetPage(data){
         dashOffset40 += Number(strokeDasharray40);
         dashOffset35 += Number(strokeDasharray35);
 
-
-        //hover
+        //hover svg chart
 
         g.addEventListener('mouseenter', () => {
             chartHover.style.opacity = 1;
@@ -138,8 +149,7 @@ function feedbudgetPage(data){
 
 
 
-
-    //list
+    //list under the svg chart
 
     const budgetCategories = data.budgets.map(budget => budget.category);
     const categorySet = new Set(budgetCategories);
@@ -164,15 +174,11 @@ function feedbudgetPage(data){
     budgetsSpend.textContent = `$${Math.floor(Math.abs(amountByCategory))}`;
 
 
+
+    /* CREATE ARTICLE */
+
     const budgetsList = document.querySelector('.section-budgets .list-pots');
-    const budgetsLiElements = budgetsList.querySelectorAll('.li-pots');
-
-
-
-
-
-
-    /* ARTICLE */
+    // const budgetsLiElements = budgetsList.querySelectorAll('.li-pots');    
 
     const fragment = document.createDocumentFragment();
     const templateLiPots = document.querySelector('#template-li-pots');
@@ -190,7 +196,6 @@ function feedbudgetPage(data){
         li.querySelector('.budget-spent').textContent = `$${spent.toFixed(2)}`;
         li.querySelector('.budget-amount-max').textContent = `$${budget.maximum.toFixed(2)}`;
 
-        // budgetsList.appendChild(clone);
         fragment.appendChild(clone);
 
     });
@@ -213,14 +218,8 @@ function feedbudgetPage(data){
         const containerGraph = clone.querySelector('.container-graph');
         containerGraph.querySelector('.amount-spent').textContent = budget.maximum;
 
-        // console.log('budget.category :', budgetAmountbyCategory.get(budget.category));
-        // console.log('budget.maximum :', budget.maximum);
 
-
-        // const lengthGraph =  Math.floor(( budgetAmountbyCategory.get(budget.category) / budget.maximum ) * 100) >= 100 ? 100 : Math.floor(( budgetAmountbyCategory.get(budget.category) / budget.maximum ) * 100);
         const lengthGraph =  Math.min((budgetAmountbyCategory.get(budget.category) / budget.maximum ) * 100, 100);
-
-
         containerGraph.querySelector('.line-graph').style.width = `${lengthGraph}%`;
         containerGraph.querySelector('.line-graph').style.backgroundColor = budget.theme;
         containerGraph.querySelector('.border').style.backgroundColor = budget.theme;
@@ -236,7 +235,7 @@ function feedbudgetPage(data){
                                                         .sort((a, b) => new Date(b.date) - new Date(a.date))                                                
                                                         .slice(0, 3);
 
-        console.log('lastThreeTransactions : ', lastThreeTransactions);
+        // console.log('lastThreeTransactions : ', lastThreeTransactions);
 
         lastThreeTransactions.forEach( (transaction) => {
 
@@ -257,7 +256,6 @@ function feedbudgetPage(data){
 
         });
 
-        
         fragmentArticleBudget.appendChild(clone);
 
     })
@@ -265,4 +263,86 @@ function feedbudgetPage(data){
     containerArticle.appendChild(fragmentArticleBudget);
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+    /* ADD NEW BUDGET */
+
+    //open modal
+
+    const modalAddEdit = document.querySelector('.modal-add');
+    const btnAddBudget = document.querySelector('.add-budget');
+
+    const modalTitle = modalAddEdit.querySelector('.title');
+    const modalText = modalAddEdit.querySelector('.text:nth-of-type(1)');
+
+    const btnSubmitModal = modalAddEdit.querySelector('.modal-add .button-submit-modal');
+
+    btnAddBudget.addEventListener('click', () => {
+
+        modalTitle.textContent = 'Add New Budget';
+        modalText.textContent = 'Choose a category to set a spending budget. These categories can help you monitor spending.';
+        btnSubmitModal.textContent = 'Add Budget';
+        modalAddEdit.showModal();
+
+    });
+
+
+
+
+
+
+
+    //close modal
+
+    const btnCloseModal = document.querySelector('.close-modal');
+
+    btnCloseModal.addEventListener('click', () => {
+
+        const btnCategoryList = modalAddEdit.querySelector('.search-field .container-sort:nth-of-type(1) .button');
+
+        btnCategoryList.disabled = false;
+        btnCategoryList.style.opacity = '1';
+        btnCategoryList.style.pointerEvents = 'auto';
+        btnCategoryList.style.cursor = 'pointer';
+
+        modalAddEdit.querySelectorAll('.list-sort').forEach( (item, index) => {
+            item.classList.remove('active');
+        })
+
+    })
+
+
+
+
+    /* OPEN ADD LIST BUTTON MODAL */
+
+    const btnSort = document.querySelectorAll('.button-sort');
+    const listSort = document.querySelectorAll('.list-sort');
+
+    openSortListModal(btnSort, listSort);
+
+
+    /* OPEN CLOSE DROPDOWN MENU */
+
+    setupDropdownMenu();
+
+
 }
+
+
+
+
+

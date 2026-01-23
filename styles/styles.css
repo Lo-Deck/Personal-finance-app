@@ -74,7 +74,7 @@ body{
   min-width: 17.5rem;
 
   min-height: 100vh;
-  min-height: 100dvh;/*  mobile size  */
+  min-height: 100dvh;/*  mobile size ios */
 
   font-size: 1rem;
   color: var(--grey-900);
@@ -1021,7 +1021,14 @@ a{
   position: relative;
 
   .dropdown{
-    display: none;
+
+    /* display: none; */
+    display: block;
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
     width: 8.375rem;
     background: var(--white);
     border-radius: 0.5rem;
@@ -1031,7 +1038,10 @@ a{
     box-shadow: 0.1rem 0.1rem 1rem hsla(252, 7%, 13%, 0.2);
 
     &.active{
-      display: block;
+      /* display: block; */
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
     }
 
   }
@@ -1192,7 +1202,7 @@ body:has(dialog[open]) {
           border: 0.0625rem solid var(--grey-900);
       }
     }
-    .button-modal{
+    .button-submit-modal{
       background: var(--grey-900);
       color: var(--white);
       border-radius: 0.5rem;
@@ -1220,7 +1230,7 @@ body:has(dialog[open]) {
 
       }
 
-      .button-modal{
+      .button-submit-modal{
         /* background: var(--grey-900);
         color: var(--white);
         border-radius: 0.5rem;
@@ -1243,7 +1253,7 @@ body:has(dialog[open]) {
 
   .search-field{
 
-    .button-modal{
+    .button-submit-modal{
 
       margin: 0;
 

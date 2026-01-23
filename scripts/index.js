@@ -1,8 +1,17 @@
 
 
+
+import { getData } from './data-service.js';
+import { setupSideMenu } from './ui-utils.js';
+
+
+
+
 ( async () => {
 
     try{
+
+        setupSideMenu();
 
         const data = await getData.fetchData('../data.json');
         console.log(data);
@@ -10,8 +19,15 @@
 
     } catch(error) {
 
-        console.error('Error download data :', error.message);
-        // document.body.innerHTML += "<p>Erreur de chargement</p>";
+        console.error('CRITICAL APP ERROR:', error.message);
+        document.querySelector('.container-main').innerHTML = `
+            <div class="error-message">
+                <p>Oups ! Impossible de charger vos données.</p>
+                <button onclick="location.reload()">Réessayer</button>
+            </div>`; 
+
+            //****************************ATTENTION INNER HTML******************
+
     }
 
 })()
@@ -329,7 +345,7 @@ function feedIndexPage(data){
 
     billRecurring.forEach( (bill, index) => {
 
-        billDate = new Date(bill.date).getDate();
+        const billDate = new Date(bill.date).getDate();
         const amount = Math.abs(bill.amount);
 
         if( billDate <= today ){
