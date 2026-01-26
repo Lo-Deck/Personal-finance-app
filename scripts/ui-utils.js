@@ -43,7 +43,7 @@ export function setupSideMenu() {
 
 export function addWithrawMoney(event, btn, modal){
 
-    event.stopPropagation();
+    // event.stopPropagation();
     const category = btn.closest('.container-article').querySelector('.container-header-title .article-title').textContent;
 
     if(btn.classList.contains('button-add-money')){
@@ -81,6 +81,8 @@ export function openSortListModal(buttons, lists){
 
         btn.addEventListener('click', () => {
 
+            console.log('list modal');
+            
             // for(let i = 0; i < button.length; i++){
             lists.forEach( (list, i) => {
 
@@ -108,32 +110,122 @@ export function openSortListModal(buttons, lists){
  * @param {HTMLElement} button  - The menu to display.
  */
 
-export function setupDropdownMenu() {
+export function toggleDropdownMenu(btn) {
 
-    document.addEventListener('click', (event) => {
 
-        const dropDownMenu = document.querySelectorAll('.dropdown');  
-        const btn = event.target.closest('.button-edit');
+    const dropDownMenu = document.querySelectorAll('.dropdown');  
+    const currentDropdown = btn.parentElement.querySelector('.dropdown');
 
-        if(btn){
+    for(let i = 0; i < dropDownMenu.length; i++){
+        dropDownMenu[i] === currentDropdown ? currentDropdown.classList.toggle('active') : dropDownMenu[i].classList.remove('active');
+    }
+
+    
+}
+
+
+export function closeAllDropdowns() {
+    document.querySelectorAll('.dropdown.active').forEach(menu => {
+        menu.classList.remove('active');
+    });
+}
+
+
+
+
+
+
+
+
+// export function setupDropdownMenu() {
+
+//     document.addEventListener('click', (event) => {
+
+//         const dropDownMenu = document.querySelectorAll('.dropdown');  
+//         const btn = event.target.closest('.button-edit');
+
+//         if(btn){
             
-            event.stopPropagation();
-            const currentDropdown = btn.parentElement.querySelector('.dropdown');
+//             event.stopPropagation();
+//             const currentDropdown = btn.parentElement.querySelector('.dropdown');
 
-            for(let i = 0; i < dropDownMenu.length; i++){
-                dropDownMenu[i] === currentDropdown ? currentDropdown.classList.toggle('active') : dropDownMenu[i].classList.remove('active');
-            }
+//             for(let i = 0; i < dropDownMenu.length; i++){
+//                 dropDownMenu[i] === currentDropdown ? currentDropdown.classList.toggle('active') : dropDownMenu[i].classList.remove('active');
+//             }
 
-        }
+//         }
 
-    })
+//     })
 
-    window.addEventListener('click', () => {
-        document.querySelectorAll('.dropdown.active').forEach(menu => {
-            menu.classList.remove('active');
+//     window.addEventListener('click', () => {
+//         document.querySelectorAll('.dropdown.active').forEach(menu => {
+//             menu.classList.remove('active');
+//         });
+//     });
+
+// }
+
+
+
+
+
+
+
+
+
+/**
+ * function to open modal box.
+ * modal to add or edit pots/budgets.
+ * @param {string} title - The title text to display in the modal.
+ * @param {string} text - The description or body text for the modal.
+ * @param {string} button - The text for the submit button.
+ */
+
+// export function openModalAddEdit(title, text, button){
+
+//     const modalAdd = document.querySelector('.modal-add');
+
+//     modalAdd.querySelector('.title').textContent = title;
+//     modalAdd.querySelector('.text:nth-of-type(1)').textContent = text;
+//     modalAdd.querySelector('.button-submit-modal').textContent = button;
+
+//     modalAdd.showModal();
+
+// }
+
+
+
+
+
+
+/**
+ * Function to close modal box.
+ * Close all list open.
+ */
+
+export function closeModalAddEdit(modal){
+   
+    // const modalAdd = document.querySelector('.modal-add');
+    const btnCloseModal = document.querySelector('.close-modal');
+
+    btnCloseModal.addEventListener('click', () => {
+
+        const btnCategoryList = modal.querySelector('.search-field .container-sort:nth-of-type(1) .button');
+
+        btnCategoryList.disabled = false;
+        btnCategoryList.style.opacity = '1';
+        btnCategoryList.style.pointerEvents = 'auto';
+        btnCategoryList.style.cursor = 'pointer';
+
+        modal.querySelectorAll('.list-sort').forEach( (item) => {
+            item.classList.remove('active');
         });
+
     });
 
 }
+
+
+
 
 

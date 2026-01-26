@@ -1,7 +1,7 @@
 
 
 import { getData } from './data-service.js';
-import { setupSideMenu, addWithrawMoney, openSortListModal, setupDropdownMenu } from './ui-utils.js';
+import { setupSideMenu, addWithrawMoney, openSortListModal, toggleDropdownMenu, closeModalAddEdit, closeAllDropdowns } from './ui-utils.js';
 
 
 ( async () => {
@@ -71,36 +71,79 @@ function feedPotsPage(data){
     containerMain.appendChild(fragmentPot);
 
 
+}
 
 
 
+
+
+
+
+
+
+
+/*** LISTENER ***/
 
 
     /* ADD NEW POT */
 
-    const btnAddPot = document.querySelector('.add-pot');
-
-    const modalAddPot = document.querySelector('.modal-add');
-    const modalTitle = modalAddPot.querySelector('.title');
-    const modalText = modalAddPot.querySelector('.text:nth-of-type(1)');
-    const modalButton = modalAddPot.querySelector('.button-submit-modal');
-        
-    btnAddPot.addEventListener('click', () => {
-        modalTitle.textContent = 'Add New Pot';
-        modalText.textContent = 'Create a pot to set savings targets. These can help keep you on track as you save for special purchases.';
-        modalButton.textContent = 'Add Pot';
-        modalAddPot.showModal();
-    }) 
-
-
-
-
-    /* OPEN ADD WIHDRAW BUTTON */
+    const modalAdd = document.querySelector('.modal-add');
 
     const modalAddMoney = document.querySelector('.modal-add-money');
     const modalWithdrawMoney = document.querySelector('.modal-withdraw-money');
 
-    containerMain.addEventListener('click', (event) => {
+
+    document.addEventListener('click', (event) => {
+
+        const btnToggleDropdown = event.target.closest('.button-edit');
+
+        if(btnToggleDropdown){
+
+            event.stopPropagation();
+            toggleDropdownMenu(btnToggleDropdown)
+
+        } else {
+
+            closeAllDropdowns();
+
+        }
+
+
+        const btnOpenAddModal = event.target.closest('.open-add-modal');
+        const btnOpenEditModal = event.target.closest('.open-edit-modal');
+
+        if (btnOpenAddModal) {
+            const title = 'Add New Pot';
+            const descriptionText = 'Create a pot to set savings targets. These can help keep you on track as you save for special purchases.';
+            const buttonText = 'Add Pot';
+            modalAdd.querySelector('.title').textContent = title;
+            modalAdd.querySelector('.text:nth-of-type(1)').textContent = descriptionText;
+            modalAdd.querySelector('.button-submit-modal').textContent = buttonText;
+            modalAdd.showModal();
+        }
+
+
+        if(btnOpenEditModal){
+            const title = 'Edit Pot';
+            const descriptionText = 'If your saving targets change, feel free to update your pots.';
+            const buttonText = 'Save Changes';
+            modalAdd.querySelector('.title').textContent = title;
+            modalAdd.querySelector('.text:nth-of-type(1)').textContent = descriptionText;
+            modalAdd.querySelector('.button-submit-modal').textContent = buttonText;
+
+            //specification button edit
+
+            const category = event.target.closest('.container-header-title').querySelector('.article-title').textContent;
+            const btnCategoryList = modalAdd.querySelector('.search-field .container-sort:nth-of-type(1) .button');
+            btnCategoryList.querySelector('span').textContent = category;
+            btnCategoryList.disabled = true;
+            btnCategoryList.style.opacity = '0.5';
+            btnCategoryList.style.pointerEvents = 'none';
+            btnCategoryList.style.cursor = 'not-allowed';
+            event.target.closest('.dropdown').classList.remove('active');
+            modalAdd.showModal();
+        }
+
 
         const btnAdd = event.target.closest('.button-add-money');
         const btnWithdraw = event.target.closest('.button-withdraw-money');
@@ -113,7 +156,33 @@ function feedPotsPage(data){
             addWithrawMoney(event, btnWithdraw, modalWithdrawMoney);
         }
 
+
     });
+
+
+    //close modal
+    closeModalAddEdit(modalAdd);
+
+
+    /* OPEN ADD WIHDRAW BUTTON */
+
+    // const modalAddMoney = document.querySelector('.modal-add-money');
+    // const modalWithdrawMoney = document.querySelector('.modal-withdraw-money');
+
+    // document.addEventListener('click', (event) => {
+
+    //     const btnAdd = event.target.closest('.button-add-money');
+    //     const btnWithdraw = event.target.closest('.button-withdraw-money');
+
+    //     if(btnAdd){
+    //         addWithrawMoney(event, btnAdd, modalAddMoney);
+    //     } 
+
+    //     if(btnWithdraw){
+    //         addWithrawMoney(event, btnWithdraw, modalWithdrawMoney);
+    //     }
+
+    // });
 
 
 
@@ -121,17 +190,14 @@ function feedPotsPage(data){
 
     const btnSort = document.querySelectorAll('.button-sort');
     const listSort = document.querySelectorAll('.list-sort');
-
     openSortListModal(btnSort, listSort);
 
 
 
 
-    /* OPEN CLOSE DROPDOWN MENU */
-
-    setupDropdownMenu();
 
 
+    
 
 
-}
+    /* FAIRE  MODAL DELETE POT/BUDGET */
