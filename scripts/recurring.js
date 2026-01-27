@@ -3,7 +3,7 @@
 
 import { getData } from './data-service.js';
 
-import { setupSideMenu } from './ui-utils.js';
+import { setupSideMenu, toggleSortMenu, closeAllSortMenu } from './ui-utils.js';
 
 
 
@@ -163,3 +163,47 @@ function feedRecurringPage(data){
     containerTransactions.appendChild(fragmentBill);
 
 }
+
+
+
+
+
+/* LISTENER */
+
+// const btnSort = document.querySelector('.button-sort');
+// const listSort = document.querySelector('.list-sort');
+
+// btnSort.addEventListener('click', () => {
+
+//     const isActive = listSort.classList.toggle('active');
+//     const caret = btnSort.querySelector('.caret');
+//     caret.style.transform = isActive ? "rotate(180deg)" : "rotate(0deg)";
+//     btnSort.setAttribute('aria-expanded', isActive);
+
+// });
+
+
+
+// btnSort.setAttribute('aria-expanded', 'true');  A METTRE ARIA LABEL BUTTON
+// btnSort.setAttribute('aria-selected', 'true');  A METTRE ARIA LABEL LIST-SORT LI 
+
+
+
+
+document.addEventListener('click', (event) => {
+
+    const btnSort = event.target.closest('.button-sort');
+
+    if(btnSort){
+
+        toggleSortMenu(btnSort);
+
+    } else {
+
+        closeAllSortMenu();
+        
+    }
+
+
+
+})

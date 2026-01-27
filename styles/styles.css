@@ -979,10 +979,6 @@ a{
 
 
 
-
-
-
-
 .color-tag{
   width: 1rem;
   height: 1rem;
@@ -1032,7 +1028,7 @@ a{
     width: 8.375rem;
     background: var(--white);
     border-radius: 0.5rem;
-    padding: 0 var(--space-20px);
+    /* padding: 0 var(--space-20px); */
     position: absolute;
       top: 2rem; right: 0;
     box-shadow: 0.1rem 0.1rem 1rem hsla(252, 7%, 13%, 0.2);
@@ -1049,7 +1045,8 @@ a{
   .button{
     width: 100%;
     text-align: left;    
-    padding: var(--space-12px) 0;
+    /* padding: var(--space-12px) 0; */
+    padding: var(--space-12px) var(--space-20px);
   }
 
   .button-edit-budget{
@@ -1340,37 +1337,53 @@ body:has(dialog[open]) {
           top: 2rem; left: -4.5rem;
       }
   }
+
   .button-sort{
       width: 1.25rem;
       height: 1.25rem;
       span{
-          display: none;
+          /* display: none; */
       }
       .desktop{
           display: none;
       }
   }
+
   .list-sort{
-      display: none;
+
+      display: flex;
       flex-direction: column;
       background: white;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+
       border-radius: 0.5rem;
-      padding: 0 var(--space-20px);
+
       position: absolute;
           top: 2rem; left: -8rem;
       box-shadow: 0.1rem 0.1rem 0.5rem rgba(0, 0, 0, 0.5);
-      &.active{
-          display: flex;
-      }
+
       .li-sort{
-          padding: var(--space-12px) 0;
+          padding: var(--space-12px) var(--space-20px);
           &:not(:last-of-type){
               border-bottom: 0.0625rem solid var(--grey-100);
           }
           &.selected{
               font-weight: 700;
           }
+          &:hover{
+            cursor: pointer;
+          }
       }
+
+      &.active{
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+      }
+
+
   }
 
   @media screen and (min-width: 37.5rem){
@@ -1387,7 +1400,6 @@ body:has(dialog[open]) {
       &:nth-of-type(2) .list-sort{
           width: 11.125rem;
           top: 2.5rem; left: -5.5rem;
-
       }
     }
     .list-sort{
@@ -1395,10 +1407,15 @@ body:has(dialog[open]) {
     }
   }
 
+
+
   @media screen and (min-width: 48rem){
+
+
     input{
         width: 10rem;
     }
+
     .container-sort{
         display: flex;
         align-items: center;
@@ -1413,31 +1430,40 @@ body:has(dialog[open]) {
             width: 11.125rem;
         }
     }
+
     .button-sort{
         width: 7.125rem;
         height: 2.8125rem;
         border-radius: 0.5rem;
         border: 0.0625rem solid var(--beige-500);
-        span{
+        /* span{
             display: inline-block;
-        }
+        } */
         img.mobile{
-            display: none;              
+            display: none;             
         }
-        img.desktop{
-            display: inline-block;
-            margin-left: 1rem;
-            position: relative;
-                top: -0.1rem;
+        .desktop{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 var(--space-20px);
+            /* margin-left: 1rem; */
+            /* position: relative;
+                top: -0.1rem; */
         }
         &:hover{
             border: 0.0625rem solid var(--grey-900);
         }
     }
+
     .list-sort{
         width: 7.125rem;
     }
+
+
   }
+
+  
 
 }
 

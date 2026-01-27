@@ -74,30 +74,24 @@
         <div class="form-and-transaction">
 
           <search class="search-field">
-            <label><span>Search bills</span>
-                <input type="search" name="transaction" id="transaction" placeholder="Search bills" class="public-sans-regular">
+
+            <label for="transaction"><span >Search bills</span>
+                <input type="search" name="transaction" id="transaction" placeholder="Search bills" class="public-sans-regular" aria-label="Search bills">
             </label>
+
             <div class="container-sort">
-              <label for="sort" class="sr-only"><span>Sort by</span></label> 
-              <select name="sort" id="sort" class="sr-only">
-                  <option value="latest" selected>Latest</option>
-                  <option value="oldest">Oldest</option>
-                  <option value="ascend">A to Z</option>
-                  <option value="descend">Z to A</option>
-                  <option value="highest">Highest</option>
-                  <option value="lowest">Lowest</option>
-              </select>
-              <p class="text public-sans-regular text-preset-4">Sort by</p>
-              <button class="button button-sort"><img src="../assets/images/icon-sort-mobile.svg" alt="" class="mobile"><span class="public-sans-regular text-preset-4">Latest</span><img src="../assets/images/icon-caret-down.svg" alt="" class="desktop"></button>
-              <ul class="list list-sort sort text-preset-4 public-sans-regular">
-                <li class="li-sort selected">Latest</li>
-                <li class="li-sort">Oldest</li>
-                <li class="li-sort">A to Z</li>
-                <li class="li-sort">Z to A</li>
-                <li class="li-sort">Highest</li>
-                <li class="li-sort">Lowest</li>
+              <p id="sort-label" class="text public-sans-regular text-preset-4">Sort by</p>
+              <button class="button button-sort" aria-label="Sort by Latest" aria-haspopup="listbox" aria-expanded="false"><img src="../assets/images/icon-sort-mobile.svg" alt="" class="mobile"><span class="desktop"><span class="public-sans-regular text-preset-4">Latest</span><img src="../assets/images/icon-caret-down.svg" alt="caret" class="caret"></span></button>
+              <ul class="list list-sort sort text-preset-4 public-sans-regular" role="listbox" aria-label="Sort options" tabindex="-1">            
+                <li class="li-sort selected" role="option" aria-selected="true">Latest</li>
+                <li class="li-sort" role="option" aria-selected="false">Oldest</li>
+                <li class="li-sort" role="option" aria-selected="false">A to Z</li>
+                <li class="li-sort" role="option" aria-selected="false">Z to A</li>
+                <li class="li-sort" role="option" aria-selected="false">Highest</li>
+                <li class="li-sort" role="option" aria-selected="false">Lowest</li>
               </ul>
             </div>
+
           </search>
 
           <div class="container-transactions table" role="table" aria-label="Transactions">

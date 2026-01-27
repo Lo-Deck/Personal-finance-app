@@ -2,7 +2,9 @@
 
 
 
-/* --- HEADER MENU --- */
+/**
+ * Open close side menu.
+ */
 
 export function setupSideMenu() {
 
@@ -14,18 +16,10 @@ export function setupSideMenu() {
     if (!btn || !container) return;
 
     btn.addEventListener('click', () => {
-        const isReduced = container.classList.toggle('reduce');
+        const isReduced = container.classList.toggle('reduce'); /* VERIFIER FONCTIONNEMENT */
         container.classList.toggle('large', !isReduced);
     });
 
-    // if(isBtnMenuClicked){
-    //     container.classList.add('reduce');
-    //     container.classList.remove('large');
-    // } else {
-    //     container.classList.remove('reduce');
-    //     container.classList.add('large');
-    // }
- 
 }
 
 
@@ -43,14 +37,11 @@ export function setupSideMenu() {
 
 export function addWithrawMoney(event, btn, modal){
 
-    // event.stopPropagation();
     const category = btn.closest('.container-article').querySelector('.container-header-title .article-title').textContent;
 
     if(btn.classList.contains('button-add-money')){
-        // console.log(btn.classList);
         modal.querySelector('.title').textContent = `Add from '${category}'`;
     } else {
-        // console.log(btn.classList);
         modal.querySelector('.title').textContent = `Withdraw from '${category}'`;
     }
 
@@ -81,9 +72,6 @@ export function openSortListModal(buttons, lists){
 
         btn.addEventListener('click', () => {
 
-            console.log('list modal');
-            
-            // for(let i = 0; i < button.length; i++){
             lists.forEach( (list, i) => {
 
                 if(i === index){
@@ -107,11 +95,10 @@ export function openSortListModal(buttons, lists){
 /**
  * Manages toggle switches for dropdown menu (3 dots).
  * Only one menu can be active at a time.
- * @param {HTMLElement} button  - The menu to display.
+ * @param {HTMLElement} btn  - The menu to display.
  */
 
 export function toggleDropdownMenu(btn) {
-
 
     const dropDownMenu = document.querySelectorAll('.dropdown');  
     const currentDropdown = btn.parentElement.querySelector('.dropdown');
@@ -120,53 +107,18 @@ export function toggleDropdownMenu(btn) {
         dropDownMenu[i] === currentDropdown ? currentDropdown.classList.toggle('active') : dropDownMenu[i].classList.remove('active');
     }
 
-    
 }
 
+
+/**
+ * Close all Dropdown menu when clicked on window.
+ */
 
 export function closeAllDropdowns() {
     document.querySelectorAll('.dropdown.active').forEach(menu => {
         menu.classList.remove('active');
     });
 }
-
-
-
-
-
-
-
-
-// export function setupDropdownMenu() {
-
-//     document.addEventListener('click', (event) => {
-
-//         const dropDownMenu = document.querySelectorAll('.dropdown');  
-//         const btn = event.target.closest('.button-edit');
-
-//         if(btn){
-            
-//             event.stopPropagation();
-//             const currentDropdown = btn.parentElement.querySelector('.dropdown');
-
-//             for(let i = 0; i < dropDownMenu.length; i++){
-//                 dropDownMenu[i] === currentDropdown ? currentDropdown.classList.toggle('active') : dropDownMenu[i].classList.remove('active');
-//             }
-
-//         }
-
-//     })
-
-//     window.addEventListener('click', () => {
-//         document.querySelectorAll('.dropdown.active').forEach(menu => {
-//             menu.classList.remove('active');
-//         });
-//     });
-
-// }
-
-
-
 
 
 
@@ -181,25 +133,10 @@ export function closeAllDropdowns() {
  * @param {string} button - The text for the submit button.
  */
 
-// export function openModalAddEdit(title, text, button){
-
-//     const modalAdd = document.querySelector('.modal-add');
-
-//     modalAdd.querySelector('.title').textContent = title;
-//     modalAdd.querySelector('.text:nth-of-type(1)').textContent = text;
-//     modalAdd.querySelector('.button-submit-modal').textContent = button;
-
-//     modalAdd.showModal();
-
-// }
-
-
-
-
 
 
 /**
- * Function to close modal box.
+ * Function to close modal box, reset all the list and style.
  * Close all list open.
  */
 
@@ -229,3 +166,79 @@ export function closeModalAddEdit(modal){
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * Function to toggle list sort by.
+ * in the <search> tag
+ * @param {HTMLElement} btn - The button to push to open the list sort by.
+ */
+
+
+
+
+
+
+/*******  NOUBLIE PAS LES ARIA LABEL POUR LE CHANGEMENT DE CATEGORIE SORT CATEGORY LIST******** */
+
+//ARIA LABEL
+
+// li.setAttribute('aria-selected', 'true');  A METTRE ARIA LABEL LIST-SORT LI  
+
+// const prefix = btn.dataset.prefix;
+// btn.setAttribute('aria-label', `${prefix} ${li.textContent}`);
+
+// ARIA_SELECTED SUR LI A FAIRE ET ARIA-LABEL SUR BUTTON A MODIFIER AVEC SELECTION LI
+
+// *************** ET BUG CATEGORY NE SAFFICHE PAS **************
+
+
+export function toggleSortMenu(btn){
+
+    const container = btn.closest('.container-sort');    
+    const listSort = container.querySelector('.list-sort');
+    const caret = btn.querySelector('.caret');
+    const isActive = listSort.classList.toggle('active');
+    caret.style.transform = isActive ? "rotate(180deg)" : "rotate(0deg)";
+    btn.setAttribute('aria-expanded', isActive);        
+
+}
+
+
+
+export function closeAllSortMenu(){
+
+    document.querySelectorAll('.search-field .list-sort.active').forEach( menu => {
+
+        menu.classList.remove('active');
+        const btn = menu.closest('.container-sort').querySelector('.button-sort');
+        const caret = btn.querySelector('.caret');
+        caret.style.transform = "rotate(0deg)";
+        btn.setAttribute('aria-expanded', 'false');        
+
+    });
+
+
+}

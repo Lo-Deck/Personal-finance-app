@@ -179,9 +179,7 @@ function feedbudgetPage(data){
 
     /* CREATE ARTICLE */
 
-    const budgetsList = document.querySelector('.section-budgets .list-pots');
-    // const budgetsLiElements = budgetsList.querySelectorAll('.li-pots');    
-
+    const budgetsList = document.querySelector('.section-budgets .list-pots');  
     const fragment = document.createDocumentFragment();
     const templateLiPots = document.querySelector('#template-li-pots');
 
@@ -189,7 +187,6 @@ function feedbudgetPage(data){
 
         const clone = templateLiPots.content.cloneNode(true);
         const li = clone.querySelector('.li-pots');
-        // console.log(clone);
 
         li.querySelector('.border').style.backgroundColor = budget.theme;
         li.querySelector('.budget-category').textContent = budget.category;
@@ -237,8 +234,6 @@ function feedbudgetPage(data){
                                                         .sort((a, b) => new Date(b.date) - new Date(a.date))                                                
                                                         .slice(0, 3);
 
-        // console.log('lastThreeTransactions : ', lastThreeTransactions);
-
         lastThreeTransactions.forEach( (transaction) => {
 
             const cloneLi = innerTemplate.content.cloneNode(true);
@@ -264,19 +259,7 @@ function feedbudgetPage(data){
 
     containerArticle.appendChild(fragmentArticleBudget);
 
-
-
-
-
 }
-
-
-
-
-
-
-
-
 
 
 
@@ -286,115 +269,97 @@ function feedbudgetPage(data){
 /*** LISTENER ***/
 
 
-    /* ADD NEW BUDGET */
+const modalAdd = document.querySelector('.modal-add');
+const modalDelete = document.querySelector('.modal-delete');
 
-    const modalAdd = document.querySelector('.modal-add');
+
+document.addEventListener('click', (event) => {
+
+    const btnToggleDropdown = event.target.closest('.button-edit');
+    const btnOpenAddModal = event.target.closest('.open-add-modal');
+    const btnOpenEditModal = event.target.closest('.open-edit-modal');
+    const btnDeleteBudget = event.target.closest('.button-delete-budget');
 
 
-    document.addEventListener('click', (event) => {
+    if(btnToggleDropdown){
+        event.stopPropagation();
+        toggleDropdownMenu(btnToggleDropdown);
+    } else {
+        closeAllDropdowns();
+    }
 
-        const btnToggleDropdown = event.target.closest('.button-edit');
+
+    if (btnOpenAddModal) {
+        const title = 'Add New Budget';
+        const descriptionText = 'Choose a category to set a spending budget. These categories can help you monitor spending.';
+        const buttonText = 'Add Budget';
+        modalAdd.querySelector('.title').textContent = title;
+        modalAdd.querySelector('.text:nth-of-type(1)').textContent = descriptionText;
+        modalAdd.querySelector('.button-submit-modal').textContent = buttonText;
+        modalAdd.showModal();
+    }
+
+
+    if(btnOpenEditModal){
+
+        const title = 'Edit Budget';
+        const descriptionText = 'As your budgets change, feel free to update your spending limits.';
+        const buttonText = 'Save Changes';
+
+        modalAdd.querySelector('.title').textContent = title;
+        modalAdd.querySelector('.text:nth-of-type(1)').textContent = descriptionText;
+        modalAdd.querySelector('.button-submit-modal').textContent = buttonText;
+
+        //specification button edit
+
+        const category = event.target.closest('.container-header-title').querySelector('.article-title').textContent;
+        const btnCategoryList = modalAdd.querySelector('.search-field .container-sort:nth-of-type(1) .button');
+
+        btnCategoryList.querySelector('span').textContent = category;
+        btnCategoryList.disabled = true;
+        btnCategoryList.style.opacity = '0.5';
+        btnCategoryList.style.pointerEvents = 'none';
+        btnCategoryList.style.cursor = 'not-allowed';
+
+        event.target.closest('.dropdown').classList.remove('active');
+
+        modalAdd.showModal();
+
+    }
+
+
+
+    if(btnDeleteBudget){
+
+        console.log(btnDeleteBudget);
+
+        const category = event.target.closest('.container-header-title').querySelector('.article-title').textContent;
+        const categoryText = `Delete '${category}'?`;
+        const contentText = 'Are you sure you want to delete this budget? This action cannot be reversed, and all the data inside it will be removed forever.';
+
+        modalDelete.querySelector('.title').textContent = categoryText;
+        modalDelete.querySelector('.text').textContent = contentText;
+
+        event.target.closest('.dropdown').classList.remove('active');
+        modalDelete.showModal();
         
-        const btnOpenAddModal = event.target.closest('.open-add-modal');
-        const btnOpenEditModal = event.target.closest('.open-edit-modal');
-
-
-        if(btnToggleDropdown){
-
-            event.stopPropagation();
-
-            toggleDropdownMenu(btnToggleDropdown)
-            // const dropDownMenu = document.querySelectorAll('.dropdown'); 
-            // const currentDropdown = btnToggleDropdown.parentElement.querySelector('.dropdown');
-
-            // for(let i = 0; i < dropDownMenu.length; i++){
-            //     dropDownMenu[i] === currentDropdown ? currentDropdown.classList.toggle('active') : dropDownMenu[i].classList.remove('active');
-            // }
-
-        } else {
-
-            closeAllDropdowns();
-
-        }
-
-
-
-        if (btnOpenAddModal) {
-            const title = 'Add New Budget';
-            const descriptionText = 'Choose a category to set a spending budget. These categories can help you monitor spending.';
-            const buttonText = 'Add Budget';
-            modalAdd.querySelector('.title').textContent = title;
-            modalAdd.querySelector('.text:nth-of-type(1)').textContent = descriptionText;
-            modalAdd.querySelector('.button-submit-modal').textContent = buttonText;
-            modalAdd.showModal();
-        }
-
-
-        if(btnOpenEditModal){
-
-            const title = 'Edit Budget';
-            const descriptionText = 'As your budgets change, feel free to update your spending limits.';
-            const buttonText = 'Save Changes';
-
-            modalAdd.querySelector('.title').textContent = title;
-            modalAdd.querySelector('.text:nth-of-type(1)').textContent = descriptionText;
-            modalAdd.querySelector('.button-submit-modal').textContent = buttonText;
-
-            //specification button edit
-
-            const category = event.target.closest('.container-header-title').querySelector('.article-title').textContent;
-            const btnCategoryList = modalAdd.querySelector('.search-field .container-sort:nth-of-type(1) .button');
-
-            btnCategoryList.querySelector('span').textContent = category;
-            btnCategoryList.disabled = true;
-            btnCategoryList.style.opacity = '0.5';
-            btnCategoryList.style.pointerEvents = 'none';
-            btnCategoryList.style.cursor = 'not-allowed';
-
-            event.target.closest('.dropdown').classList.remove('active');
-
-            modalAdd.showModal();
-
-        }
-
-    });
+    }
 
 
 
 
+});
 
 
+//close modal
+closeModalAddEdit(modalAdd);
 
 
+/* OPEN ADD LIST BUTTON MODAL */
 
-
-
-
-    //close modal
-    closeModalAddEdit(modalAdd);
-
-
-    /* OPEN ADD LIST BUTTON MODAL */
-
-    const btnSort = document.querySelectorAll('.button-sort');
-    const listSort = document.querySelectorAll('.list-sort');
-    openSortListModal(btnSort, listSort);
-
-
-    /* OPEN CLOSE DROPDOWN MENU */
-
-    // closeAllDropdowns();
-
-
-
-
-    // setupDropdownMenu();
-
-
-
-
-
-
+const btnSort = document.querySelectorAll('.button-sort');
+const listSort = document.querySelectorAll('.list-sort');
+openSortListModal(btnSort, listSort);
 
 
 
