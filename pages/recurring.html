@@ -81,14 +81,14 @@
 
             <div class="container-sort">
               <p id="sort-label" class="text public-sans-regular text-preset-4">Sort by</p>
-              <button class="button button-sort" aria-label="Sort by Latest" aria-haspopup="listbox" aria-expanded="false"><img src="../assets/images/icon-sort-mobile.svg" alt="" class="mobile"><span class="desktop"><span class="public-sans-regular text-preset-4">Latest</span><img src="../assets/images/icon-caret-down.svg" alt="caret" class="caret"></span></button>
+              <button class="button button-sort" aria-label="Sort by Latest" aria-haspopup="listbox" aria-expanded="false"><img src="../assets/images/icon-sort-mobile.svg" alt="" class="mobile"><span class="desktop"><span class="text public-sans-regular text-preset-4">Latest</span><img src="../assets/images/icon-caret-down.svg" alt="caret" class="caret"></span></button>
               <ul class="list list-sort sort text-preset-4 public-sans-regular" role="listbox" aria-label="Sort options" tabindex="-1">            
-                <li class="li-sort selected" role="option" aria-selected="true">Latest</li>
-                <li class="li-sort" role="option" aria-selected="false">Oldest</li>
-                <li class="li-sort" role="option" aria-selected="false">A to Z</li>
-                <li class="li-sort" role="option" aria-selected="false">Z to A</li>
-                <li class="li-sort" role="option" aria-selected="false">Highest</li>
-                <li class="li-sort" role="option" aria-selected="false">Lowest</li>
+                <li class="li-sort selected" role="option" aria-selected="true" tabindex="0" data-sort="Latest">Latest</li>
+                <li class="li-sort" role="option" aria-selected="false" data-sort="Oldest">Oldest</li>
+                <li class="li-sort" role="option" aria-selected="false" data-sort="A to Z">A to Z</li>
+                <li class="li-sort" role="option" aria-selected="false" data-sort="Z to A">Z to A</li>
+                <li class="li-sort" role="option" aria-selected="false" data-sort="Highest">Highest</li>
+                <li class="li-sort" role="option" aria-selected="false" data-sort="Lowest">Lowest</li>
               </ul>
             </div>
 
@@ -123,6 +123,9 @@
                 </div>
               </div>
             </template>
+            <div class="append-transactions">
+
+            </div>
           </div>
 
         </div>

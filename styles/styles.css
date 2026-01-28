@@ -1347,6 +1347,9 @@ body:has(dialog[open]) {
       .desktop{
           display: none;
       }
+      .text{
+        color: var(--grey-900);
+      }
   }
 
   .list-sort{

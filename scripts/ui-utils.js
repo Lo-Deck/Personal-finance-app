@@ -8,7 +8,7 @@
 
 export function setupSideMenu() {
 
-    console.log('setupSideMenu()');
+    // console.log('setupSideMenu()');
     
     const container = document.querySelector('.container-header');
     const btn = document.querySelector('.button-extend-menu');
@@ -190,11 +190,61 @@ export function closeModalAddEdit(modal){
 
 
 
+
+
+
+
+
 /**
- * Function to toggle list sort by.
- * in the <search> tag
+ * Function to toggle list sort/category by,
+ * in the search tag
  * @param {HTMLElement} btn - The button to push to open the list sort by.
  */
+
+export function toggleSortMenu(btn){
+
+    const container = btn.closest('.container-sort');    
+    const listSort = container.querySelector('.list-sort');
+    const caret = btn.querySelector('.caret');
+    const isActive = listSort.classList.toggle('active');
+    caret.style.transform = isActive ? "rotate(180deg)" : "rotate(0deg)";
+    btn.setAttribute('aria-expanded', isActive);        
+
+}
+
+
+/**
+ * Function to close list sort/category by,
+ * in the search tag
+ */
+
+export function closeAllSortMenu(){
+
+    document.querySelectorAll('.search-field .list-sort.active').forEach( menu => {
+
+        menu.classList.remove('active');
+        const btn = menu.closest('.container-sort').querySelector('.button-sort');
+        const caret = btn.querySelector('.caret');
+        caret.style.transform = "rotate(0deg)";
+        btn.setAttribute('aria-expanded', 'false');        
+
+    });
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -215,30 +265,122 @@ export function closeModalAddEdit(modal){
 // *************** ET BUG CATEGORY NE SAFFICHE PAS **************
 
 
-export function toggleSortMenu(btn){
-
-    const container = btn.closest('.container-sort');    
-    const listSort = container.querySelector('.list-sort');
-    const caret = btn.querySelector('.caret');
-    const isActive = listSort.classList.toggle('active');
-    caret.style.transform = isActive ? "rotate(180deg)" : "rotate(0deg)";
-    btn.setAttribute('aria-expanded', isActive);        
-
-}
 
 
+export function billSortBy(data, liSortBy){
 
-export function closeAllSortMenu(){
+    console.log('btnSortBy', liSortBy);
+    const dataSort = liSortBy.dataset.sort;
+    console.log('data-sort: ', dataSort);
 
-    document.querySelectorAll('.search-field .list-sort.active').forEach( menu => {
+    const btnMenuSortText = document.querySelector('.button-sort .text'); 
 
-        menu.classList.remove('active');
-        const btn = menu.closest('.container-sort').querySelector('.button-sort');
-        const caret = btn.querySelector('.caret');
-        caret.style.transform = "rotate(0deg)";
-        btn.setAttribute('aria-expanded', 'false');        
+    btnMenuSortText.textContent = dataSort;
+
+    document.querySelectorAll('.list-sort.sort .li-sort').forEach( (li) => {
+        // li.classList.contains('selected') ? li.classList.remove('selected') : li.classList.add('selected');
+        li.classList.remove('selected');
+    });
+
+    liSortBy.classList.add('selected');
+
+    
+
+    // const sortBill = Array.from(
+    //     recurringTransactions.reduce( (map, obj) => {
+    //         map.set(obj.name, obj)
+    //         return map;
+    //     }, new Map()).values()
+    // );
+
+    let recurringTransactions = data.transactions.filter(transaction => transaction.recurring);
+    console.log('recurringTransactions', recurringTransactions);
+
+    const sortBillMap = new Map();    
+    
+    recurringTransactions.forEach( (transaction) => {
+        sortBillMap.set(transaction.name, transaction);
+    });
+
+    const sortBill = Array.from(sortBillMap.values());    
+    console.log('sortBill before map: ', sortBill);
+    
+    sortBill.sort( (a, b) => {
+
+        let valueA = new Date(a.date).getDate();
+        let valueB = new Date(b.date).getDate();
+
+        switch(dataSort){
+            case 'Latest': return valueA - valueB;
+            case 'Oldest': return valueB - valueA;
+            case 'A to Z': return a.name.localeCompare(b.name);
+            case 'Z to A': return b.name.localeCompare(a.name);
+            case 'Highest': return Math.abs(b.amount) - Math.abs(a.amount);
+            case 'Lowest': return Math.abs(a.amount) - Math.abs(b.amount);
+            default: return 0;
+        }
 
     });
 
 
+    console.log('sortBill', sortBill);
+
+    const currentDate = new Date('2024-08-19T00:00:00');
+    const today = currentDate.getDate();
+
+    const referenceDate = new Date(currentDate);
+    const dayPlusFive = new Date(referenceDate);
+
+    dayPlusFive.setDate(referenceDate.getDate() + 5);
+    const daydueSoon = dayPlusFive.getDate();
+
+
+    const fragmentBill = document.createDocumentFragment();
+    const templateBill = document.querySelector('#template-transaction');
+    // const containerTransactions = document.querySelector('.container-transactions');
+    const containerTransactions = document.querySelector('.append-transactions');
+
+
+    containerTransactions.textContent = '';
+
+    sortBill.forEach( (transaction) => {
+
+        const clone = templateBill.content.cloneNode(true);
+
+        if(transaction.avatar && transaction.avatar.startsWith('../')){
+            clone.querySelector('.avatar').src = transaction.avatar;            
+        }
+
+        clone.querySelector('.cell-name .text').textContent = transaction.name; 
+        clone.querySelector('.cell-amount .text').textContent = `$${Math.abs(transaction.amount).toFixed(2)}`;            
+
+        let billDate = new Date(transaction.date).getDate();
+        // console.log('billDate', billDate);
+
+        const suffixes = [ 'st', 'nd', 'rd' ];
+        const suffix = suffixes[billDate] || 'th';
+        const textDate = `Monthly-${billDate}${suffix}`;
+
+        clone.querySelector('.cell-date time').textContent = textDate;        
+
+        if(billDate <= today){
+            clone.querySelector('.logo-paid').src = "../assets/images/icon-bill-paid.svg";
+            clone.querySelector('.cell-date time').classList.add('green');
+        } 
+        else if(billDate <= daydueSoon){
+            clone.querySelector('.logo-paid').src="../assets/images/icon-bill-due.svg";                   
+            clone.querySelector('.cell-amount .text').classList.add('red');
+        }        
+        else {
+            clone.querySelector('.logo-paid').style.display = "none";
+        }
+
+        fragmentBill.appendChild(clone);
+
+    });
+
+    containerTransactions.appendChild(fragmentBill);
+
+
 }
+

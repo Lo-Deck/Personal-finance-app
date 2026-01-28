@@ -3,9 +3,10 @@
 
 import { getData } from './data-service.js';
 
-import { setupSideMenu, toggleSortMenu, closeAllSortMenu } from './ui-utils.js';
+import { setupSideMenu, toggleSortMenu, closeAllSortMenu, billSortBy } from './ui-utils.js';
 
 
+let data;
 
 ( async () => {
 
@@ -13,8 +14,8 @@ import { setupSideMenu, toggleSortMenu, closeAllSortMenu } from './ui-utils.js';
 
         setupSideMenu();
 
-        const data = await getData.fetchData('../data.json');
-        console.log(data);
+        data = await getData.fetchData('../data.json');
+        // console.log(data);
         feedRecurringPage(data);
 
     } catch(error) {
@@ -90,6 +91,9 @@ function feedRecurringPage(data){
 
     });
 
+
+
+
     const articleHeader = document.querySelector('.article-header');
     articleHeader.querySelector('.total-bill').textContent = `$${totalBill.toFixed(2)}`;    
     articleHeader.querySelector('.paid .price').textContent = `${paid}($${paidBills.toFixed(2)})`;
@@ -99,10 +103,17 @@ function feedRecurringPage(data){
 
 
 
+
+
     
     const fragmentBill = document.createDocumentFragment();
     const templateBill = document.querySelector('#template-transaction');
-    const containerTransactions = document.querySelector('.container-transactions');
+
+
+    // const containerTransactions = document.querySelector('.container-transactions');
+    const containerTransactions = document.querySelector('.append-transactions');
+
+
 
     recurringBill.forEach( (transaction) => {
 
@@ -162,6 +173,12 @@ function feedRecurringPage(data){
 
     containerTransactions.appendChild(fragmentBill);
 
+
+
+
+
+
+
 }
 
 
@@ -169,19 +186,6 @@ function feedRecurringPage(data){
 
 
 /* LISTENER */
-
-// const btnSort = document.querySelector('.button-sort');
-// const listSort = document.querySelector('.list-sort');
-
-// btnSort.addEventListener('click', () => {
-
-//     const isActive = listSort.classList.toggle('active');
-//     const caret = btnSort.querySelector('.caret');
-//     caret.style.transform = isActive ? "rotate(180deg)" : "rotate(0deg)";
-//     btnSort.setAttribute('aria-expanded', isActive);
-
-// });
-
 
 
 // btnSort.setAttribute('aria-expanded', 'true');  A METTRE ARIA LABEL BUTTON
@@ -192,17 +196,28 @@ function feedRecurringPage(data){
 
 document.addEventListener('click', (event) => {
 
-    const btnSort = event.target.closest('.button-sort');
+    const btnOpenMenuSort = event.target.closest('.button-sort');
 
-    if(btnSort){
+    const liSortBy = event.target.closest('.li-sort');
 
-        toggleSortMenu(btnSort);
 
+    if(btnOpenMenuSort){
+        toggleSortMenu(btnOpenMenuSort);
     } else {
-
         closeAllSortMenu();
-        
     }
+
+
+
+    if(liSortBy){
+
+        console.log('SORT BY');
+
+        billSortBy(data, liSortBy);
+
+   
+    }
+
 
 
 

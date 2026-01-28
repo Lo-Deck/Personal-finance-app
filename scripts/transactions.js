@@ -198,23 +198,11 @@ function feedTransactionPage(data){
 
 /* LISTENER */
 
-
 document.addEventListener('click', (event) => {
 
     const btnSort = event.target.closest('.button-sort');
 
     if(btnSort){
-
-        // const listSort = btnSort.parentElement.parentElement.querySelectorAll('.list-sort');
-        // console.log(listSort);
-        // //to have only one menu list open
-        // listSort.forEach( (list) => {
-        //     if(list.classList.contains('active')){
-        //         closeAllSortMenu();  
-        //     }
-        // });
-
-        // toggleSortMenu(btnSort);
 
         const container = btnSort.closest('.container-sort');
         const targetList = container.querySelector('.list-sort');
@@ -230,7 +218,6 @@ document.addEventListener('click', (event) => {
     } else {
 
         console.log('btn sort ELSE ');
-        
         closeAllSortMenu();
 
     }

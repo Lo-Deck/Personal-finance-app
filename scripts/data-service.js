@@ -7,7 +7,7 @@ export const getData = {
     async fetchData(url) {
 
         if(this.cachedData){
-            console.log('data retrieved from cache');
+            // console.log('data retrieved from cache');
             return this.cachedData;
         }
         
@@ -19,7 +19,7 @@ export const getData = {
 
         this.cachedData = await response.json();
 
-        console.log('data server');
+        // console.log('data server');
 
         return this.cachedData;
 
