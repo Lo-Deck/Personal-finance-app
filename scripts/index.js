@@ -20,13 +20,14 @@ import { setupSideMenu } from './ui-utils.js';
     } catch(error) {
 
         console.error('CRITICAL APP ERROR:', error.message);
+        console.error('CRITICAL APP ERROR:', error.stack);
         document.querySelector('.container-main').innerHTML = `
             <div class="error-message">
-                <p>Oups ! Impossible de charger vos données.</p>
-                <button onclick="location.reload()">Réessayer</button>
+                <p style="font-size: 2rem; margin-top: 5rem; color: red;"> !!! Impossible to download data !!! </p>
+                <button onclick="location.reload()" style="font-size: 2rem; margin-top: 1rem; padding: 0.5rem; border: 2px solid red; color: red;">Retry</button>
             </div>`; 
 
-            //****************************ATTENTION INNER HTML******************
+            //****************************ATTENTION INNER HTML SECURITY******************
 
     }
 

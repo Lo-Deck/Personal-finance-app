@@ -1,12 +1,11 @@
 
 
-
 import { getData } from './data-service.js';
-
 import { setupSideMenu, toggleSortMenu, closeAllSortMenu, billSortBy } from './ui-utils.js';
 
 
 let data;
+let recurringBill;
 
 ( async () => {
 
@@ -15,19 +14,31 @@ let data;
         setupSideMenu();
 
         data = await getData.fetchData('../data.json');
-        // console.log(data);
-        feedRecurringPage(data);
+
+        //extract recurring bills data
+        let recurringTransactions = data.transactions.filter(transaction => transaction.recurring);
+        const sortBillMap = new Map();
+        recurringTransactions.forEach( (transaction) => {
+            sortBillMap.set(transaction.name, transaction);
+        });
+        recurringBill = Array.from(sortBillMap.values());
+
+        //set page
+        feedRecurringPage(recurringBill);
+
 
     } catch(error) {
 
         console.error('CRITICAL APP ERROR:', error.message);
+        console.error('CRITICAL APP ERROR:', error.stack);
+
         document.querySelector('.container-main').innerHTML = `
             <div class="error-message">
-                <p>Oups ! Impossible de charger vos données.</p>
-                <button onclick="location.reload()">Réessayer</button>
-            </div>`; 
+                <p style="font-size: 2rem; margin-top: 5rem; color: red;"> !!! Impossible to download data !!! </p>
+                <button onclick="location.reload()" style="font-size: 2rem; margin-top: 1rem; padding: 0.5rem; border: 2px solid red; color: red;">Retry</button>
+            </div>`;
 
-            //****************************ATTENTION INNER HTML******************
+            //****************************ATTENTION INNER HTML SECURITY******************
 
     }
 
@@ -35,7 +46,26 @@ let data;
 
 
 
-function feedRecurringPage(data){
+function feedRecurringPage(recurringBill){
+
+    const currentLiSort = document.querySelector('.search-field .li-sort.selected');
+    // const dataSort = currentLiSort.dataset.sort;
+
+    const totalBill = recurringBill.reduce( (acc, transaction) => {
+        return acc + Math.abs(transaction.amount);
+    }, 0);
+
+    // console.log('totalBill: ', totalBill); 
+    
+    const currentDate = new Date('2024-08-19T00:00:00');
+    const today = currentDate.getDate();
+
+    const referenceDate = new Date(currentDate);
+    const dayPlusFive = new Date(referenceDate);
+
+    dayPlusFive.setDate(referenceDate.getDate() + 5);
+    const daydueSoon = dayPlusFive.getDate();
+
 
     let paidBills = 0;
     let paid = 0;
@@ -44,35 +74,7 @@ function feedRecurringPage(data){
     let dueSoon = 0;
     let soon = 0;
 
-    const recurringBill = new Map();
-
-    data.transactions.sort( (a, b) => {
-        const dayA = new Date(a.date).getDate();
-        const dayB = new Date(b.date).getDate();
-        return dayA - dayB;
-    }).forEach( (transaction) => {
-            if(transaction.recurring){
-                recurringBill.set(transaction.name, transaction);
-            }
-    });
-
-    // console.log(recurringBill);
-
-    const totalBill = Array.from(recurringBill.values()).reduce( (acc, transaction) => {
-        return acc + Math.abs(transaction.amount);
-    }, 0);
-    
-    // console.log('totalBill: ', totalBill); 
-    
-    const currentDate = new Date('2024-08-19T00:00:00');
-    const today = currentDate.getDate();
-    const referenceDate = new Date(currentDate);
-    const dayPlusFive = new Date(referenceDate);
-    dayPlusFive.setDate(referenceDate.getDate() + 5);
-    const daydueSoon = dayPlusFive.getDate();
-
-
-    recurringBill.forEach( (bill, index) => {
+    recurringBill.forEach( (bill) => {
 
         const billDate = new Date(bill.date).getDate();
         const amount = Math.abs(bill.amount);
@@ -92,92 +94,13 @@ function feedRecurringPage(data){
     });
 
 
-
-
     const articleHeader = document.querySelector('.article-header');
     articleHeader.querySelector('.total-bill').textContent = `$${totalBill.toFixed(2)}`;    
     articleHeader.querySelector('.paid .price').textContent = `${paid}($${paidBills.toFixed(2)})`;
     articleHeader.querySelector('.upcoming .price').textContent = `${upcoming}($${totalUpcoming.toFixed(2)})`;
     articleHeader.querySelector('.due .price').textContent = `${soon}($${dueSoon.toFixed(2)})`;
 
-
-
-
-
-
-    
-    const fragmentBill = document.createDocumentFragment();
-    const templateBill = document.querySelector('#template-transaction');
-
-
-    // const containerTransactions = document.querySelector('.container-transactions');
-    const containerTransactions = document.querySelector('.append-transactions');
-
-
-
-    recurringBill.forEach( (transaction) => {
-
-        const clone = templateBill.content.cloneNode(true);
-
-        if(transaction.avatar && transaction.avatar.startsWith('../')){
-            clone.querySelector('.avatar').src = transaction.avatar;            
-        }
-
-        clone.querySelector('.cell-name .text').textContent = transaction.name; 
-        clone.querySelector('.cell-amount .text').textContent = `$${Math.abs(transaction.amount).toFixed(2)}`;            
-
-        let billDate = new Date(transaction.date).getDate();
-        // console.log('billDate', billDate);
-
-        let textDate;
-
-        switch(billDate){
-
-            case 1:
-                textDate = `Monthly-${billDate}st`;
-                break;
-
-            case 2:
-                textDate = `Monthly-${billDate}nd`;
-                break;
-
-            case 3:
-                textDate = `Monthly-${billDate}rd`;
-                break;
-
-            default:
-                textDate = `Monthly-${billDate}th`;
-                break;
-
-        }
-
-        clone.querySelector('.cell-date time').textContent = textDate;        
-
-        if(billDate <= today){
-            clone.querySelector('.logo-paid').src = "../assets/images/icon-bill-paid.svg";
-            // console.log(clone.querySelector('.cell-date time'));
-            clone.querySelector('.cell-date time').classList.add('green');
-        } 
-        else if(billDate <= daydueSoon){
-            clone.querySelector('.logo-paid').src="../assets/images/icon-bill-due.svg";                   
-            clone.querySelector('.cell-amount .text').classList.add('red');
-        }        
-        
-        else {
-            clone.querySelector('.logo-paid').style.display = "none";
-        }
-
-        fragmentBill.appendChild(clone);
-
-    });
-
-    containerTransactions.appendChild(fragmentBill);
-
-
-
-
-
-
+    billSortBy(recurringBill, currentLiSort);
 
 }
 
@@ -187,19 +110,10 @@ function feedRecurringPage(data){
 
 /* LISTENER */
 
-
-// btnSort.setAttribute('aria-expanded', 'true');  A METTRE ARIA LABEL BUTTON
-// btnSort.setAttribute('aria-selected', 'true');  A METTRE ARIA LABEL LIST-SORT LI 
-
-
-
-
 document.addEventListener('click', (event) => {
 
     const btnOpenMenuSort = event.target.closest('.button-sort');
-
     const liSortBy = event.target.closest('.li-sort');
-
 
     if(btnOpenMenuSort){
         toggleSortMenu(btnOpenMenuSort);
@@ -207,18 +121,9 @@ document.addEventListener('click', (event) => {
         closeAllSortMenu();
     }
 
-
-
     if(liSortBy){
-
         console.log('SORT BY');
-
-        billSortBy(data, liSortBy);
-
-   
+        billSortBy(recurringBill, liSortBy);
     }
-
-
-
 
 })

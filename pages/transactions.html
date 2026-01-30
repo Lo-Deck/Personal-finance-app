@@ -58,28 +58,29 @@
 
             <div class="container-sort">
               <p class="text public-sans-regular text-preset-4">Sort by</p>
-              <button class="button button-sort" aria-haspopup="listbox" aria-expanded="false" aria-controls="sort-list" aria-label="Sort by Latest"><img src="../assets/images/icon-sort-mobile.svg" alt="" class="mobile"><span class="desktop"><span class="public-sans-regular text-preset-4">Latest</span><img src="../assets/images/icon-caret-down.svg" alt="caret" class="caret" ></span></button>
+              <button class="button button-sort sort" aria-label="Sort by Latest" aria-haspopup="listbox" aria-expanded="false" aria-controls="sort-list"><img src="../assets/images/icon-sort-mobile.svg" alt="" class="mobile"><span class="desktop"><span class="text public-sans-regular text-preset-4">Latest</span><img src="../assets/images/icon-caret-down.svg" alt="caret" class="caret" ></span></button>
+
               <ul id="sort-list" class="list list-sort sort text-preset-4 public-sans-regular" role="listbox" aria-label="Sort options" tabindex="-1">            
-                <li class="li-sort selected" role="option" aria-selected="true">Latest</li>
-                <li class="li-sort" role="option" aria-selected="false">Oldest</li>
-                <li class="li-sort" role="option" aria-selected="false">A to Z</li>
-                <li class="li-sort" role="option" aria-selected="false">Z to A</li>
-                <li class="li-sort" role="option" aria-selected="false">Highest</li>
-                <li class="li-sort" role="option" aria-selected="false">Lowest</li>
+                <li class="li-sort selected" role="option" aria-selected="true" data-sort="Latest">Latest</li>
+                <li class="li-sort" role="option" aria-selected="false" data-sort="Oldest">Oldest</li>
+                <li class="li-sort" role="option" aria-selected="false" data-sort="A to Z">A to Z</li>
+                <li class="li-sort" role="option" aria-selected="false" data-sort="Z to A">Z to A</li>
+                <li class="li-sort" role="option" aria-selected="false" data-sort="Highest">Highest</li>
+                <li class="li-sort" role="option" aria-selected="false" data-sort="Lowest">Lowest</li>
               </ul>
             </div>
 
             <div class="container-sort">
               <p class="text public-sans-regular text-preset-4">Category</p>
-              <button class="button button-sort" aria-haspopup="listbox" aria-expanded="false" aria-controls="category-list" aria-label="Category All transactions"><img src="../assets/images/icon-filter-mobile.svg" alt="" class="mobile"><span class="desktop"><span class="public-sans-regular text-preset-4">All transactions</span><img src="../assets/images/icon-caret-down.svg" alt="caret" class="caret"></span></button>
+              <button class="button button-sort category" aria-label="Category All transactions" aria-haspopup="listbox" aria-expanded="false" aria-controls="category-list"><img src="../assets/images/icon-filter-mobile.svg" alt="" class="mobile"><span class="desktop"><span class="text public-sans-regular text-preset-4">All transactions</span><img src="../assets/images/icon-caret-down.svg" alt="caret" class="caret"></span></button>
               <ul id="category-list" class="list list-sort category text-preset-4 public-sans-regular" role="listbox" aria-label="Category options" tabindex="-1">
-                <li class="li-sort selected" role="option" aria-selected="true">All transactions</li>
-                <li class="li-sort" role="option" aria-selected="false">Entertainement</li>
-                <li class="li-sort" role="option" aria-selected="false">Bills</li>
-                <li class="li-sort" role="option" aria-selected="false">Groceries</li>
-                <li class="li-sort" role="option" aria-selected="false">Dining Out</li>
-                <li class="li-sort" role="option" aria-selected="false">Transportation</li>
-                <li class="li-sort" role="option" aria-selected="false">Personal Care</li>
+                <li class="li-sort selected" role="option" aria-selected="true" data-category="All transactions">All transactions</li>
+                <li class="li-sort" role="option" aria-selected="false" data-category="Entertainment">Entertainement</li>
+                <li class="li-sort" role="option" aria-selected="false" data-category="Bills">Bills</li>
+                <li class="li-sort" role="option" aria-selected="false" data-category="Groceries">Groceries</li>
+                <li class="li-sort" role="option" aria-selected="false" data-category="Dining Out">Dining Out</li>
+                <li class="li-sort" role="option" aria-selected="false" data-category="Transportation">Transportation</li>
+                <li class="li-sort" role="option" aria-selected="false" data-category="Personal Care">Personal Care</li>
               </ul>
             </div>
 
@@ -131,23 +132,7 @@
 
             </div>
 
-            <!-- <div class="transactions" role="row">
-              <div class="container-avatar">
-                <img src="../assets/images/avatars/emma-richardson.jpg" alt="avatar" class="avatar">
-              </div>
-              <div class="cell-name" role="cell">  
-                <p class="text public-sans-bold text-preset-4">Emma Richardson</p>
-              </div>
-              <div class="cell-category" role="cell">
-                <p class="text public-sans-regular text-preset-5">General</p>
-              </div>
-              <div class="cell-amount" role="cell">
-                <p class="text public-sans-bold text-preset-4 plus">+$75.50</p>
-              </div>
-              <div class="cell-date" role="cell">
-                <time datetime="2024-08-19" class="text public-sans-regular text-preset-5">19 Aug 2024</time>
-              </div>
-            </div> -->
+
 
           </div>
 

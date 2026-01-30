@@ -25,8 +25,6 @@ export function setupSideMenu() {
 
 
 
-
-
 /**
  * Manages the display and configuration of the add/withdraw money modals.
  * This function is triggered when clicking the action buttons of a savings "Pot".
@@ -53,8 +51,6 @@ export function addWithrawMoney(event, btn, modal){
     modal.showModal();
 
 }
-
-
 
 
 
@@ -87,8 +83,6 @@ export function openSortListModal(buttons, lists){
     });
 
 }
-
-
 
 
 
@@ -142,7 +136,6 @@ export function closeAllDropdowns() {
 
 export function closeModalAddEdit(modal){
    
-    // const modalAdd = document.querySelector('.modal-add');
     const btnCloseModal = document.querySelector('.close-modal');
 
     btnCloseModal.addEventListener('click', () => {
@@ -167,34 +160,6 @@ export function closeModalAddEdit(modal){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /**
  * Function to toggle list sort/category by,
  * in the search tag
@@ -208,8 +173,8 @@ export function toggleSortMenu(btn){
     const caret = btn.querySelector('.caret');
     const isActive = listSort.classList.toggle('active');
     caret.style.transform = isActive ? "rotate(180deg)" : "rotate(0deg)";
-    btn.setAttribute('aria-expanded', isActive);        
-
+    btn.setAttribute('aria-expanded', isActive);  
+    
 }
 
 
@@ -230,7 +195,6 @@ export function closeAllSortMenu(){
 
     });
 
-
 }
 
 
@@ -245,67 +209,46 @@ export function closeAllSortMenu(){
 
 
 
+/**
+ * Function to sort the recurring bill,
+ * @param {recurringBill} data - The data bill recurring.
+ * @param {liSortBy} li - get the dataset to sort by .
+ */
 
+export function billSortBy(recurringBill, liSortBy){
 
-
-
-
-
-/*******  NOUBLIE PAS LES ARIA LABEL POUR LE CHANGEMENT DE CATEGORIE SORT CATEGORY LIST******** */
-
-//ARIA LABEL
-
-// li.setAttribute('aria-selected', 'true');  A METTRE ARIA LABEL LIST-SORT LI  
-
-// const prefix = btn.dataset.prefix;
-// btn.setAttribute('aria-label', `${prefix} ${li.textContent}`);
-
-// ARIA_SELECTED SUR LI A FAIRE ET ARIA-LABEL SUR BUTTON A MODIFIER AVEC SELECTION LI
-
-// *************** ET BUG CATEGORY NE SAFFICHE PAS **************
-
-
-
-
-export function billSortBy(data, liSortBy){
-
-    console.log('btnSortBy', liSortBy);
+    //set text btn sort by
     const dataSort = liSortBy.dataset.sort;
-    console.log('data-sort: ', dataSort);
-
     const btnMenuSortText = document.querySelector('.button-sort .text'); 
-
     btnMenuSortText.textContent = dataSort;
 
+
     document.querySelectorAll('.list-sort.sort .li-sort').forEach( (li) => {
-        // li.classList.contains('selected') ? li.classList.remove('selected') : li.classList.add('selected');
         li.classList.remove('selected');
+        li.setAttribute('aria-selected', 'false');
     });
 
     liSortBy.classList.add('selected');
+    liSortBy.setAttribute('aria-selected', 'true');
+
+    document.querySelector('.button-sort').setAttribute('aria-label', `Sort by ${dataSort}`);
+
+
+    const currentDate = new Date('2024-08-19T00:00:00');
+    const today = currentDate.getDate();
+    const referenceDate = new Date(currentDate);
+    const dayPlusFive = new Date(referenceDate);
+    dayPlusFive.setDate(referenceDate.getDate() + 5);
+    const daydueSoon = dayPlusFive.getDate();
+
+    const fragmentBill = document.createDocumentFragment();
+    const templateBill = document.querySelector('#template-transaction');
+    const containerTransactions = document.querySelector('.append-transactions');
+
+    containerTransactions.textContent = '';
 
     
-
-    // const sortBill = Array.from(
-    //     recurringTransactions.reduce( (map, obj) => {
-    //         map.set(obj.name, obj)
-    //         return map;
-    //     }, new Map()).values()
-    // );
-
-    let recurringTransactions = data.transactions.filter(transaction => transaction.recurring);
-    console.log('recurringTransactions', recurringTransactions);
-
-    const sortBillMap = new Map();    
-    
-    recurringTransactions.forEach( (transaction) => {
-        sortBillMap.set(transaction.name, transaction);
-    });
-
-    const sortBill = Array.from(sortBillMap.values());    
-    console.log('sortBill before map: ', sortBill);
-    
-    sortBill.sort( (a, b) => {
+    [...recurringBill].sort( (a, b) => {
 
         let valueA = new Date(a.date).getDate();
         let valueB = new Date(b.date).getDate();
@@ -320,30 +263,7 @@ export function billSortBy(data, liSortBy){
             default: return 0;
         }
 
-    });
-
-
-    console.log('sortBill', sortBill);
-
-    const currentDate = new Date('2024-08-19T00:00:00');
-    const today = currentDate.getDate();
-
-    const referenceDate = new Date(currentDate);
-    const dayPlusFive = new Date(referenceDate);
-
-    dayPlusFive.setDate(referenceDate.getDate() + 5);
-    const daydueSoon = dayPlusFive.getDate();
-
-
-    const fragmentBill = document.createDocumentFragment();
-    const templateBill = document.querySelector('#template-transaction');
-    // const containerTransactions = document.querySelector('.container-transactions');
-    const containerTransactions = document.querySelector('.append-transactions');
-
-
-    containerTransactions.textContent = '';
-
-    sortBill.forEach( (transaction) => {
+    }).forEach( (transaction) => {
 
         const clone = templateBill.content.cloneNode(true);
 
@@ -354,14 +274,25 @@ export function billSortBy(data, liSortBy){
         clone.querySelector('.cell-name .text').textContent = transaction.name; 
         clone.querySelector('.cell-amount .text').textContent = `$${Math.abs(transaction.amount).toFixed(2)}`;            
 
+
+        //set suffix st, nd, th 
+
         let billDate = new Date(transaction.date).getDate();
-        // console.log('billDate', billDate);
 
         const suffixes = [ 'st', 'nd', 'rd' ];
-        const suffix = suffixes[billDate] || 'th';
-        const textDate = `Monthly-${billDate}${suffix}`;
+        let suffix;
 
+        const date = billDate.toString().split('');
+
+        if(date.length === 1){
+            date.unshift('0');
+        }
+
+        suffix = date[0] !== '1' ? suffixes[Number(date[1])-1] || 'th' : 'th' ;
+        const textDate = `Monthly-${billDate}${suffix}`;
         clone.querySelector('.cell-date time').textContent = textDate;        
+
+        //set text
 
         if(billDate <= today){
             clone.querySelector('.logo-paid').src = "../assets/images/icon-bill-paid.svg";
@@ -381,6 +312,148 @@ export function billSortBy(data, liSortBy){
 
     containerTransactions.appendChild(fragmentBill);
 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * Function to sort / category the transaction,
+ * @param {transactions} data - The data bill transaction.
+ * @param {liSortBy} li - get the dataset to sort by .
+ * @param {liCategoryBy} li - get the dataset category .
+ */
+
+export function transactionSliceBy(transactions, liSortBy, liCategoryBy){
+
+    console.log('********FONCTION*******');
+    
+
+    let dataSort;
+
+    //liSortBy
+
+    console.log('FONCTION liSortBy', liSortBy);
+
+    if(liSortBy){
+
+        dataSort = liSortBy.dataset.sort;
+
+        console.log('IF SORT', dataSort);
+
+
+        document.querySelectorAll('.list-sort.sort .li-sort').forEach( (li) => {
+            li.classList.remove('selected');
+            li.setAttribute('aria-selected', 'false');
+        });
+
+        liSortBy.classList.add('selected');
+        liSortBy.setAttribute('aria-selected', 'true');
+
+        document.querySelector('.button-sort.sort').setAttribute('aria-label', `Sort by ${dataSort}`);        
+
+    } 
+
+    else {
+        dataSort = document.querySelector('.list-sort.sort .li-sort.selected').dataset.sort;
+        console.log('ELSE SORT', dataSort);  
+    }
+
+
+    const btnMenuSortText = document.querySelector('.button-sort.sort .text'); 
+    btnMenuSortText.textContent = dataSort;
+
+
+    //li category
+
+    console.log('FONCTION liCategoryBy', liCategoryBy);
+
+    let dataCategory;
+
+    if(liCategoryBy){
+
+        dataCategory = liCategoryBy.dataset.category;
+
+        console.log('IF CATEGORY', dataCategory);
+        
+        document.querySelectorAll('.list-sort.category .li-sort').forEach( (li) => {
+            li.classList.remove('selected');
+            li.setAttribute('aria-selected', 'false');
+        });
+
+        liCategoryBy.classList.add('selected');
+        liCategoryBy.setAttribute('aria-selected', 'true');
+
+        document.querySelector('.button-sort.category').setAttribute('aria-label', `Category ${dataCategory}`);
+
+    }
+    else {
+        dataCategory = document.querySelector('.list-sort.category .li-sort.selected').dataset.category;
+    }
+
+
+    const btnMenuCategoryText = document.querySelector('.button-sort.category .text'); 
+    btnMenuCategoryText.textContent = dataCategory;
+
+    // console.log('FONCTION dataCategory', dataCategory);
+    
+    const fragmentTransaction = document.createDocumentFragment();
+    const templateTransaction = document.querySelector('#template-transaction');
+    const containerTemplateTransactions = document.querySelector('.container-template-transactions');
+
+    containerTemplateTransactions.textContent = '';
+
+
+    // const containerTransactions = document.querySelector('.container-transactions');
+
+    [...transactions].filter(t => dataCategory === 'All transactions' || t.category.toLowerCase() === dataCategory.toLowerCase())
+    .sort( (a, b) => {
+
+        let valueA = new Date(a.date);
+        let valueB = new Date(b.date);
+
+        switch(dataSort){
+            case 'Latest': return valueB - valueA;
+            case 'Oldest': return valueA - valueB;
+            case 'A to Z': return a.name.localeCompare(b.name);
+            case 'Z to A': return b.name.localeCompare(a.name);
+            case 'Highest': return Math.abs(b.amount) - Math.abs(a.amount);
+            case 'Lowest': return Math.abs(a.amount) - Math.abs(b.amount);
+            default: return valueB - valueA;
+        }
+
+    }).slice(0, 10).forEach( (transaction) => {
+
+        const clone = templateTransaction.content.cloneNode(true);
+
+        if(transaction.avatar && transaction.avatar.startsWith('../')){
+            clone.querySelector('.avatar').src = transaction.avatar;            
+        }
+
+        clone.querySelector('.cell-name .text').textContent = transaction.name;
+        clone.querySelector('.cell-amount .text').textContent = `$${Math.abs(transaction.amount).toFixed(2)}`;
+
+        clone.querySelector('.cell-category .text').textContent = transaction.category;
+
+        const transactionDate = new Date(transaction.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+        clone.querySelector('.cell-date time').textContent = transactionDate;        
+
+        fragmentTransaction.appendChild(clone);
+
+    });
+
+
+    containerTemplateTransactions.appendChild(fragmentTransaction);
 
 }
+
+
 

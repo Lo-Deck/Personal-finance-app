@@ -81,9 +81,9 @@
 
             <div class="container-sort">
               <p id="sort-label" class="text public-sans-regular text-preset-4">Sort by</p>
-              <button class="button button-sort" aria-label="Sort by Latest" aria-haspopup="listbox" aria-expanded="false"><img src="../assets/images/icon-sort-mobile.svg" alt="" class="mobile"><span class="desktop"><span class="text public-sans-regular text-preset-4">Latest</span><img src="../assets/images/icon-caret-down.svg" alt="caret" class="caret"></span></button>
-              <ul class="list list-sort sort text-preset-4 public-sans-regular" role="listbox" aria-label="Sort options" tabindex="-1">            
-                <li class="li-sort selected" role="option" aria-selected="true" tabindex="0" data-sort="Latest">Latest</li>
+              <button class="button button-sort" aria-label="Sort by Latest" aria-haspopup="listbox" aria-expanded="false" aria-controls="sort-list"><img src="../assets/images/icon-sort-mobile.svg" alt="" class="mobile"><span class="desktop"><span class="text public-sans-regular text-preset-4">Latest</span><img src="../assets/images/icon-caret-down.svg" alt="caret" class="caret"></span></button>
+              <ul id="sort-list" class="list list-sort sort text-preset-4 public-sans-regular" role="listbox" aria-label="Sort options" tabindex="-1">            
+                <li class="li-sort selected" role="option" aria-selected="true" data-sort="Latest">Latest</li>
                 <li class="li-sort" role="option" aria-selected="false" data-sort="Oldest">Oldest</li>
                 <li class="li-sort" role="option" aria-selected="false" data-sort="A to Z">A to Z</li>
                 <li class="li-sort" role="option" aria-selected="false" data-sort="Z to A">Z to A</li>
