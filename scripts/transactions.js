@@ -1,9 +1,12 @@
 
 import { getData } from './data-service.js';
-import { setupSideMenu, toggleSortMenu, closeAllSortMenu, transactionSliceBy } from './ui-utils.js';
+import { setupSideMenu, toggleSortMenu, closeAllSortMenu, transactionSliceBy, createNavBar, choosePageNavbar } from './ui-utils.js';
 
 
-let transactions;
+let transactions;//keep the data transactions
+let transactionsFilter;//keep the data transactions filtered
+const containerNavPages = document.querySelector('.container-nav-pages');
+
 
 
 ( async () => {
@@ -55,61 +58,34 @@ function feedTransactionPage(transactions){
     // console.log(transactions);
 
 
-    transactionSliceBy(transactions, currentLiSort, currentLiCategory);
+    transactionsFilter = transactionSliceBy(transactions, currentLiSort, currentLiCategory);
 
+    containerNavPages.textContent = '';
 
+    if(transactionsFilter.length > 10){
 
-    const containerTransactions = document.querySelector('.container-transactions');
+        // console.log('NAVBAR ');
 
-    if(transactions.length > 10){
+        console.log('transactionsFilter length', transactionsFilter.length);
 
-        //create nav
-        var nav = document.createElement('nav');
-        nav.classList.add('pages');
-        nav.setAttribute('aria-label', 'pagination');
+        createNavBar(containerNavPages, transactionsFilter.length);
 
-        //create ul
-        const ul = document.createElement('ul');
-        nav.appendChild(ul);
-        ul.classList.add('list', 'list-pages', 'public-sans-regular');
-
-        //create li
-        const liPrevious = document.createElement('li');
-        liPrevious.classList.add('li-page', 'previous', 'disabled');
-        liPrevious.innerHTML = `<button type="button" class="button previous" aria-label="page previous" data-page="previous" disabled="true"><svg fill="none" height="11" viewBox="0 0 6 11" width="6" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                                                                                                      <path d="m5.14656 10.8535-5.000005-4.99997c-.046488-.04643-.0833676-.10158-.1085298-.16228-.0251623-.06069-.03811269-.12576-.0381127-.19147 0-.0657.0129504-.13077.0381126-.19147.0251623-.06069.0620419-.11584.1085299-.16228l4.999995-4.999997c.06993-.0700052.15906-.117689.2561-.13701419.09704-.01932521.19764-.0094229.28905.02845329.09141.0378763.16953.1020229.22447.1843199.05493.082297.08421.179044.08414.277991v10.000017c.00007.0989-.02921.1957-.08414.278-.05494.0823-.13306.1464-.22447.1843s-.19201.0478-.28905.0284c-.09704-.0193-.18617-.067-.25609-.137z"/>
-                                                                                                                    </svg><span>Prev</span></button>`;
-        ul.appendChild(liPrevious);
-
-        for(let i = 0; i < Math.ceil(transactions.length / 10); i++){
-            const li = document.createElement('li');
-            i === 0 ? li.classList.add('li-page', 'active') : li.classList.add('li-page');
-            li.innerHTML = `<button type="button" class="button button-page" aria-label="Page ${i+1}" data-page="${i+1}">${i+1}</button>`;
-            ul.appendChild(li);
-        }
-
-        const liNext = document.createElement('li');
-        liNext.classList.add('li-page', 'next');
-        liNext.innerHTML = `<button type="button" class="button next" aria-label="page next" data-page="next"><span>Next</span><svg fill="none" height="11" viewBox="0 0 6 11" width="6" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                                                                                          <path d="m.853506.146465 5.000004 5.000005c.04648.04643.08336.10158.10853.16228.02516.06069.03811.12576.03811.19147 0 .0657-.01295.13077-.03811.19147-.02517.06069-.06205.11584-.10853.16228l-5.000004 5.00003c-.069927.07-.159054.1177-.256097.137-.097042.0193-.197637.0094-.289048-.0285-.091412-.0378-.16953-.102-.2244652-.1843-.0549354-.0823-.08421767-.179-.08413981-.278l-.00000043-9.999984c-.00007788-.098949.02920444-.195695.08413984-.277992.0549356-.082297.1330536-.1464431.2244646-.1843193.091412-.03787611.192007-.04777907.289049-.02845381.097042.01932521.186169.06700801.256097.13701411z"/>
-                                                                                                  </svg></button>`;
-        ul.appendChild(liNext);    
-
-        containerTransactions.appendChild(nav);
-
-
-
-
+    }
+    
 
 
 
 
     /************************************/
-    /********  CREER LISTENER POUR NAV BAR AVEC CLOSEST  ET APRES FAIRE SELECTION AVEC INPUT ************/
+    /********  VOIR .slice().forEach le sortir de la fonction et creer propre fonction
+     *  APRES FAIRE SELECTION AVEC INPUT ET CHOOSEPAGENAVBAR VOIR NUMBER PAGE = 5 METTRE NOMBRE DYNAMIQUE ************/
     
 
-        //create listener
 
+
+
+
+    
         // ul.addEventListener('click', (event) => {
 
         //     const button = event.target.closest('.button');
@@ -177,15 +153,8 @@ function feedTransactionPage(transactions){
 
 
 
-
-
-
-
-
-
-    }
-
 }
+
 
 
 
@@ -196,9 +165,16 @@ document.addEventListener('click', (event) => {
     const btnSort = event.target.closest('.button-sort');
     const liSortBy = event.target.closest('.list-sort.sort .li-sort');
     const liCategory = event.target.closest('.list-sort.category .li-sort');
+    const liPage = event.target.closest('.li-page');
+
+
+
+    const searchByName = event.target.closest('input');
+
 
     if(btnSort){
 
+        //to have only one menu open
         const container = btnSort.closest('.container-sort');
         const targetList = container.querySelector('.list-sort');
         const isOpen = targetList.classList.contains('active');
@@ -215,13 +191,38 @@ document.addEventListener('click', (event) => {
     }
 
 
-    if( liSortBy || liCategory ){
 
-        // console.log('********LI LISTENER******');
-        // console.log('liSortBy :', liSortBy);
-        // console.log('liCategory :', liCategory);
-    
-        transactionSliceBy(transactions, liSortBy, liCategory);
+    if( liSortBy || liCategory ){
+        
+        transactionsFilter = transactionSliceBy(transactions, liSortBy, liCategory);
+        containerNavPages.textContent = '';
+
+        if(transactionsFilter.length > 10){
+       
+            console.log('lengthData', transactionsFilter.length);
+
+            console.log('transactionsFilter liPage :', transactionsFilter);
+
+            createNavBar(containerNavPages, transactionsFilter.length);
+
+        }
+
+    }
+
+
+    if(liPage){
+
+        console.log('************CLICK ON PAGE************');     
+        console.log('transactionsFilter liPage :', transactionsFilter);
+        choosePageNavbar(liPage, transactionsFilter);
+        
+    }
+
+
+    if(searchByName){
+
+        console.log('searchByName', searchByName);
+        
 
     }
 
