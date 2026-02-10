@@ -1,11 +1,15 @@
 
 @font-face {
   font-family: "public-sans";
+  font-weight: 100 900; 
+  font-style: normal;
   src: url("../assets/fonts/PublicSans-VariableFont_wght.ttf") format("truetype");
 }
 
 @font-face {
   font-family: "public-sans-italic";
+  font-weight: 100 900;
+  font-style: italic;
   src: url("../assets/fonts/PublicSans-Italic-VariableFont_wght.ttf") format("truetype");
 }
 
@@ -92,6 +96,7 @@ body{
     grid-template-areas:  "header  main";
   }
 
+
 }
 
 
@@ -114,6 +119,10 @@ body{
 .text-preset-1{
   font-size: 2rem;
   line-height: 1.2;
+
+
+  -webkit-font-smoothing: antialiased; /* apple */
+
 }
 
 .text-preset-2{
@@ -129,11 +138,13 @@ body{
 .text-preset-4{
   font-size: 0.875rem;
   line-height: 1.5;
+  -webkit-font-smoothing: subpixel-antialiased; /* apple */
 }
 
 .text-preset-5{
   font-size: 0.75rem;
   line-height: 1.5;
+  -webkit-font-smoothing: subpixel-antialiased; /* apple */
 }
 
 
@@ -160,12 +171,7 @@ button{
   font-size: inherit;
   font-family: inherit;
   font-weight: inherit;
-  /* cursor: pointer; */
 }
-
-/* .button:hover{
-  cursor: pointer;
-} */
 
 button:hover{
   cursor: pointer;
@@ -199,7 +205,7 @@ input{
 
 label{
   position: relative;
-  &::after{
+  &[for="search"]::after{
     content: '';
     display: inline-block;
     width: 1rem;
@@ -228,6 +234,16 @@ a{
   border: 0;
 }
 
+
+.is-disabled{
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+
+/* input:disabled{
+  cursor: not-allowed;
+} */
 
 /*HEADER*/
 
@@ -577,7 +593,6 @@ a{
   justify-content: space-between;
   align-items: center;
   margin-bottom: var(--space-20px);
-
   .link-details{
     display: flex;
     color: var(--grey-500);
@@ -988,8 +1003,11 @@ a{
   border-radius: 50%;
   margin-right: 1rem;
 
+
+  background-color: #277C78;
+
   &.green { background-color: #277C78; }
-  &.yellow { background-color: #F2CDAC; } /* Version pastel pour used */
+  &.yellow { background-color: #F2CDAC; } 
   &.cyan { background-color: #82C9D7; }
   &.navy { background-color: #626070; }
   &.red { background-color: #C94736; }
@@ -1073,7 +1091,6 @@ body:has(dialog[open]) {
 
 }
 
-
 .modal{
   width: var(--size350to560);
   background: var(--white);
@@ -1082,10 +1099,7 @@ body:has(dialog[open]) {
   padding: var(--size24to32) var(--size20to32);
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-
   overflow: visible;
-
-
   .container-title{
     display: flex;
     justify-content: space-between;
@@ -1104,13 +1118,24 @@ body:has(dialog[open]) {
     align-items: stretch;
     width: 100%;
     margin-top: var(--space-20px);
+
+
+/************* faire input create pot *****************/
+
     label{
       margin: var(--space-16px) 0;
+      /* position: relative; */
+      &:last-of-type{
+        margin: 0 0 var(--space-16px);
+      }
+
       span{
           display: inline-block;
           margin-bottom: var(--space-08px);              
       }
-      &::after{
+
+      /* &::after{ */
+      &[for="maxspend"]::after{
         content: '$';
         display: inline-block;
         width: 1rem;
@@ -1124,16 +1149,25 @@ body:has(dialog[open]) {
     }
     input{
       width: 100%;
-      text-indent: 2rem;
+
+      font-size: 1rem;  /* RAJOUT ICI */
+
+      text-indent: 1rem;
+      &[name="maxspend"]{
+        text-indent: 2rem;
+      }
+    }
+    .char-limit{
+      width: fit-content;      
+      color: var(--grey-500);
+      margin: var(--space-04px) 0 0 auto;
     }
     .container-sort{
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       align-items: stretch;
-
       position: relative;
-
       .text{
         display: block;
         margin-bottom: var(--space-08px);
@@ -1143,16 +1177,6 @@ body:has(dialog[open]) {
         position: absolute;
           top: 5rem; left: 0rem;
       }
-      /* &:nth-of-type(1) .list-sort, &:nth-of-type(2) .list-sort{
-        position: absolute;
-          top: 5rem; left: 0rem;
-      } */
-      /* &:nth-of-type(2) .list-sort{
-        width: 100%;
-        position: absolute;
-          top: 5rem; left: 0rem;
-      } */
-
       &:nth-of-type(2) .button-sort{
           width: 100%;
       }
@@ -1171,9 +1195,23 @@ body:has(dialog[open]) {
         align-items: center;
         &.used{
           opacity: 0.5;
+          cursor: not-allowed;
+          pointer-events: none;
+
+          .isUsed{   /* MODIF ICI AVEC ISUSED ET EN DESSOUS */
+            opacity: 1;
+            visibility: visible;
+            /* pointer-events: auto; */
+
+          }
+
         }
-        span:nth-of-type(2){
+        /* span:nth-of-type(2){ */
+        .isUsed{
           margin-left: auto;
+          opacity: 0;
+          visibility: hidden;
+          pointer-events: none;
         }
       }
     }
@@ -1192,12 +1230,23 @@ body:has(dialog[open]) {
       .desktop{
           display: inline-block;
       }
-      img.desktop{
+      /* img.desktop{ */
+      .caret{
         margin-left: auto;
+      }
+      &.expanded{
+
+        .caret{
+
+          transform: rotate(180deg);
+
+        }
+
       }
       &:hover{
           border: 0.0625rem solid var(--grey-900);
       }
+
     }
     .button-submit-modal{
       background: var(--grey-900);
@@ -1244,6 +1293,9 @@ body:has(dialog[open]) {
 
 
 
+
+
+
 .modal-delete{
 
   padding-bottom: var(--space-16px);
@@ -1269,14 +1321,8 @@ body:has(dialog[open]) {
   }
 }
 
-
-
-
-
 .modal::backdrop{
-
   background: rgba(0, 0, 0, 0.5);
-
 }
 
 
@@ -1319,7 +1365,7 @@ body:has(dialog[open]) {
   }
   input{
       width: 13.4375rem;
-      &:hover{
+      &:hover:not(:disabled){
           cursor: pointer;
           border: 0.0625rem solid var(--grey-900);
       }

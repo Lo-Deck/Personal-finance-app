@@ -221,8 +221,6 @@ function feedIndexPage(data){
 
             const rect = g.getBoundingClientRect();
 
-            // const budgetChartHover = document.querySelector('.budget-chart');
-            // const rect = budgetChartHover.getBoundingClientRect();
 
             const mouseXRelative = event.clientX - rect.left;
             const mouseYRelative = event.clientY - rect.top;
@@ -315,7 +313,7 @@ function feedIndexPage(data){
         budgetsLiElements[i].querySelector('span').textContent = `$${data.budgets[i].maximum.toFixed(2)}`;
     }
 
-    
+
 
 
 

@@ -1,7 +1,5 @@
 
 
-
-
 /**
  * Open close side menu.
  */
@@ -21,7 +19,6 @@ export function setupSideMenu() {
     });
 
 }
-
 
 
 
@@ -60,7 +57,6 @@ export function addWithrawMoney(event, btn, modal){
  * @param {NodeList} buttons - The name/theme where choose from.
  * @param {NodeList} lists - The list of category/name to choose.
  */
-
 
 export function openSortListModal(buttons, lists){
 
@@ -104,6 +100,7 @@ export function toggleDropdownMenu(btn) {
 }
 
 
+
 /**
  * Close all Dropdown menu when clicked on window.
  */
@@ -113,19 +110,6 @@ export function closeAllDropdowns() {
         menu.classList.remove('active');
     });
 }
-
-
-
-
-
-
-/**
- * function to open modal box.
- * modal to add or edit pots/budgets.
- * @param {string} title - The title text to display in the modal.
- * @param {string} text - The description or body text for the modal.
- * @param {string} button - The text for the submit button.
- */
 
 
 
@@ -139,6 +123,9 @@ export function closeModalAddEdit(modal){
     const btnCloseModal = document.querySelector('.close-modal');
 
     btnCloseModal.addEventListener('click', () => {
+
+        // e.preventDefault();
+        // e.stopPropagation();
 
         const btnCategoryList = modal.querySelector('.search-field .container-sort:nth-of-type(1) .button');
 
@@ -154,9 +141,6 @@ export function closeModalAddEdit(modal){
     });
 
 }
-
-
-
 
 
 
@@ -176,6 +160,7 @@ export function toggleSortMenu(btn){
     btn.setAttribute('aria-expanded', isActive);  
     
 }
+
 
 
 /**
@@ -199,20 +184,10 @@ export function closeAllSortMenu(){
 
 
 
-
-
-
-
-
-
-
-
-
-
 /**
  * Function to sort the recurring bill,
- * @param {recurringBill} data - The data bill recurring.
- * @param {liSortBy} li - get the dataset to sort by .
+ * @param {Array<object>} recurringBill - The data bill recurring.
+ * @param {HTMLLIElement} liSortBy - get the dataset to sort by .
  */
 
 export function billSortBy(recurringBill, liSortBy){
@@ -234,8 +209,17 @@ export function billSortBy(recurringBill, liSortBy){
     document.querySelector('.button-sort').setAttribute('aria-label', `Sort by ${dataSort}`);
 
 
+    const searchByName = document.querySelector('input').value;
 
-    const recurringBillSort = [...recurringBill].sort( (a, b) => {
+    const recurringBillSort = [...recurringBill].filter( (bill) => {
+
+        const name = bill.name.toLowerCase();        
+
+        if( name.startsWith(searchByName) ){
+            return bill;
+        }
+
+    }).sort( (a, b) => {
 
         let valueA = new Date(a.date).getDate();
         let valueB = new Date(b.date).getDate();
@@ -251,9 +235,7 @@ export function billSortBy(recurringBill, liSortBy){
         }
 
     });
-    
 
-    
 
     const currentDate = new Date('2024-08-19T00:00:00');
     const today = currentDate.getDate();
@@ -263,14 +245,11 @@ export function billSortBy(recurringBill, liSortBy){
     const daydueSoon = dayPlusFive.getDate();
 
 
-
-
     const fragmentBill = document.createDocumentFragment();
     const templateBill = document.querySelector('#template-transaction');
     const containerTransactions = document.querySelector('.append-transactions');
 
     containerTransactions.textContent = '';
-
 
 
     recurringBillSort.forEach( (transaction) => {
@@ -286,7 +265,6 @@ export function billSortBy(recurringBill, liSortBy){
 
 
         //set suffix st, nd, th 
-
         let billDate = new Date(transaction.date).getDate();
 
         const suffixes = [ 'st', 'nd', 'rd' ];
@@ -303,7 +281,6 @@ export function billSortBy(recurringBill, liSortBy){
         clone.querySelector('.cell-date time').textContent = textDate;        
 
         //set text
-
         if(billDate <= today){
             clone.querySelector('.logo-paid').src = "../assets/images/icon-bill-paid.svg";
             clone.querySelector('.cell-date time').classList.add('green');
@@ -320,8 +297,8 @@ export function billSortBy(recurringBill, liSortBy){
 
     });
 
-    containerTransactions.appendChild(fragmentBill);
 
+    containerTransactions.appendChild(fragmentBill);
 
     return recurringBillSort;
 
@@ -329,26 +306,15 @@ export function billSortBy(recurringBill, liSortBy){
 
 
 
-
-
-
-
-
-
-
-
-
 /**
  * Function to sort / category the transaction,
- * @param {transactions} data - The data bill transaction.
- * @param {liSortBy} li - get the dataset to sort by .
- * @param {liCategoryBy} li - get the dataset category .
+ * @param {Array<object>} transactions - The data bill transaction.
+ * @param {HTMLLIElement} liSortBy - get the dataset to sort by .
+ * @param {HTMLLIElement} liCategoryBy - get the dataset category .
  */
 
 export function transactionSliceBy(transactions, liSortBy, liCategoryBy){
 
-    // console.log('********FONCTION*******');
-    
     let dataSort;
 
     if(liSortBy){
@@ -399,9 +365,17 @@ export function transactionSliceBy(transactions, liSortBy, liCategoryBy){
     const btnMenuCategoryText = document.querySelector('.button-sort.category .text'); 
     btnMenuCategoryText.textContent = dataCategory;
 
+    const searchByName = document.querySelector('input').value;
 
+    const transactionFilter = [...transactions].filter( (transaction) => {
 
-    const transactionFilter = [...transactions].filter(t => dataCategory === 'All transactions' || t.category.toLowerCase() === dataCategory.toLowerCase())
+        const name = transaction.name.toLowerCase();        
+
+        if( name.startsWith(searchByName) ){
+            return transaction;
+        }
+
+    }).filter(t => dataCategory === 'All transactions' || t.category.toLowerCase() === dataCategory.toLowerCase())
     .sort( (a, b) => {
 
         let valueA = new Date(a.date);
@@ -418,7 +392,6 @@ export function transactionSliceBy(transactions, liSortBy, liCategoryBy){
         }
 
     });
-
 
 
     const fragmentTransaction = document.createDocumentFragment();
@@ -451,19 +424,17 @@ export function transactionSliceBy(transactions, liSortBy, liCategoryBy){
 
     containerTemplateTransactions.appendChild(fragmentTransaction);
 
-    // console.log('transactionFilter.length: ', transactionFilter.length);
-
     return transactionFilter;
-
 
 }
 
 
 
-
-
-
-
+/**
+ * Function to choose the page,
+ * @param {HTMLDivElement} container - where to set the navigation for multiple pages.
+ * @param {Array} dataLength - to have the number of pages to set.
+ */
 
 export function createNavBar(container, dataLength){
 
@@ -486,7 +457,7 @@ export function createNavBar(container, dataLength){
                                                                                                                 </svg><span>Prev</span></button>`;
     ul.appendChild(liPrevious);
 
-    for(let i = 0; i < Math.ceil(dataLength / 10); i++){//NUMBER OF BUTTON = PAGES
+    for(let i = 0; i < Math.ceil(dataLength / 10); i++){ //NUMBER OF BUTTON = PAGES
         const li = document.createElement('li');
         i === 0 ? li.classList.add('li-page', 'active') : li.classList.add('li-page');
         li.dataset.page = `${i+1}`;
@@ -509,21 +480,16 @@ export function createNavBar(container, dataLength){
 
 
 
-
-
-
-
+/**
+ * Function to choose the page,
+ * @param {HTMLLIElement} li - the data attribute to set the new page.
+ * @param {Array<Object>} data - the data to work on .
+ */
 
 export function choosePageNavbar(li, data){
 
-
     const currentPage = document.querySelector('.list-pages .active').getAttribute('data-page');
     const dataPage = li.getAttribute('data-page') ?? "1";
-
-    console.log('FUNCTION CHOOSENAVBAR ');
-    // console.log('currentPage ', currentPage);
-    // console.log('dataPage ', dataPage);
-
 
     let numberPage;
 
@@ -535,33 +501,29 @@ export function choosePageNavbar(li, data){
         }
     }
 
-
-
     const liPages = document.querySelectorAll('.li-page');
+    const lastPage = liPages.length-2;
 
     liPages[currentPage].classList.remove('active');
     liPages[numberPage].classList.add('active');
 
 
-    if( numberPage !== 1 || numberPage !== 5 ){//non dynamique a modifier
+    if( numberPage !== 1 || numberPage !== lastPage ){
         liPages[0].classList.remove('disabled');
         liPages[0].querySelector('.button').disabled = false;
-        liPages[6].classList.remove('disabled');
-        liPages[6].querySelector('.button').disabled = false;
+        liPages[liPages.length-1].classList.remove('disabled');
+        liPages[liPages.length-1].querySelector('.button').disabled = false;
     }
-
 
     if(numberPage === 1){
         liPages[0].classList.add('disabled');
         liPages[0].querySelector('.button').disabled = true;
     }
 
-
-    if(numberPage === 5){//non dynamique a modifier
-        liPages[6].classList.add('disabled');
-        liPages[6].querySelector('.button').disabled = true;
+    if(numberPage === lastPage){
+        liPages[liPages.length-1].classList.add('disabled');
+        liPages[liPages.length-1].querySelector('.button').disabled = true;
     }
-
 
 
     if( numberPage ){
@@ -570,7 +532,6 @@ export function choosePageNavbar(li, data){
         const templateTransaction = document.querySelector('#template-transaction');
         const containerTemplateTransactions = document.querySelector('.container-template-transactions');
         containerTemplateTransactions.textContent = '';
-
 
         data.slice( (numberPage-1) * 10 , (numberPage) * 10 ).forEach( (data) => {
 
@@ -583,7 +544,6 @@ export function choosePageNavbar(li, data){
 
             clone.querySelector('.cell-category .text').textContent = data.category;
 
-
             const transactionDate = new Date(data.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
             clone.querySelector('.cell-date time').textContent = transactionDate;        
             fragmentTransaction.appendChild(clone);
@@ -595,6 +555,79 @@ export function choosePageNavbar(li, data){
     }
 
 
+}
+
+
+
+
+
+
+
+
+
+
+
+export function createNewPot(name, target, theme){
+
+
+    // const inputNamePot = document.querySelector('input[name="potName"]').value;
+    // const inputAmountPot = document.querySelector('input[name="maxspend"]').value;
+    // const colorTagPot = document.querySelector('.list-sort.color .selected').dataset.sort;
+
+    // inputNamePot, inputAmountPot, colorTagPot
+
+
+    const potData = {
+        name: name,
+        target: target,
+        total: 0,
+        theme: theme
+    };
+
+
+
+    sendData('../data.json/pots', potData);
+
 
 
 }
+
+
+
+export async function sendData(url, dataToInsert){
+
+
+    try{
+
+        console.log("1. Entrée dans sendData");
+
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+
+            },
+            body: JSON.stringify(dataToInsert)
+        });
+
+        console.log("2. Réponse reçue, status:", response.status);
+
+        if(!response.ok){
+            throw new Error(`Erreur Serveur: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+
+        console.log('3. Update successful:', data);
+
+        return data;
+
+    } catch(error){
+        console.error('Error sending data :', error.message);
+        throw error;
+    } 
+
+
+}
+
+

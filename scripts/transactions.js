@@ -8,7 +8,6 @@ let transactionsFilter;//keep the data transactions filtered
 const containerNavPages = document.querySelector('.container-nav-pages');
 
 
-
 ( async () => {
 
     try{
@@ -23,9 +22,6 @@ const containerNavPages = document.querySelector('.container-nav-pages');
             return dateB - dateA;
         });
 
-        // transactions = data.transactions;
-
-        // console.log(data);
         feedTransactionPage(transactions);
 
     } catch(error) {
@@ -53,104 +49,39 @@ function feedTransactionPage(transactions){
     const currentLiSort = document.querySelector('.search-field .list-sort.sort .li-sort.selected');
     const currentLiCategory = document.querySelector('.search-field .list-sort.category .li-sort.selected');
 
-    // console.log('feedpage: ', currentLiSort);
-    // console.log('feedpage: ', currentLiCategory);
-    // console.log(transactions);
-
-
     transactionsFilter = transactionSliceBy(transactions, currentLiSort, currentLiCategory);
-
     containerNavPages.textContent = '';
 
     if(transactionsFilter.length > 10){
-
-        // console.log('NAVBAR ');
-
-        console.log('transactionsFilter length', transactionsFilter.length);
-
         createNavBar(containerNavPages, transactionsFilter.length);
-
     }
-    
-
 
 
 
     /************************************/
-    /********  VOIR .slice().forEach le sortir de la fonction et creer propre fonction
-     *  APRES FAIRE SELECTION AVEC INPUT ET CHOOSEPAGENAVBAR VOIR NUMBER PAGE = 5 METTRE NOMBRE DYNAMIQUE ************/
-    
+    /********  VOIR .slice().forEach le sortir de la fonction et creer propre fonction ************/
 
 
+    const categoryHTMLList = document.querySelector('.list-sort.category');
+    const categoryMapList = new Map();
+
+    transactionsFilter.forEach( (transaction, index) => {
+        categoryMapList.set(transaction.category, transaction.category);
+    });
 
 
+    const categoryList = Array.from(categoryMapList.values());
+    console.log('categoryList', categoryList);
 
-    
-        // ul.addEventListener('click', (event) => {
-
-        //     const button = event.target.closest('.button');
-        //     const currentPage = ul.querySelector('.active .button').getAttribute('data-page');
-
-        //     if(button){
-
-        //         const dataPage = button.getAttribute('data-page') ?? "1";
-        //         let numberPage;
-
-        //         if(dataPage !== null){
-        //             if( isNaN(Number(dataPage)) ){
-        //                 numberPage = dataPage === 'next' ? Number(currentPage) + 1 : Number(currentPage) - 1;
-        //             } else {
-        //                 numberPage = Number(dataPage); 
-        //             }
-        //         }
-   
-        //         ul.querySelectorAll('.li-page')[currentPage].classList.remove('active');
-        //         ul.querySelectorAll('.li-page')[numberPage].classList.add('active');
-
-        //         if( numberPage !== 1 || numberPage !== 5 ){
-        //             ul.querySelectorAll('.li-page')[0].classList.remove('disabled');
-        //             ul.querySelectorAll('.li-page')[0].querySelector('.button').disabled = false;
-        //             ul.querySelectorAll('.li-page')[6].classList.remove('disabled');
-        //             ul.querySelectorAll('.li-page')[6].querySelector('.button').disabled = false;
-        //         }
-
-        //         if(numberPage === 1){
-        //             ul.querySelectorAll('.li-page')[0].classList.add('disabled');
-        //             ul.querySelectorAll('.li-page')[0].querySelector('.button').disabled = true;
-        //         }
-
-        //         if(numberPage === 5){
-        //             ul.querySelectorAll('.li-page')[6].classList.add('disabled');
-        //             ul.querySelectorAll('.li-page')[6].querySelector('.button').disabled = true;
-        //         }
-
-        //         if( numberPage ){
-
-        //             transactions.slice( (numberPage-1) * 10 , (numberPage) * 10 ).forEach( (transaction, index) => {
-
-        //                 const clone = templateTransaction.content.cloneNode(true);
-        //                 if(transaction.avatar && transaction.avatar.startsWith('../')){
-        //                     clone.querySelector('.avatar').src = transaction.avatar;            
-        //                 }
-        //                 clone.querySelector('.cell-name .text').textContent = transaction.name; 
-        //                 clone.querySelector('.cell-amount .text').textContent = `$${Math.abs(transaction.amount).toFixed(2)}`;
-        //                 const transactionDate = new Date(transaction.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-        //                 clone.querySelector('.cell-date time').textContent = transactionDate;        
-        //                 fragmentTransaction.appendChild(clone);
-
-        //             });         
-        //             containerTemplateTransactions.innerHTML='';
-        //             containerTemplateTransactions.appendChild(fragmentTransaction);
-        //         }     
-        //         console.log('ul.querySelectorAll: ', ul.querySelectorAll('.li-page'));
-        //     }
-        // });
-
-
-
-
-
-
+    categoryList.forEach( (transaction, index) => {
+        const li = document.createElement('li');
+        li.classList.add('li-sort');
+        li.setAttribute('role', 'option');
+        li.setAttribute('aria-selected', 'false');
+        li.setAttribute('data-category', `${transaction}`);
+        li.textContent = `${transaction}`;
+        categoryHTMLList.appendChild(li);
+    });
 
 
 }
@@ -166,10 +97,6 @@ document.addEventListener('click', (event) => {
     const liSortBy = event.target.closest('.list-sort.sort .li-sort');
     const liCategory = event.target.closest('.list-sort.category .li-sort');
     const liPage = event.target.closest('.li-page');
-
-
-
-    const searchByName = event.target.closest('input');
 
 
     if(btnSort){
@@ -191,42 +118,40 @@ document.addEventListener('click', (event) => {
     }
 
 
-
     if( liSortBy || liCategory ){
-        
+
         transactionsFilter = transactionSliceBy(transactions, liSortBy, liCategory);
         containerNavPages.textContent = '';
 
         if(transactionsFilter.length > 10){
-       
-            console.log('lengthData', transactionsFilter.length);
-
-            console.log('transactionsFilter liPage :', transactionsFilter);
-
             createNavBar(containerNavPages, transactionsFilter.length);
-
         }
 
     }
 
-
     if(liPage){
-
-        console.log('************CLICK ON PAGE************');     
-        console.log('transactionsFilter liPage :', transactionsFilter);
         choosePageNavbar(liPage, transactionsFilter);
-        
     }
-
-
-    if(searchByName){
-
-        console.log('searchByName', searchByName);
-        
-
-    }
-
 
 });
 
 
+
+
+
+const searchByName = document.querySelector('input');
+
+if(searchByName){
+
+    searchByName.addEventListener('input', (event) => {
+
+        transactionsFilter = transactionSliceBy(transactions, null, null);
+        containerNavPages.textContent = '';
+        
+        if(transactionsFilter.length > 10){
+            createNavBar(containerNavPages, transactionsFilter.length);
+        }
+
+    });
+
+}
