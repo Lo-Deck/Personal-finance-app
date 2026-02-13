@@ -1,7 +1,13 @@
 
 
 import { getData } from './data-service.js';
-import { setupSideMenu, addWithrawMoney, openSortListModal, toggleDropdownMenu, closeModalAddEdit, closeAllDropdowns, createNewPot, sendData } from './ui-utils.js';
+import { setupSideMenu, addWithrawMoney, openSortListModal, toggleDropdownMenu, closeAllDropdowns, closeModalAddEdit, sendData } from './ui-utils.js';
+
+
+
+const colorTagsMap = {};//keep track of the color
+const referencePotId = new WeakMap();
+const listHTMLColorTag = document.querySelectorAll('.list-sort.color .li-sort');
 
 
 ( async () => {
@@ -13,8 +19,18 @@ import { setupSideMenu, addWithrawMoney, openSortListModal, toggleDropdownMenu, 
         // const data = await getData.fetchData('../data.json');
         const data = await getData.fetchData('http://localhost:3000/pots');
 
-        console.log(data);
+
+        // console.log('listHTMLColorTag', listHTMLColorTag);
+        
+        listHTMLColorTag.forEach( (li) => {
+            colorTagsMap[li.dataset.sort] = li;
+        });
+
+        // console.log(colorTagsMap);
+
+        // console.log(data);
         feedPotsPage(data);
+
 
     } catch(error) {
 
@@ -36,38 +52,12 @@ import { setupSideMenu, addWithrawMoney, openSortListModal, toggleDropdownMenu, 
 
 
 
-
-function feedPotsPage(data){
+function createArticle(data){
 
     const fragmentPot = document.createDocumentFragment();
     const templatePot = document.querySelector('#template-pot');
-    // const containerPots = document.querySelector('.container-article-pots');
-    const containerMain = document.querySelector('.container-main');
 
-
-
-
-    const listHTMLColorTag = document.querySelectorAll('.list-sort.color .li-sort');
-    console.log('listHTMLColorTag', listHTMLColorTag);
-    
-
-
-    const colorTagsMap = {};
-
-
-    listHTMLColorTag.forEach( (li) => {
-
-        colorTagsMap[li.dataset.sort] = li;
-
-    });
-
-
-
-    console.log(colorTagsMap);
-    
-
-    // data.pots.forEach( (pot) => { // changement erreur avec jsonserver
-    data.forEach( (pot, index) => {
+    data.forEach( (pot) => {
 
         const clone = templatePot.content.cloneNode(true);
         const colorTheme = pot.theme;
@@ -80,7 +70,7 @@ function feedPotsPage(data){
             if (statusLabel) statusLabel.textContent = 'Already Used';
         }
 
-        // console.log('listHTMLColorTag.dataset.sort', listHTMLColorTag[index].dataset.sort);
+        const article = clone.querySelector('.container-article');
 
         //header
         const header = clone.querySelector('.container-title');
@@ -100,17 +90,42 @@ function feedPotsPage(data){
         body.querySelector('.percent').textContent = `${percent}%`;
         body.querySelector('.amount').textContent = `$${pot.target}`;
 
+        referencePotId.set(article, pot);
+
         fragmentPot.appendChild(clone);
 
     });
 
-    // containerPots.appendChild(fragmentPot);
+    return fragmentPot;
+
+}
+
+
+
+
+function feedPotsPage(data){
+
+    const containerMain = document.querySelector('.container-main');
+    const fragmentPot = createArticle(data);
+
     containerMain.appendChild(fragmentPot);
 
+    const liSelected = Array.from(listHTMLColorTag).find( li => !li.classList.contains('used'));
 
+    listHTMLColorTag.forEach( (li) => {
 
+        if(li === liSelected){
+            li.classList.add('selected');
+            li.setAttribute('aria-selected', 'true');
+        }
+        else{
+            li.classList.remove('selected');
+            li.setAttribute('aria-selected', 'false');
+        }
 
+    });
 
+    // Array.from(listHTMLColorTag).find( li => !li.classList.contains('used')).classList.add('selected');
 
 }
 
@@ -123,15 +138,24 @@ function feedPotsPage(data){
 const modalAdd = document.querySelector('.modal-add');
 const modalDelete = document.querySelector('.modal-delete');
 
-const modalAddMoney = document.querySelector('.modal-add-money');
-const modalWithdrawMoney = document.querySelector('.modal-withdraw-money');
+// const modalAddMoney = document.querySelector('.modal-add-money');
 
+const modalAddwithdrawMoney = document.querySelector('.modal-addwithdraw-money');
 
+// const modalWithdrawMoney = document.querySelector('.modal-withdraw-money');
 
 const listSortColorTag = document.querySelectorAll('.list-sort.color .li-sort');
 
-
 const btnChooseColorTag = document.querySelector('.modal-add .button-sort');
+
+
+let articleToEdit = null;
+
+
+let articleToAddWithdraw = null;
+
+
+let articleToDelete = null;
 
 
 
@@ -145,18 +169,13 @@ document.addEventListener('click', async (event) => {
     const btnAdd = event.target.closest('.button-add-money');
     const btnWithdraw = event.target.closest('.button-withdraw-money');
 
-
+    const btnListSort = event.target.closest('.button-sort');
     const liColorTagModal = event.target.closest('.list-sort.color .li-sort');
 
-
-
-
-    const btnListSort = event.target.closest('.button-sort');
+    const btnCloseModal = event.target.closest('.close-modal');
 
 
     // const btnSubmit = event.target.closest('.modal-add .button-submit-modal');
-
-
 
     if(btnToggleDropdown){
         event.stopPropagation();
@@ -165,14 +184,47 @@ document.addEventListener('click', async (event) => {
         closeAllDropdowns();
     }
 
+
     if (btnOpenAddModal) {
+
         const title = 'Add New Pot';
         const descriptionText = 'Create a pot to set savings targets. These can help keep you on track as you save for special purchases.';
         const buttonText = 'Add Pot';
         modalAdd.querySelector('.title').textContent = title;
         modalAdd.querySelector('.text:nth-of-type(1)').textContent = descriptionText;
         modalAdd.querySelector('.button-submit-modal').textContent = buttonText;
+
+        const btnColorTag = modalAdd.querySelector('.button-sort.color');
+
+        const firstAvailable = Array.from(listHTMLColorTag).find(li => !li.classList.contains('used'));
+
+        listHTMLColorTag.forEach(li => {
+            const isTarget = (li === firstAvailable);
+            li.classList.toggle('selected', isTarget);
+            li.setAttribute('aria-selected', isTarget);
+        });
+
+        if (firstAvailable) {
+            const theme = firstAvailable.dataset.sort;
+            const themeName = firstAvailable.querySelector('.color-name').textContent;
+            btnColorTag.querySelector('.color-tag').style.backgroundColor = theme;
+            btnColorTag.querySelector('.color-name').textContent = themeName;
+        }
+
+        // let theme;
+        // for(const value of Object.values(colorTagsMap)){// extract color theme by selected li
+        //     if(value.classList.contains('selected')){
+        //         theme = value.dataset.sort;
+        //     }
+        // }
+
+        // btnColorTag.querySelector('.color-tag').style.backgroundColor = theme;
+
+        // const name = Array.from(listHTMLColorTag).find( li => li.classList.contains('selected')).querySelector('.color-name').textContent;
+        // btnColorTag.querySelector('.color-name').textContent = name;
+
         modalAdd.showModal();
+
     }
 
 
@@ -187,78 +239,96 @@ document.addEventListener('click', async (event) => {
         modalAdd.querySelector('.text:nth-of-type(1)').textContent = descriptionText;
         modalAdd.querySelector('.button-submit-modal').textContent = buttonText;
 
-        //specification button edit
-        const category = event.target.closest('.container-header-title').querySelector('.article-title').textContent;
+
+        //get the info
+        const containerPot = event.target.closest('.container-article');
+
+        articleToEdit = containerPot;
+
+        const potData = referencePotId.get(containerPot);
+
+        const  { name, target, theme, id } = potData;
+
+        modalAdd.dataset.id = id;
 
         const labelCategory =  modalAdd.querySelector('.search-field label[for="potName"]');
         const inputCategory = labelCategory.querySelector('input');
 
         if(labelCategory){
-            labelCategory.classList.add('is-disabled');
-            inputCategory.style.pointerEvents = 'none';
-            inputCategory.value = category;
-            inputCategory.disabled = true;
+            // labelCategory.classList.add('is-disabled');
+            // inputCategory.style.pointerEvents = 'none';
+            // inputCategory.disabled = true;     
+            inputCategory.value = name;
         }
-        
-        /********* *********************** ***********/
-        /********* GET COLOR TAG AND APPLY ON THEME ***********/
 
+        const inputTarget =  modalAdd.querySelector('.search-field label[for="maxspend"] input');
+        if(inputTarget){
+            inputTarget.value = target;
+        }
+
+        const themeName = colorTagsMap[theme].querySelector('.color-name').textContent ?? 'Unknown';
+
+        listHTMLColorTag.forEach( (li) => {
+
+            if(li.dataset.sort === theme){
+                li.classList.add('selected');
+                li.setAttribute('aria-selected', 'true');
+            } 
+            else{
+                li.classList.remove('selected');
+                li.setAttribute('aria-selected', 'false');
+            }
+
+        });
         
+        const btnThemeText = modalAdd.querySelector('.button-sort.color');
+        if(btnThemeText){
+            btnThemeText.querySelector('.color-tag').style.backgroundColor = theme;
+            btnThemeText.querySelector('.color-name').textContent = themeName;
+        }
+
         event.target.closest('.dropdown').classList.remove('active');
-
         modalAdd.showModal();
 
     }
 
 
-    
 
-
-
-    if(btnAdd){
-        addWithrawMoney(event, btnAdd, modalAddMoney);
+    if(btnAdd || btnWithdraw){
+        //get the info
+        const containerPot = event.target.closest('.container-article');
+        articleToAddWithdraw = containerPot;
+        const data = referencePotId.get(containerPot);
+        addWithrawMoney(data, btnAdd || btnWithdraw, modalAddwithdrawMoney);
     } 
 
-    if(btnWithdraw){
-        addWithrawMoney(event, btnWithdraw, modalWithdrawMoney);
-    }
 
-
-    
     if(btnDeletePot){
-
-        console.log(btnDeletePot);
-
+        articleToDelete = event.target.closest('.container-article');
         const category = event.target.closest('.container-header-title').querySelector('.article-title').textContent;
         const categoryText = `Delete '${category}'?`;
         const contentText = 'Are you sure you want to delete this pot? This action cannot be reversed, and all the data inside it will be removed forever.';
-
         modalDelete.querySelector('.title').textContent = categoryText;
         modalDelete.querySelector('.text').textContent = contentText;
-
         event.target.closest('.dropdown').classList.remove('active');
         modalDelete.showModal();
-        
     }
-
-
 
 
     //open the list tochoose the color tag
     if(btnListSort){
 
-        const listColorTagModal = document.querySelector('.list-sort.color');
-        // console.log('listColorTagModal', listColorTagModal);
-
-        const isExpanded = btnListSort.classList.toggle('expanded');
+        const container = event.target.closest('.container-sort');
+        const currentList = container.querySelector('.list-sort');
+        const isExpanded = btnListSort.classList.toggle('expanded');       
 
         if(isExpanded){
             btnListSort.setAttribute('aria-expanded', 'true');
-            listColorTagModal.classList.add('active');
+            currentList.classList.add('active');
         }
         else{
             btnListSort.setAttribute('aria-expanded', 'false');
-            listColorTagModal.classList.remove('active');
+            currentList.classList.remove('active');
         }
 
     }
@@ -266,9 +336,6 @@ document.addEventListener('click', async (event) => {
 
     //choose the color tag for the new pot
     if(liColorTagModal){
-
-        // console.log('listColorTagModal', liColorTagModal);
-        // const liColorTag = listColorTagModal.querySelector('.li-sort');
 
         listSortColorTag.forEach( (li) => {
             li.classList.remove('selected');
@@ -292,104 +359,81 @@ document.addEventListener('click', async (event) => {
     }
 
 
+    if(btnCloseModal){
 
-    // if(btnSubmit){
+        // const container = event.target.closest('.modal');
+        // const btnSort = container.querySelectorAll('.container-sort .button-sort');
 
-    //     event.preventDefault();
-    //     event.stopPropagation();
+        // btnSort.forEach( (btn) => {
+        //     btn.disabled = false;
+        //     btn.style.opacity = '1';
+        //     btn.style.pointerEvents = 'auto';
+        //     btn.style.cursor = 'pointer';
+        //     btn.classList.remove('expanded');
+        //     btn.setAttribute('aria-expanded', 'false');
+        // });
 
-    //     console.log('submit');
+        // const listSort = container.querySelectorAll('.container-sort .list-sort');
+        // listSort.forEach( (list) => {
+        //     list.classList.remove('active');
+        // });
 
-    //     /*************** DISABLED BUTTON SUBMIT OT AVOID MULTIPLE REQUEST *****************/
+        // document.querySelector('#createForm').reset();
 
-    //     const inputNamePot = document.querySelector('input[name="potName"]').value;
-    //     const inputAmountPot = document.querySelector('input[name="maxspend"]').value;
-    //     const colorTagPot = document.querySelector('.list-sort.color .selected').dataset.sort;
-
-    //     console.log('inputNamePot ', inputNamePot);
-    //     console.log('inputAmountPot ', inputAmountPot);
-    //     console.log('colorTagPot ', colorTagPot);
-
-    //     const name = inputNamePot;
-    //     const target = inputAmountPot;
-    //     const theme = colorTagPot;
-
-    //     // createNewPot(inputNamePot, inputAmountPot, colorTagPot);
-
-    //     const potData = {
-    //         name: name,
-    //         target: Number(target),
-    //         total: 0,
-    //         theme: theme
-    //     };
-
-    //     console.log('potData', potData);
-
-
-    //     /************* ******************************* **************/
-
-    //     /************* BLOQUER APPUIE SUBMIT AVEC DISABLED ET VOIR FONCTION TEMPS POUR LIMITER SUBMIT **************/
+        closeModalAddEdit(btnCloseModal, event);
         
-    //     try{
 
-    //         const newPot = await sendData('http://localhost:3000/pots', potData);
-    //         modalAdd.querySelector('form').reset();
-    //         // modalAdd.close();
-    //         // feedPotsPage({ pots: [newPot] });
-
-    //     } catch(error){
-
-    //         console.error('Error sending data :', error.message);
-    //         alert(`Impossible to create new Pot : ${error.message}`);
-        
-    //     }
-    
-    // }
+    }
 
 
 });
 
 
 
+/* INPUT */
+
+const charLeftText = document.querySelector('.charLeft');
+const inputName = document.querySelector('input[name="potName"]');
+
+inputName.addEventListener('input', () => {
+
+    const charLeftNumber = 30 - inputName.value.length;
+    // console.log(charLeftNumber);
+    charLeftText.textContent = charLeftNumber;
+
+});
+
+
+
+/* SUBMIT */
 
 const formPot = document.querySelector('#createForm');
 
-
 formPot.addEventListener('submit', async (event) => {
-
 
     event.preventDefault();
     event.stopPropagation();
 
-    console.log('submit');
+    // const name = document.querySelector('input[name="potName"]').value;
+    // const target = document.querySelector('input[name="maxspend"]').value;
+    // const theme = document.querySelector('.list-sort.color .selected').dataset.sort;
 
-    
-    /*************** CREER COLOR TAG DYNAMIQUE *****************/
-    /*************** DISABLED BUTTON SUBMIT OT AVOID MULTIPLE REQUEST *****************/
+    // const potData = {
+    //     name: name,
+    //     target: Number(target),
+    //     // total: 0,
+    //     theme: theme
+    // };
 
-    const inputNamePot = document.querySelector('input[name="potName"]').value;
-    const inputAmountPot = document.querySelector('input[name="maxspend"]').value;
-    const colorTagPot = document.querySelector('.list-sort.color .selected').dataset.sort;
-
-    console.log('inputNamePot ', inputNamePot);
-    console.log('inputAmountPot ', inputAmountPot);
-    console.log('colorTagPot ', colorTagPot);
-
-    const name = inputNamePot;
-    const target = inputAmountPot;
-    const theme = colorTagPot;
-
-    // createNewPot(inputNamePot, inputAmountPot, colorTagPot);
+    const formData = new FormData(event.target);
 
     const potData = {
-        name: name,
-        target: Number(target),
-        total: 0,
-        theme: theme
+        name: formData.get('potName'),
+        target: Number(formData.get('maxspend')),
+        theme: document.querySelector('.list-sort.color .selected').dataset.sort
     };
 
-    console.log('potData', potData);
-
+    const potId = modalAdd.dataset.id;
 
     /************* ****************************** **************/
     /************* BLOQUER APPUIE SUBMIT AVEC DISABLED ET VOIR FONCTION TEMPS POUR LIMITER SUBMIT **************/
@@ -397,37 +441,159 @@ formPot.addEventListener('submit', async (event) => {
 
     try{
 
-        const newPot = await sendData('http://localhost:3000/pots', potData);
+        if(potId){ //EDIT
+
+            const oldPotData = referencePotId.get(articleToEdit);
+
+            //compare object to send
+            const keysToCompare = Object.keys(potData);
+            // console.log('keysToCompare', keysToCompare);
+            const hasChange = keysToCompare.some( key => potData[key] !== oldPotData[key] );
+
+            if(hasChange){
+
+                const updatedPot = await sendData(`http://localhost:3000/pots/${potId}`, potData, 'PATCH');
+                console.log('DATA PATCH SEND');                
+
+                if(oldPotData.theme !== updatedPot.theme){
+                    const liOldTag = colorTagsMap[oldPotData.theme];
+                    if (liOldTag) {
+                        liOldTag.classList.remove('used');
+                        const statusLabel = liOldTag.querySelector('.isUsed');
+                        if (statusLabel) statusLabel.textContent = '';
+                    }
+                }
+
+                const articleUpdated = createArticle([updatedPot]).firstElementChild;
+                if(articleUpdated){
+                    articleToEdit.replaceWith(articleUpdated);                  
+                }   
+
+            }
+
+            articleToEdit = null;
+
+        }
+        else{ //CREATE
+            potData.total = 0;
+            const newPot = await sendData('http://localhost:3000/pots', potData, 'POST');
+            feedPotsPage([newPot]);
+        }
+
+
         modalAdd.querySelector('#createForm').reset();
+        // event.target.closest('.modal').querySelector('form').reset();
+
         modalAdd.close();
-
-        console.log('newPot', newPot);
-        
-        feedPotsPage([newPot]);
-
+        delete modalAdd.dataset.id;
 
     } catch(error){
-
         console.error('Error sending data :', error.message);
         alert(`Impossible to create new Pot : ${error.message}`);
-    
     }
-    
     
 });
 
 
 
-//close modal
-closeModalAddEdit(modalAdd);
-
-
-/* OPEN ADD LIST BUTTON MODAL */
-
-// const btnSort = document.querySelectorAll('.button-sort');
-// const listSort = document.querySelectorAll('.list-sort');
-// openSortListModal(btnSort, listSort);
 
 
 
 
+const formAddWithdraw = document.querySelector('#addWithdrawForm');
+
+formAddWithdraw.addEventListener('submit', async (event) => {
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    const reference = referencePotId.get(articleToAddWithdraw);
+    const id = reference.id;
+    const currentTotal = reference.total;
+
+    const operator =  modalAddwithdrawMoney.dataset.operator;
+
+    const formData = new FormData(event.target);
+    let newTotal;
+
+    if(operator === 'minus'){
+        newTotal = -Number(formData.get('amountToAddWithdraw'));
+    }
+    else{
+        newTotal = Number(formData.get('amountToAddWithdraw'));
+    }
+
+    const amountData = {
+        total: Math.max( 0, currentTotal + newTotal )
+    };
+
+
+    // console.log(reference.total);
+    const isTotalDifferent = reference.total !== amountData.total;
+    console.log('isTotalDifferent', isTotalDifferent);
+
+
+    try{
+
+        if(id && isTotalDifferent){
+
+            const updatedPot = await sendData(`http://localhost:3000/pots/${id}`, amountData, 'PATCH');
+            const articleUpdated = createArticle([updatedPot]).firstElementChild;
+
+            // console.log('PATCH');
+
+            if(articleUpdated){
+                articleToAddWithdraw.replaceWith(articleUpdated);                  
+            }
+
+            // articleToAddWithdraw = null;
+
+        }
+
+    } catch(error) {
+        console.error('Error sending data :', error.message);
+        alert(`Impossible to create new Pot : ${error.message}`);
+    }
+
+
+    articleToAddWithdraw = null;
+
+    delete modalAddwithdrawMoney.dataset.operator;
+
+    modalAddwithdrawMoney.querySelector('#addWithdrawForm').reset();
+    modalAddwithdrawMoney.close();
+
+});
+
+
+
+
+
+const formDelete = document.querySelector('#deletePot');
+
+formDelete.addEventListener('submit', async (event) => {
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    console.log('articleToDelete', articleToDelete);
+
+    const reference = referencePotId.get(articleToDelete);
+    const id = reference.id;
+
+    try{
+
+        if(id){
+            const updatedPot = await sendData(`http://localhost:3000/pots/${id}`, null, 'DELETE');
+            articleToDelete.remove();
+            articleToDelete = null;
+        }
+
+    } catch(error){
+        console.error('Error sending data :', error.message);
+        alert(`Impossible to create new Pot : ${error.message}`);
+    }
+
+    modalDelete.close();
+
+});

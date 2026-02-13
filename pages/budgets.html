@@ -116,7 +116,7 @@
                     <li class="li-spending">
                       <div class="container-avatar">
                         <img class="logo-spending" src="" alt="logo">
-                        <span class="category public-sans-bold text-preset-5"></span>                  
+                        <span class="category public-sans-bold text-preset-5"></span>                
                       </div>
                       <div class="details">
                         <span class="price public-sans-bold text-preset-5"></span>
@@ -141,9 +141,11 @@
           </form>
         </div>
         <p class="text public-sans-regular text-preset-4"></p>
-        <form method="dialog" class="search-field">
+
+        <form method="dialog" id="createForm" class="search-field">
           <div class="container-sort">
-            <label for="category" class="sr-only"><span>Budget Category</span></label>
+
+            <!-- <label for="category" class="sr-only"><span>Budget Category</span></label>
             <select name="category" id="category" class="sr-only">
               <option value="Entertainement">Entertainement</option>
               <option value="Bills">Bills</option>
@@ -152,9 +154,13 @@
               <option value="Transportation">Transportation</option>
               <option value="Care">Personal Care</option>
               <option value="Care">Education</option>
-            </select>
+            </select> -->
+
             <p class="text public-sans-bold text-preset-5">Budget Category</p>
+
             <button type="button" class="button button-sort"><span class="public-sans-regular text-preset-4">Entertainement</span><img src="../assets/images/icon-caret-down.svg" alt="" class="desktop"></button>
+            
+            <!-- DINAMIQUE CATEGORY A FAIRE -->
             <ul class="list list-sort category text-preset-4 public-sans-regular">
               <li class="li-sort">Entertainement</li>
               <li class="li-sort">Bills</li>
@@ -164,30 +170,16 @@
               <li class="li-sort">Personal Care</li>
               <li class="li-sort">Education</li>
             </ul>
+
           </div>
+
           <label for="maxspend"><span class="text public-sans-bold text-preset-5">Maximum Spending</span>
             <input type="text" name="maxspend" id="maxspend" placeholder="e.g. 2000" class="public-sans-regular">
           </label>
+
           <div class="container-sort">
-            <label for="color" class="sr-only"><span>Color Tag</span></label>
-            <select name="color" id="color" class="sr-only">
-                <option value="Green">Green<span>Already used</span></option>
-                <option value="Yellow">Yellow<span>Already used</span></option>
-                <option value="Cyan">Cyan<span>Already used</span></option>
-                <option value="Navy">Navy<span>Already used</span></option>
-                <option value="Red">Red</option>
-                <option value="Purple">Purple</option>
-                <option value="Care">Turquoise</option>
-                <option value="Brown">Brown</option>
-                <option value="Magenta">Magenta</option>
-                <option value="Blue">Blue</option>
-                <option value="Grey">Grey</option>
-                <option value="Army">Army</option>
-                <option value="Pink">Pink</option>
-                <option value="Yellow">Yellow</option>
-                <option value="Orange">Orange</option>
-            </select>
-            <p class="text public-sans-bold text-preset-5">Theme</p>
+
+            <!-- <p class="text public-sans-bold text-preset-5">Theme</p>
             <button type="button" class="button button-sort"><span class="color-tag green"></span><span class="public-sans-regular text-preset-4">Green</span><img src="../assets/images/icon-caret-down.svg" alt="" class="desktop"></button>
             <ul class="list list-sort color text-preset-4 public-sans-regular">
               <li class="li-sort used"><span class="color-tag green"></span>Green <span>Already used</span></li>
@@ -205,10 +197,38 @@
               <li class="li-sort"><span class="color-tag pink"></span>Pink</li>
               <li class="li-sort"><span class="color-tag yellow"></span>Yellow</li>
               <li class="li-sort"><span class="color-tag orange"></span>Orange</li>
+            </ul> -->
+
+            <p class="text public-sans-bold text-preset-5">Theme</p>
+            <button type="button" class="button button-sort color" aria-label="choose color-tag" aria-haspopup="listbox" aria-expanded="false" aria-controls="sort-list"><span class="color-tag"></span><span class="color-name public-sans-regular text-preset-4">Green</span><img src="../assets/images/icon-caret-down.svg" alt="" class="caret"></button>
+
+            <ul id="sort-list" class="list list-sort color text-preset-4 public-sans-regular" role="listbox" aria-label="Color Tag" tabindex="-1">
+              <li class="li-sort" role="option" aria-selected="true" data-sort="#277C78"> <span class="color-tag green"></span><span class="color-name">Green</span><span class="isUsed">Already Used</span> </li>
+              <li class="li-sort" role="option" aria-selected="false" data-sort="#F2CDAC"> <span class="color-tag yellow "></span><span class="color-name">Yellow</span><span class="isUsed">Already Used</span></li>
+              <li class="li-sort" role="option" aria-selected="false" data-sort="#82C9D7"><span class="color-tag cyan"></span><span class="color-name">Cyan</span><span class="isUsed">Already Used</span></li>
+              <li class="li-sort" role="option" aria-selected="false" data-sort="#626070"><span class="color-tag navy"></span><span class="color-name">Navy </span><span class="isUsed">Already Used</span> </li>
+              <li class="li-sort" role="option" aria-selected="false" data-sort="#C94736"><span class="color-tag red"></span><span class="color-name">Red</span><span class="isUsed">Already Used</span></li>
+              <li class="li-sort" role="option" aria-selected="false" data-sort="#826CB0"><span class="color-tag purple"></span><span class="color-name">Purple</span><span class="isUsed">Already Used</span></li>
+              <li class="li-sort" role="option" aria-selected="false" data-sort="#597C7C"><span class="color-tag turquoise"></span><span class="color-name">Turquoise</span><span class="isUsed">Already Used</span></li>
+              <li class="li-sort" role="option" aria-selected="false" data-sort="#93674F"><span class="color-tag brown"></span><span class="color-name">Brown</span><span class="isUsed">Already Used</span></li>
+              <li class="li-sort" role="option" aria-selected="false" data-sort="#934F6F"><span class="color-tag magenta"></span><span class="color-name">Magenta</span><span class="isUsed">Already Used</span></li>
+              <li class="li-sort" role="option" aria-selected="false" data-sort="#3F82B2"><span class="color-tag blue"></span><span class="color-name">Blue</span><span class="isUsed">Already Used</span></li>
+              <li class="li-sort" role="option" aria-selected="false" data-sort="#97A0AC"><span class="color-tag grey"></span><span class="color-name">Navy Grey</span><span class="isUsed">Already Used</span></li>
+              <li class="li-sort" role="option" aria-selected="false" data-sort="#7F9161"><span class="color-tag army"></span><span class="color-name">Army Green</span><span class="isUsed">Already Used</span></li>
+              <li class="li-sort" role="option" aria-selected="false" data-sort="#AF81BA"><span class="color-tag pink"></span><span class="color-name">Pink</span><span class="isUsed">Already Used</span></li>
+              <li class="li-sort" role="option" aria-selected="false" data-sort="#CAB361"><span class="color-tag yellow"></span><span class="color-name">Gold</span><span class="isUsed">Already Used</span></li>
+              <li class="li-sort" role="option" aria-selected="false" data-sort="#BE6C49"><span class="color-tag orange"></span><span class="color-name">Orange</span><span class="isUsed">Already Used</span></li>
             </ul>
+
+
           </div>
-          <button type="submit" class="button button-submit-modal public-sans-bold text-preset-4"></button>
+
+          <!-- <button type="submit" class="button button-submit-modal public-sans-bold text-preset-4"></button> -->
+          <button type="submit" form="createForm" class="button button-submit-modal public-sans-bold text-preset-4"></button>
+
         </form>
+
+
       </dialog>
 
 

@@ -1,9 +1,7 @@
 
 
 import { getData } from './data-service.js';
-
 import { setupSideMenu, openSortListModal, toggleDropdownMenu, closeModalAddEdit, closeAllDropdowns } from './ui-utils.js';
-
 
 
 
@@ -13,11 +11,21 @@ import { setupSideMenu, openSortListModal, toggleDropdownMenu, closeModalAddEdit
 
         setupSideMenu();
 
-        const data = await getData.fetchData('../data.json');
+        // const data = await getData.fetchData('../data.json');
+        // const data = await getData.fetchData('http://localhost:3000/db');
+
+        const [ transactions, budgets ] = await Promise.all([
+            getData.fetchData('http://localhost:3000/transactions'),   
+            getData.fetchData('http://localhost:3000/budgets')
+        ]);
+
+        const data = {
+            transactions: transactions,
+            budgets: budgets
+        };
+
         console.log(data);
         feedbudgetPage(data);
-
-
 
     } catch(error) {
 
@@ -39,23 +47,28 @@ import { setupSideMenu, openSortListModal, toggleDropdownMenu, closeModalAddEdit
 
 function feedbudgetPage(data){
 
-
     /* BUDGETS */
 
-    //Extract Budget
 
+    //Extract Budget
     const budgetAmountbyCategory = new Map();
 
+
     data.budgets.forEach( (budget) => {
+    // data.forEach( (budget) => {
         budgetAmountbyCategory.set(budget.category, 0);
     });
 
+
+
+    // data.transactions.forEach( (transaction) => {
     data.transactions.forEach( (transaction) => {
         if(budgetAmountbyCategory.has(transaction.category)){
             const currentAmount = budgetAmountbyCategory.get(transaction.category);
             budgetAmountbyCategory.set(transaction.category, currentAmount + Math.abs(transaction.amount));
         }
     });
+
 
 
     //chart create SVG
@@ -282,6 +295,15 @@ document.addEventListener('click', (event) => {
     const btnDeleteBudget = event.target.closest('.button-delete-budget');
 
 
+
+
+    const btnCloseModal = event.target.closest('.close-modal');
+
+
+    const btnListSort = event.target.closest('.button-sort');
+
+
+
     if(btnToggleDropdown){
         event.stopPropagation();
         toggleDropdownMenu(btnToggleDropdown);
@@ -347,20 +369,82 @@ document.addEventListener('click', (event) => {
     }
 
 
+        /**************
+
+            CSS POT PAGE ICONE INPUT SEARCH MODAL 
+
+            FAIRE DYNAMIQUE LIST CATEGORY, TROUVER CODE DE CATEGORY LIST       
+
+            FAIRE HMTL LIST-SORT AVEC ARIA
+
+            CSS BUDGET CATEGORY MODAL 
+
+        **************/
+
+    if(btnListSort){
+
+        const modal = event.target.closest('.modal');
+        const containerAll = modal.querySelectorAll('.container-sort');
+        const isOpening = btnListSort.classList.contains('expanded');
+
+        containerAll.forEach((container) => {
+            container.querySelector('.button-sort').classList.remove('expanded');
+        });
+
+        if (!isOpening) {
+            btnListSort.classList.add('expanded');
+        }
+
+        containerAll.forEach( (container) => {
+
+            const btn = container.querySelector('.button-sort');
+            const list = container.querySelector('.list-sort');
+
+            if(btn.classList.contains('expanded')){
+                btn.setAttribute('aria-expanded', 'true');
+                list.classList.add('active');
+            }
+            else {
+                btn.setAttribute('aria-expanded', 'false');
+                list.classList.remove('active');
+            }
+
+        });
+
+    }
+
+
+
+    if(btnCloseModal){
+
+        /* METTRE DANS UTILS.JS */
+
+        // const container = event.target.closest('.modal');
+        // const btnSort = container.querySelectorAll('.container-sort .button-sort');
+
+        // console.log('budget close modal');
+
+        // btnSort.forEach( (btn) => {
+        //     btn.disabled = false;
+        //     btn.style.opacity = '1';
+        //     btn.style.pointerEvents = 'auto';
+        //     btn.style.cursor = 'pointer';
+        //     btn.classList.remove('expanded');
+        //     btn.setAttribute('aria-expanded', 'false');
+        // });
+
+        // const listSort = container.querySelectorAll('.container-sort .list-sort');
+        // listSort.forEach( (list) => {
+        //     list.classList.remove('active');
+        // });
+
+        // document.querySelector('#createForm').reset();
+
+        closeModalAddEdit(btnCloseModal, event);
+
+    }
 
 
 });
-
-
-//close modal
-closeModalAddEdit(modalAdd);
-
-
-/* OPEN ADD LIST BUTTON MODAL */
-
-const btnSort = document.querySelectorAll('.button-sort');
-const listSort = document.querySelectorAll('.list-sort');
-openSortListModal(btnSort, listSort);
-
 
 

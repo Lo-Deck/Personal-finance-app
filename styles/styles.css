@@ -1295,7 +1295,7 @@ body:has(dialog[open]) {
 
 
 
-
+/* 
 .modal-delete{
 
   padding-bottom: var(--space-16px);
@@ -1319,13 +1319,36 @@ body:has(dialog[open]) {
     }
 
   }
+} */
+
+.modal-delete{
+
+  padding-bottom: var(--space-16px);
+
+  .search-field{
+
+    .button-submit-modal{
+      margin: 0;
+      background: var(--secondary-red);
+    }
+
+    &:nth-of-type(2){
+      margin-top: 0;
+      .button-submit-modal{
+        background: transparent;
+        color: var(--grey-500);
+
+      }
+    }
+
+  }
+
 }
+
 
 .modal::backdrop{
   background: rgba(0, 0, 0, 0.5);
 }
-
-
 
 
 

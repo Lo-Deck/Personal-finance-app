@@ -30,14 +30,26 @@ export function setupSideMenu() {
  * @param {HTMLDialogElement} modal - The <dialog> element to configure and display.
  */
 
-export function addWithrawMoney(event, btn, modal){
+export function addWithrawMoney(data, btn, modal){
 
-    const category = btn.closest('.container-article').querySelector('.container-header-title .article-title').textContent;
+    // const category = btn.closest('.container-article').querySelector('.container-header-title .article-title').textContent;
+
+    const { name } = data;
+
+    const category = name;
+    console.log('category', category);
+
 
     if(btn.classList.contains('button-add-money')){
         modal.querySelector('.title').textContent = `Add from '${category}'`;
+        modal.querySelector('label .text').textContent = 'Amount to Add';
+        modal.querySelector('.button-submit-modal').textContent = 'Confirm Addition';
+        modal.dataset.operator = 'plus';
     } else {
         modal.querySelector('.title').textContent = `Withdraw from '${category}'`;
+        modal.querySelector('label .text').textContent = 'Amount to Withdraw';
+        modal.querySelector('.button-submit-modal').textContent = 'Confirm Withdrawal';
+        modal.dataset.operator = 'minus';
     }
 
     const extractModal = btn.closest('.container-article').querySelector('.extract-modal');
@@ -45,9 +57,13 @@ export function addWithrawMoney(event, btn, modal){
     modal.querySelector('.import-modal').textContent = '';
     modal.querySelector('.import-modal').appendChild(clone);
 
+    // modal.dataset.id = id;
+
     modal.showModal();
 
 }
+
+
 
 
 
@@ -57,6 +73,29 @@ export function addWithrawMoney(event, btn, modal){
  * @param {NodeList} buttons - The name/theme where choose from.
  * @param {NodeList} lists - The list of category/name to choose.
  */
+
+// export function openSortListModal(buttons, lists){
+
+//     buttons.forEach( ( btn, index ) => {
+
+//         btn.addEventListener('click', () => {
+
+//             lists.forEach( (list, i) => {
+
+//                 if(i === index){
+//                     list.classList.toggle('active');
+//                 } else {
+//                     list.classList.remove('active');
+//                 }
+
+//             })
+
+//         });
+
+//     });
+
+// }
+
 
 export function openSortListModal(buttons, lists){
 
@@ -77,6 +116,7 @@ export function openSortListModal(buttons, lists){
         });
 
     });
+
 
 }
 
@@ -118,27 +158,50 @@ export function closeAllDropdowns() {
  * Close all list open.
  */
 
-export function closeModalAddEdit(modal){
+export function closeModalAddEdit(btn, event){
    
-    const btnCloseModal = document.querySelector('.close-modal');
+    // const btnCloseModal = document.querySelector('.close-modal');
 
-    btnCloseModal.addEventListener('click', () => {
+    // btnCloseModal.addEventListener('click', () => {
 
-        // e.preventDefault();
-        // e.stopPropagation();
+    //     const btnCategoryList = modal.querySelector('.search-field .container-sort:nth-of-type(1) .button');
 
-        const btnCategoryList = modal.querySelector('.search-field .container-sort:nth-of-type(1) .button');
+    //     btnCategoryList.disabled = false;
+    //     btnCategoryList.style.opacity = '1';
+    //     btnCategoryList.style.pointerEvents = 'auto';
+    //     btnCategoryList.style.cursor = 'pointer';
 
-        btnCategoryList.disabled = false;
-        btnCategoryList.style.opacity = '1';
-        btnCategoryList.style.pointerEvents = 'auto';
-        btnCategoryList.style.cursor = 'pointer';
+    //     modal.querySelectorAll('.list-sort').forEach( (item) => {
+    //         item.classList.remove('active');
+    //     });
 
-        modal.querySelectorAll('.list-sort').forEach( (item) => {
-            item.classList.remove('active');
+    // });
+
+
+    if(btn){
+
+        const container = event.target.closest('.modal');
+        const btnSort = container.querySelectorAll('.container-sort .button-sort');
+
+        // console.log('budget close modal');
+        
+        btnSort.forEach( (btn) => {
+            btn.disabled = false;
+            btn.style.opacity = '1';
+            btn.style.pointerEvents = 'auto';
+            btn.style.cursor = 'pointer';
+            btn.classList.remove('expanded');
+            btn.setAttribute('aria-expanded', 'false');
         });
 
-    });
+        const listSort = container.querySelectorAll('.container-sort .list-sort');
+        listSort.forEach( (list) => {
+            list.classList.remove('active');
+        });
+
+        document.querySelector('#createForm').reset();
+
+    }
 
 }
 
@@ -369,7 +432,7 @@ export function transactionSliceBy(transactions, liSortBy, liCategoryBy){
 
     const transactionFilter = [...transactions].filter( (transaction) => {
 
-        const name = transaction.name.toLowerCase();        
+        const name = transaction.name.toLowerCase();
 
         if( name.startsWith(searchByName) ){
             return transaction;
@@ -421,9 +484,7 @@ export function transactionSliceBy(transactions, liSortBy, liCategoryBy){
 
     });
 
-
     containerTemplateTransactions.appendChild(fragmentTransaction);
-
     return transactionFilter;
 
 }
@@ -567,58 +628,76 @@ export function choosePageNavbar(li, data){
 
 
 
-export function createNewPot(name, target, theme){
+// export function createNewPot(name, target, theme){
 
+//     // const inputNamePot = document.querySelector('input[name="potName"]').value;
+//     // const inputAmountPot = document.querySelector('input[name="maxspend"]').value;
+//     // const colorTagPot = document.querySelector('.list-sort.color .selected').dataset.sort;
 
-    // const inputNamePot = document.querySelector('input[name="potName"]').value;
-    // const inputAmountPot = document.querySelector('input[name="maxspend"]').value;
-    // const colorTagPot = document.querySelector('.list-sort.color .selected').dataset.sort;
-
-    // inputNamePot, inputAmountPot, colorTagPot
-
-
-    const potData = {
-        name: name,
-        target: target,
-        total: 0,
-        theme: theme
-    };
-
-
-
-    sendData('../data.json/pots', potData);
+//     // inputNamePot, inputAmountPot, colorTagPot
+//     const potData = {
+//         name: name,
+//         target: target,
+//         total: 0,
+//         theme: theme
+//     };
+//     sendData('../data.json/pots', potData);
+// }
 
 
 
-}
+/**
+ * Send data to the server,
+ * @param {string} url - address to send the data.
+ * @param {Object|null} dataToInsert - data to send or null for DELETE.
+ * @param {string} method - POST, PATCH, DELETE.
+ * @returns {Promise<Object>} - The response data from the server.
+ */
 
 
-
-export async function sendData(url, dataToInsert){
-
+export async function sendData(url, dataToInsert, method){
 
     try{
 
-        console.log("1. Entrée dans sendData");
-
-        const response = await fetch(url, {
-            method: 'POST',
+        // console.log("1. Entrée dans sendData");
+        const config = {
+            method: method,
             headers: {
                 'Content-Type': 'application/json',
+            }
+        }
 
-            },
-            body: JSON.stringify(dataToInsert)
-        });
+        if(method !== 'DELETE' && dataToInsert !== null){
+            config.body = JSON.stringify(dataToInsert);
+        }
 
-        console.log("2. Réponse reçue, status:", response.status);
+        // const response = await fetch(url, {
+        //     method: method,
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify(dataToInsert)
+        // });
+
+        const response = await fetch(url, config);
+        // console.log("2. Réponse reçue, status:", response.status);
 
         if(!response.ok){
             throw new Error(`Erreur Serveur: ${response.status} ${response.statusText}`);
         }
 
+
+    /***********************************************/
+    /********** A CONTROLER LORS DUN DELETE ************/
+    /***********************************************/
+
+        // if (response.status === 204 || method === 'DELETE') { A VOIR SI FONCTIONNEL
+        //     return { success: true }; 
+        // }
+        
         const data = await response.json();
 
-        console.log('3. Update successful:', data);
+        // console.log('3. Update successful:', data);
 
         return data;
 
