@@ -615,98 +615,205 @@ export function choosePageNavbar(li, data){
 
     }
 
-
 }
-
-
-
-
-
-
-
-
-
-
-
-// export function createNewPot(name, target, theme){
-
-//     // const inputNamePot = document.querySelector('input[name="potName"]').value;
-//     // const inputAmountPot = document.querySelector('input[name="maxspend"]').value;
-//     // const colorTagPot = document.querySelector('.list-sort.color .selected').dataset.sort;
-
-//     // inputNamePot, inputAmountPot, colorTagPot
-//     const potData = {
-//         name: name,
-//         target: target,
-//         total: 0,
-//         theme: theme
-//     };
-//     sendData('../data.json/pots', potData);
-// }
 
 
 
 /**
- * Send data to the server,
- * @param {string} url - address to send the data.
- * @param {Object|null} dataToInsert - data to send or null for DELETE.
- * @param {string} method - POST, PATCH, DELETE.
- * @returns {Promise<Object>} - The response data from the server.
+ * create a list with the category in the data.json,
+ * @param {Array<Object>} data - the data to work on .
+ * @param {boolean} listForModal - list for modal or not.
  */
 
+export function createListHTMLCategory(data, listForModal){
 
-export async function sendData(url, dataToInsert, method){
+    const categoryHTMLList = document.querySelector('.list-sort.category');
+    const categoryMapList = new Map();
 
-    try{
+    data.forEach( (transaction) => {
+        categoryMapList.set(transaction.category, transaction.category);
+    });
 
-        // console.log("1. Entrée dans sendData");
-        const config = {
-            method: method,
-            headers: {
-                'Content-Type': 'application/json',
-            }
+    const categoryList = Array.from(categoryMapList.values());
+    console.log('categoryList', categoryList);
+
+    categoryList.forEach( (transaction) => {
+
+        const li = document.createElement('li');
+        li.classList.add('li-sort');
+        li.setAttribute('role', 'option');
+        li.setAttribute('aria-selected', 'false');
+        li.setAttribute('data-category', `${transaction}`);
+        // li.textContent = `${transaction}`;
+
+        if(listForModal){
+
+            const spanTextContent = document.createElement('span');
+            spanTextContent.classList.add('category-name');
+            spanTextContent.textContent = `${transaction}`;
+            li.appendChild(spanTextContent);
+
+            const spanIsUsed = document.createElement('span');
+            spanIsUsed.classList.add('isUsed');
+            spanIsUsed.textContent = 'Already Used';
+            li.appendChild(spanIsUsed);
+
+        }
+        else{
+
+            li.textContent = `${transaction}`;
+
         }
 
-        if(method !== 'DELETE' && dataToInsert !== null){
-            config.body = JSON.stringify(dataToInsert);
-        }
+        categoryHTMLList.appendChild(li);
 
-        // const response = await fetch(url, {
-        //     method: method,
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify(dataToInsert)
-        // });
-
-        const response = await fetch(url, config);
-        // console.log("2. Réponse reçue, status:", response.status);
-
-        if(!response.ok){
-            throw new Error(`Erreur Serveur: ${response.status} ${response.statusText}`);
-        }
-
-
-    /***********************************************/
-    /********** A CONTROLER LORS DUN DELETE ************/
-    /***********************************************/
-
-        // if (response.status === 204 || method === 'DELETE') { A VOIR SI FONCTIONNEL
-        //     return { success: true }; 
-        // }
-        
-        const data = await response.json();
-
-        // console.log('3. Update successful:', data);
-
-        return data;
-
-    } catch(error){
-        console.error('Error sending data :', error.message);
-        throw error;
-    } 
+    });
 
 
 }
 
 
+
+/**
+ * Updates the UI when a category or color is selected.
+ * @param {HTMLLIElement} li - The list item element clicked by the user.
+ */
+
+export function chooseLiColorCategory(li){
+
+    const container = li.closest('.container-sort');
+    const btnSort = container.querySelector('.button-sort');
+    const listContainer = container.querySelector('.list-sort');
+    const liSort = listContainer.querySelectorAll('.li-sort');
+
+    liSort.forEach( (li) => {
+        li.classList.remove('selected');
+        li.setAttribute('aria-selected', 'false');
+    });
+
+    li.classList.add('selected');
+    li.setAttribute('aria-selected', 'true');
+
+/* <button type="button" class="button button-sort category" aria-label="choose category" aria-haspopup="listbox" aria-expanded="false" aria-controls="category-list"><span class="category-name public-sans-regular text-preset-4">Entertainement</span><img src="../assets/images/icon-caret-down.svg" alt="" class="caret"></button>
+<button type="button" class="button button-sort color" aria-label="choose color-tag" aria-haspopup="listbox" aria-expanded="false" aria-controls="sort-list"><span class="color-tag"></span><span class="color-name public-sans-regular text-preset-4">Green</span><img src="../assets/images/icon-caret-down.svg" alt="" class="caret"></button> */
+
+    if(btnSort.classList.contains('category')){
+        btnSort.querySelector('.category-name').textContent = li.querySelector('.category-name').textContent;        
+    }
+    else{
+        btnSort.querySelector('.color-tag').style.backgroundColor = li.dataset.sort;
+        btnSort.querySelector('.color-name').textContent = li.querySelector('.color-name').textContent;        
+    }
+
+
+    btnSort.setAttribute('aria-expanded', 'false');
+    btnSort.classList.remove('expanded');
+
+    listContainer.classList.remove('active');
+
+
+}
+
+
+
+
+
+export function createSVGChart(data, budgetAmountbyCategory){
+
+
+    function createCircle(r, colorStroke, dashArray, dashOffset){
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", 'circle');
+        circle.setAttribute('cx', '50');
+        circle.setAttribute('cy', '50');
+        circle.setAttribute('r', r);
+        circle.setAttribute('fill', 'none');
+        circle.setAttribute('stroke', colorStroke);
+        circle.setAttribute('stroke-width', r === 40 ? '16' : '8');
+        circle.setAttribute('stroke-dasharray', dashArray);
+        circle.setAttribute('stroke-dashoffset', dashOffset);
+        return circle;
+    }
+
+
+    const chart = document.querySelector('.chart');
+    chart.textContent = '';
+
+    const maxBudget = data.reduce( (acc, budget) => {
+        return acc + budget.maximum;
+    }, 0)
+
+    //circonference of the circle color 40 et opacity 35
+    const circonference40 = Math.ceil(2 * Math.PI * 40);
+    const circonference35 = Math.ceil(2 * Math.PI * 35);
+
+    // offset used to when start the next ring
+    let dashOffset40 = 0;
+    let dashOffset35 = 0;
+
+    const chartHover = document.querySelector('.chart-hover');
+    const chartHoverIcon = chartHover.querySelector('.chart-icon');
+    const chartHoverCategory = chartHover.querySelector('.category');
+    const chartHoverCategoryAmount = chartHover.querySelector('.category-amount');
+    const chartHoverCategoryTotal = chartHover.querySelector('.category-total-amount');
+
+    data.forEach( (budget) => {
+
+        const g = document.createElementNS("http://www.w3.org/2000/svg", 'g');
+        g.classList.add('segment');
+
+        //create className with category
+        g.classList.add(`${(budget.category).replace(' ', '-').toLowerCase()}`);
+        const percentBudget = budget.maximum / maxBudget * 100;
+
+        //length of the color ring and opacity
+        const strokeDasharray40 = ((percentBudget / 100) * circonference40).toFixed(2);
+        const strokeDasharray35 = ((percentBudget / 100) * circonference35).toFixed(2);
+
+        //length of the ring and the transparent ring transform into text
+        const strokeDasharray40Text = `${strokeDasharray40} ${(circonference40 - strokeDasharray40).toFixed(2)}`;
+        const strokeDasharray35Text = `${strokeDasharray35} ${(circonference35 - strokeDasharray35).toFixed(2)}`;
+
+        //offset used in the function
+        const dashOffset40Text = `-${dashOffset40.toFixed(2)}`;
+        const dashOffset35Text = `-${dashOffset35.toFixed(2)}`;
+
+        //creating circle
+        g.appendChild(createCircle(40, budget.theme, strokeDasharray40Text, dashOffset40Text));
+        g.appendChild(createCircle(35, "rgba(255, 255, 255, 0.3)", strokeDasharray35Text, dashOffset35Text));
+        chart.insertAdjacentElement('beforeend', g);        
+
+        //calculation for the next offset where to start the next ring
+        dashOffset40 += Number(strokeDasharray40);
+        dashOffset35 += Number(strokeDasharray35);
+
+        //hover svg chart
+        g.addEventListener('mouseenter', () => {
+            chartHover.style.opacity = 1;
+            chartHover.style.visibility = 'visible';
+            chartHoverIcon.style.backgroundColor = budget.theme
+            chartHoverCategory.textContent = budget.category;
+            chartHoverCategoryAmount.textContent = `Budget Spent: $${budgetAmountbyCategory.get(budget.category)}`;
+            chartHoverCategoryTotal.textContent = `Budget Maximum: $${budget.maximum}`;
+
+        });
+
+        g.addEventListener('mousemove', (event) => {
+            const rect = g.getBoundingClientRect();
+            const mouseXRelative = event.clientX - rect.left;
+            const mouseYRelative = event.clientY - rect.top;
+            chartHover.style.transform = `translate3d(${mouseXRelative + 25}px, ${mouseYRelative + 25}px, 0)`;//VOIR POUR UTILISER TRANSLATE AU LIEU DE TRANSLATE3D
+        });
+
+        g.addEventListener('mouseleave', () => {
+            chartHover.style.opacity = 0;
+            chartHover.style.visibility = 'hidden';
+        });
+
+    });
+
+
+
+
+
+
+}

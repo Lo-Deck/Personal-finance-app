@@ -1,6 +1,6 @@
 
 import { getData } from './data-service.js';
-import { setupSideMenu, toggleSortMenu, closeAllSortMenu, transactionSliceBy, createNavBar, choosePageNavbar } from './ui-utils.js';
+import { setupSideMenu, toggleSortMenu, closeAllSortMenu, transactionSliceBy, createNavBar, choosePageNavbar, createListHTMLCategory } from './ui-utils.js';
 
 
 let transactions;//keep the data transactions
@@ -58,31 +58,30 @@ function feedTransactionPage(transactions){
 
 
 
-    /************************************/
-    /********  VOIR .slice().forEach le sortir de la fonction et creer propre fonction ************/
+    // const categoryHTMLList = document.querySelector('.list-sort.category');
+    // const categoryMapList = new Map();
+
+    // transactionsFilter.forEach( (transaction, index) => {
+    //     categoryMapList.set(transaction.category, transaction.category);
+    // });
 
 
-    const categoryHTMLList = document.querySelector('.list-sort.category');
-    const categoryMapList = new Map();
+    // const categoryList = Array.from(categoryMapList.values());
+    // console.log('categoryList', categoryList);
 
-    transactionsFilter.forEach( (transaction, index) => {
-        categoryMapList.set(transaction.category, transaction.category);
-    });
+    // categoryList.forEach( (transaction) => {
+    //     const li = document.createElement('li');
+    //     li.classList.add('li-sort');
+    //     li.setAttribute('role', 'option');
+    //     li.setAttribute('aria-selected', 'false');
+    //     li.setAttribute('data-category', `${transaction}`);
+    //     li.textContent = `${transaction}`;
+    //     categoryHTMLList.appendChild(li);
+    // });
 
 
-    const categoryList = Array.from(categoryMapList.values());
-    console.log('categoryList', categoryList);
-
-    categoryList.forEach( (transaction, index) => {
-        const li = document.createElement('li');
-        li.classList.add('li-sort');
-        li.setAttribute('role', 'option');
-        li.setAttribute('aria-selected', 'false');
-        li.setAttribute('data-category', `${transaction}`);
-        li.textContent = `${transaction}`;
-        categoryHTMLList.appendChild(li);
-    });
-
+    createListHTMLCategory(transactionsFilter, false);
+    
 
 }
 

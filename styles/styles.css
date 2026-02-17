@@ -1119,9 +1119,6 @@ body:has(dialog[open]) {
     width: 100%;
     margin-top: var(--space-20px);
 
-
-/************* faire input create pot *****************/
-
     label{
       margin: var(--space-16px) 0;
       /* position: relative; */
@@ -1135,7 +1132,7 @@ body:has(dialog[open]) {
       }
 
       /* &::after{ */
-      &[for="maxspend"]::after{
+      &[for="maxspend"]::after, &[for="amountToAddWithdraw"]::after{ /* RAJOUT ICI */
         content: '$';
         display: inline-block;
         width: 1rem;
@@ -1149,14 +1146,13 @@ body:has(dialog[open]) {
     }
     input{
       width: 100%;
-
       font-size: 1rem;  /* RAJOUT ICI */
-
       text-indent: 1rem;
-      &[name="maxspend"]{
+      &[name="maxspend"], &[name="amountToAddWithdraw"]{ /* RAJOUT ICI */
         text-indent: 2rem;
       }
     }
+
     .char-limit{
       width: fit-content;      
       color: var(--grey-500);
@@ -1168,6 +1164,9 @@ body:has(dialog[open]) {
       justify-content: space-between;
       align-items: stretch;
       position: relative;
+
+      margin-bottom: var(--space-16px);
+      
       .text{
         display: block;
         margin-bottom: var(--space-08px);
@@ -1400,7 +1399,7 @@ body:has(dialog[open]) {
       position: relative;
       .text{
           display: none;
-          color: var(--beige-500);
+          /* color: var(--beige-500); */
       }
       &:nth-of-type(1) .list-sort{
           top: 2rem; left: -4.5rem;

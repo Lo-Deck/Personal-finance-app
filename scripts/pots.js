@@ -1,7 +1,7 @@
 
 
-import { getData } from './data-service.js';
-import { setupSideMenu, addWithrawMoney, openSortListModal, toggleDropdownMenu, closeAllDropdowns, closeModalAddEdit, sendData } from './ui-utils.js';
+import { getData, sendData } from './data-service.js';
+import { setupSideMenu, addWithrawMoney, openSortListModal, toggleDropdownMenu, closeAllDropdowns, closeModalAddEdit, chooseLiColorCategory } from './ui-utils.js';
 
 
 
@@ -21,7 +21,7 @@ const listHTMLColorTag = document.querySelectorAll('.list-sort.color .li-sort');
 
 
         // console.log('listHTMLColorTag', listHTMLColorTag);
-        
+
         listHTMLColorTag.forEach( (li) => {
             colorTagsMap[li.dataset.sort] = li;
         });
@@ -137,24 +137,13 @@ function feedPotsPage(data){
 
 const modalAdd = document.querySelector('.modal-add');
 const modalDelete = document.querySelector('.modal-delete');
-
-// const modalAddMoney = document.querySelector('.modal-add-money');
-
 const modalAddwithdrawMoney = document.querySelector('.modal-addwithdraw-money');
 
-// const modalWithdrawMoney = document.querySelector('.modal-withdraw-money');
-
 const listSortColorTag = document.querySelectorAll('.list-sort.color .li-sort');
-
 const btnChooseColorTag = document.querySelector('.modal-add .button-sort');
 
-
 let articleToEdit = null;
-
-
 let articleToAddWithdraw = null;
-
-
 let articleToDelete = null;
 
 
@@ -179,7 +168,7 @@ document.addEventListener('click', async (event) => {
 
     if(btnToggleDropdown){
         event.stopPropagation();
-        toggleDropdownMenu(btnToggleDropdown)
+        toggleDropdownMenu(btnToggleDropdown);
     } else {
         closeAllDropdowns();
     }
@@ -211,18 +200,6 @@ document.addEventListener('click', async (event) => {
             btnColorTag.querySelector('.color-name').textContent = themeName;
         }
 
-        // let theme;
-        // for(const value of Object.values(colorTagsMap)){// extract color theme by selected li
-        //     if(value.classList.contains('selected')){
-        //         theme = value.dataset.sort;
-        //     }
-        // }
-
-        // btnColorTag.querySelector('.color-tag').style.backgroundColor = theme;
-
-        // const name = Array.from(listHTMLColorTag).find( li => li.classList.contains('selected')).querySelector('.color-name').textContent;
-        // btnColorTag.querySelector('.color-name').textContent = name;
-
         modalAdd.showModal();
 
     }
@@ -235,6 +212,7 @@ document.addEventListener('click', async (event) => {
         const title = 'Edit Pot';
         const descriptionText = 'If your saving targets change, feel free to update your pots.';
         const buttonText = 'Save Changes';
+
         modalAdd.querySelector('.title').textContent = title;
         modalAdd.querySelector('.text:nth-of-type(1)').textContent = descriptionText;
         modalAdd.querySelector('.button-submit-modal').textContent = buttonText;
@@ -305,7 +283,10 @@ document.addEventListener('click', async (event) => {
 
     if(btnDeletePot){
         articleToDelete = event.target.closest('.container-article');
-        const category = event.target.closest('.container-header-title').querySelector('.article-title').textContent;
+        // console.log('referencePotId.get(articleToDelete)', referencePotId.get(articleToDelete));
+        const category = referencePotId.get(articleToDelete).name;
+        // const category = event.target.closest('.container-header-title').querySelector('.article-title').textContent;
+        // console.log(category);
         const categoryText = `Delete '${category}'?`;
         const contentText = 'Are you sure you want to delete this pot? This action cannot be reversed, and all the data inside it will be removed forever.';
         modalDelete.querySelector('.title').textContent = categoryText;
@@ -315,7 +296,7 @@ document.addEventListener('click', async (event) => {
     }
 
 
-    //open the list tochoose the color tag
+    //open the list to choose the color tag
     if(btnListSort){
 
         const container = event.target.closest('.container-sort');
@@ -337,52 +318,34 @@ document.addEventListener('click', async (event) => {
     //choose the color tag for the new pot
     if(liColorTagModal){
 
-        listSortColorTag.forEach( (li) => {
-            li.classList.remove('selected');
-            liColorTagModal.setAttribute('aria-selected', 'false');
-        });
+        // const container = liColorTagModal.closest('.container-sort');
+        // const btnSort = container.querySelector('.button-sort.color');
+        // const listContainer = container.querySelector('.list-sort.color');
+        // const liColor = listContainer.querySelectorAll('.li-sort');
 
-        liColorTagModal.classList.add('selected');
-        liColorTagModal.setAttribute('aria-selected', 'true');
 
-        btnChooseColorTag.querySelector('.color-tag').style.backgroundColor = liColorTagModal.dataset.sort;
-        btnChooseColorTag.querySelector('.color-name').textContent = liColorTagModal.querySelector('.color-name').textContent;
+        // liColor.forEach( (li) => {
+        //     li.classList.remove('selected');
+        //     li.setAttribute('aria-selected', 'false');
+        // });
 
-        const container = liColorTagModal.closest('.container-sort');
-        const btnSort = container.querySelector('.button-sort.color');
-        const listContainer = container.querySelector('.list-sort.color');
+        // liColorTagModal.classList.add('selected');
+        // liColorTagModal.setAttribute('aria-selected', 'true');
 
-        btnSort.setAttribute('aria-expanded', 'false');
-        btnSort.classList.remove('expanded');
-        listContainer.classList.remove('active');
+        // btnSort.querySelector('.color-tag').style.backgroundColor = liColorTagModal.dataset.sort;
+        // btnSort.querySelector('.color-name').textContent = liColorTagModal.querySelector('.color-name').textContent;
+        // btnSort.setAttribute('aria-expanded', 'false');
+        // btnSort.classList.remove('expanded');
+
+        // listContainer.classList.remove('active');
+
+        chooseLiColorCategory(liColorTagModal);
 
     }
 
 
     if(btnCloseModal){
-
-        // const container = event.target.closest('.modal');
-        // const btnSort = container.querySelectorAll('.container-sort .button-sort');
-
-        // btnSort.forEach( (btn) => {
-        //     btn.disabled = false;
-        //     btn.style.opacity = '1';
-        //     btn.style.pointerEvents = 'auto';
-        //     btn.style.cursor = 'pointer';
-        //     btn.classList.remove('expanded');
-        //     btn.setAttribute('aria-expanded', 'false');
-        // });
-
-        // const listSort = container.querySelectorAll('.container-sort .list-sort');
-        // listSort.forEach( (list) => {
-        //     list.classList.remove('active');
-        // });
-
-        // document.querySelector('#createForm').reset();
-
         closeModalAddEdit(btnCloseModal, event);
-        
-
     }
 
 
@@ -405,6 +368,13 @@ inputName.addEventListener('input', () => {
 
 
 
+
+
+
+
+
+
+
 /* SUBMIT */
 
 const formPot = document.querySelector('#createForm');
@@ -413,17 +383,6 @@ formPot.addEventListener('submit', async (event) => {
 
     event.preventDefault();
     event.stopPropagation();
-
-    // const name = document.querySelector('input[name="potName"]').value;
-    // const target = document.querySelector('input[name="maxspend"]').value;
-    // const theme = document.querySelector('.list-sort.color .selected').dataset.sort;
-
-    // const potData = {
-    //     name: name,
-    //     target: Number(target),
-    //     // total: 0,
-    //     theme: theme
-    // };
 
     const formData = new FormData(event.target);
 
@@ -493,6 +452,16 @@ formPot.addEventListener('submit', async (event) => {
     }
     
 });
+
+
+
+
+
+
+
+
+
+
 
 
 
