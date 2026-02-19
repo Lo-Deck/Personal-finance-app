@@ -19,8 +19,6 @@ export const getData = {
 
         this.cachedData = await response.json();
 
-        // console.log('data server');
-
         return this.cachedData;
 
     }

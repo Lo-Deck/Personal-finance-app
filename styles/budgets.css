@@ -87,24 +87,6 @@
                 align-items: center;
                 width: 100%;
                 padding: var(--space-12px) 0;
-                /* .text{
-                    margin: 0;
-                }
-                .text:nth-of-type(2){
-                    color: var(--grey-900);
-                    margin: 0 0 0 auto;
-                    display: flex;
-                    justify-content: flex-start;
-                    align-items: center;
-                }
-                span{
-                    display: inline-block;
-                    color: var(--beige-500);
-                    margin-left: 0.5rem;
-                }
-                &:not(:last-of-type){
-                    border-bottom: 0.0625rem solid var(--grey-100);
-                } */
                 .budget-category{
                     margin: 0 auto 0 0;
                 }
@@ -127,11 +109,8 @@
                 &:not(:last-of-type){
                     border-bottom: 0.0625rem solid var(--grey-100);
                 }
-
             }
-
         }
-
         @media screen and (min-width: 48rem){     
             padding: 3rem var(--space-32px) var(--space-32px) 4rem;
             .section-budgets{
@@ -153,7 +132,6 @@
                 }
             }
         }
-
         @media screen and (min-width: 70rem){
             grid-area: budgets;
             width: 26.75rem;
@@ -161,7 +139,6 @@
             padding: var(--space-32px) var(--space-32px) var(--space-08px);
             .section-budgets{
                 display: block;
-                /* margin-top: 0; */
                 .title{
                     margin-bottom: var(--space-08px);
                 }
@@ -204,7 +181,6 @@
                 }
             }
         }
-
         .container-graph{
             .text{
                 color: var(--grey-500);
@@ -229,7 +205,6 @@
                 }
             }
         }
-
         .spendings{
             background: var(--beige-100);
             margin-top: var(--space-20px);
@@ -239,7 +214,6 @@
                 margin-bottom: var(--space-12px);
             }
         }
-
         .list-spending{
             flex-direction: column;
             .li-spending{
@@ -277,7 +251,6 @@
                 }
             }
         }
-
         @media screen and (min-width: 48rem){
             .container-graph{
                 .graph{
@@ -292,10 +265,8 @@
                 }
             }
         }
-
     }
 
-    
     .display-container-article{
         @media screen and (min-width: 70rem){
             grid-area: article;     
@@ -303,6 +274,5 @@
         }
     }
             
-    
 }
 

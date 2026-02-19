@@ -5,19 +5,13 @@
  */
 
 export function setupSideMenu() {
-
-    // console.log('setupSideMenu()');
-    
     const container = document.querySelector('.container-header');
     const btn = document.querySelector('.button-extend-menu');
-
     if (!btn || !container) return;
-
     btn.addEventListener('click', () => {
-        const isReduced = container.classList.toggle('reduce'); /* VERIFIER FONCTIONNEMENT */
+        const isReduced = container.classList.toggle('reduce');
         container.classList.toggle('large', !isReduced);
     });
-
 }
 
 
@@ -32,13 +26,9 @@ export function setupSideMenu() {
 
 export function addWithrawMoney(data, btn, modal){
 
-    // const category = btn.closest('.container-article').querySelector('.container-header-title .article-title').textContent;
-
     const { name } = data;
-
     const category = name;
     console.log('category', category);
-
 
     if(btn.classList.contains('button-add-money')){
         modal.querySelector('.title').textContent = `Add from '${category}'`;
@@ -57,66 +47,7 @@ export function addWithrawMoney(data, btn, modal){
     modal.querySelector('.import-modal').textContent = '';
     modal.querySelector('.import-modal').appendChild(clone);
 
-    // modal.dataset.id = id;
-
     modal.showModal();
-
-}
-
-
-
-
-
-/**
- * Manages toggle switches for sort lists (modal/menus).
- * Only one list can be active at a time.
- * @param {NodeList} buttons - The name/theme where choose from.
- * @param {NodeList} lists - The list of category/name to choose.
- */
-
-// export function openSortListModal(buttons, lists){
-
-//     buttons.forEach( ( btn, index ) => {
-
-//         btn.addEventListener('click', () => {
-
-//             lists.forEach( (list, i) => {
-
-//                 if(i === index){
-//                     list.classList.toggle('active');
-//                 } else {
-//                     list.classList.remove('active');
-//                 }
-
-//             })
-
-//         });
-
-//     });
-
-// }
-
-
-export function openSortListModal(buttons, lists){
-
-    buttons.forEach( ( btn, index ) => {
-
-        btn.addEventListener('click', () => {
-
-            lists.forEach( (list, i) => {
-
-                if(i === index){
-                    list.classList.toggle('active');
-                } else {
-                    list.classList.remove('active');
-                }
-
-            })
-
-        });
-
-    });
-
 
 }
 
@@ -129,14 +60,11 @@ export function openSortListModal(buttons, lists){
  */
 
 export function toggleDropdownMenu(btn) {
-
     const dropDownMenu = document.querySelectorAll('.dropdown');  
     const currentDropdown = btn.parentElement.querySelector('.dropdown');
-
     for(let i = 0; i < dropDownMenu.length; i++){
         dropDownMenu[i] === currentDropdown ? currentDropdown.classList.toggle('active') : dropDownMenu[i].classList.remove('active');
     }
-
 }
 
 
@@ -160,31 +88,9 @@ export function closeAllDropdowns() {
 
 export function closeModalAddEdit(btn, event){
    
-    // const btnCloseModal = document.querySelector('.close-modal');
-
-    // btnCloseModal.addEventListener('click', () => {
-
-    //     const btnCategoryList = modal.querySelector('.search-field .container-sort:nth-of-type(1) .button');
-
-    //     btnCategoryList.disabled = false;
-    //     btnCategoryList.style.opacity = '1';
-    //     btnCategoryList.style.pointerEvents = 'auto';
-    //     btnCategoryList.style.cursor = 'pointer';
-
-    //     modal.querySelectorAll('.list-sort').forEach( (item) => {
-    //         item.classList.remove('active');
-    //     });
-
-    // });
-
-
     if(btn){
-
         const container = event.target.closest('.modal');
         const btnSort = container.querySelectorAll('.container-sort .button-sort');
-
-        // console.log('budget close modal');
-        
         btnSort.forEach( (btn) => {
             btn.disabled = false;
             btn.style.opacity = '1';
@@ -198,9 +104,7 @@ export function closeModalAddEdit(btn, event){
         listSort.forEach( (list) => {
             list.classList.remove('active');
         });
-
         document.querySelector('#createForm').reset();
-
     }
 
 }
@@ -214,14 +118,12 @@ export function closeModalAddEdit(btn, event){
  */
 
 export function toggleSortMenu(btn){
-
     const container = btn.closest('.container-sort');    
     const listSort = container.querySelector('.list-sort');
     const caret = btn.querySelector('.caret');
     const isActive = listSort.classList.toggle('active');
     caret.style.transform = isActive ? "rotate(180deg)" : "rotate(0deg)";
     btn.setAttribute('aria-expanded', isActive);  
-    
 }
 
 
@@ -232,17 +134,13 @@ export function toggleSortMenu(btn){
  */
 
 export function closeAllSortMenu(){
-
     document.querySelectorAll('.search-field .list-sort.active').forEach( menu => {
-
         menu.classList.remove('active');
         const btn = menu.closest('.container-sort').querySelector('.button-sort');
         const caret = btn.querySelector('.caret');
         caret.style.transform = "rotate(0deg)";
-        btn.setAttribute('aria-expanded', 'false');        
-
+        btn.setAttribute('aria-expanded', 'false'); 
     });
-
 }
 
 
@@ -255,11 +153,11 @@ export function closeAllSortMenu(){
 
 export function billSortBy(recurringBill, liSortBy){
 
+
     //set text btn sort by
     const dataSort = liSortBy.dataset.sort;
     const btnMenuSortText = document.querySelector('.button-sort .text'); 
     btnMenuSortText.textContent = dataSort;
-
 
     document.querySelectorAll('.list-sort.sort .li-sort').forEach( (li) => {
         li.classList.remove('selected');
@@ -271,9 +169,7 @@ export function billSortBy(recurringBill, liSortBy){
 
     document.querySelector('.button-sort').setAttribute('aria-label', `Sort by ${dataSort}`);
 
-
     const searchByName = document.querySelector('input').value;
-
     const recurringBillSort = [...recurringBill].filter( (bill) => {
 
         const name = bill.name.toLowerCase();        
@@ -299,7 +195,6 @@ export function billSortBy(recurringBill, liSortBy){
 
     });
 
-
     const currentDate = new Date('2024-08-19T00:00:00');
     const today = currentDate.getDate();
     const referenceDate = new Date(currentDate);
@@ -307,13 +202,11 @@ export function billSortBy(recurringBill, liSortBy){
     dayPlusFive.setDate(referenceDate.getDate() + 5);
     const daydueSoon = dayPlusFive.getDate();
 
-
     const fragmentBill = document.createDocumentFragment();
     const templateBill = document.querySelector('#template-transaction');
     const containerTransactions = document.querySelector('.append-transactions');
 
     containerTransactions.textContent = '';
-
 
     recurringBillSort.forEach( (transaction) => {
 
@@ -323,9 +216,8 @@ export function billSortBy(recurringBill, liSortBy){
             clone.querySelector('.avatar').src = transaction.avatar;            
         }
 
-        clone.querySelector('.cell-name .text').textContent = transaction.name; 
+        clone.querySelector('.cell-name .text').textContent = transaction.name;
         clone.querySelector('.cell-amount .text').textContent = `$${Math.abs(transaction.amount).toFixed(2)}`;            
-
 
         //set suffix st, nd, th 
         let billDate = new Date(transaction.date).getDate();
@@ -334,7 +226,6 @@ export function billSortBy(recurringBill, liSortBy){
         let suffix;
 
         const date = billDate.toString().split('');
-
         if(date.length === 1){
             date.unshift('0');
         }
@@ -347,7 +238,7 @@ export function billSortBy(recurringBill, liSortBy){
         if(billDate <= today){
             clone.querySelector('.logo-paid').src = "../assets/images/icon-bill-paid.svg";
             clone.querySelector('.cell-date time').classList.add('green');
-        } 
+        }
         else if(billDate <= daydueSoon){
             clone.querySelector('.logo-paid').src="../assets/images/icon-bill-due.svg";                   
             clone.querySelector('.cell-amount .text').classList.add('red');
@@ -360,9 +251,7 @@ export function billSortBy(recurringBill, liSortBy){
 
     });
 
-
     containerTransactions.appendChild(fragmentBill);
-
     return recurringBillSort;
 
 }
@@ -381,17 +270,13 @@ export function transactionSliceBy(transactions, liSortBy, liCategoryBy){
     let dataSort;
 
     if(liSortBy){
-
         dataSort = liSortBy.dataset.sort;
-
         document.querySelectorAll('.list-sort.sort .li-sort').forEach( (li) => {
             li.classList.remove('selected');
             li.setAttribute('aria-selected', 'false');
         });
-
         liSortBy.classList.add('selected');
         liSortBy.setAttribute('aria-selected', 'true');
-
         document.querySelector('.button-sort.sort').setAttribute('aria-label', `Sort by ${dataSort}`);        
     } 
 
@@ -399,27 +284,20 @@ export function transactionSliceBy(transactions, liSortBy, liCategoryBy){
         dataSort = document.querySelector('.list-sort.sort .li-sort.selected').dataset.sort;
     }
 
-
     const btnMenuSortText = document.querySelector('.button-sort.sort .text'); 
     btnMenuSortText.textContent = dataSort;
-
 
     let dataCategory;
 
     if(liCategoryBy){
-
         dataCategory = liCategoryBy.dataset.category;
-
         document.querySelectorAll('.list-sort.category .li-sort').forEach( (li) => {
             li.classList.remove('selected');
             li.setAttribute('aria-selected', 'false');
         });
-
         liCategoryBy.classList.add('selected');
         liCategoryBy.setAttribute('aria-selected', 'true');
-
         document.querySelector('.button-sort.category').setAttribute('aria-label', `Category ${dataCategory}`);
-
     }
     else {
         dataCategory = document.querySelector('.list-sort.category .li-sort.selected').dataset.category;
@@ -427,23 +305,17 @@ export function transactionSliceBy(transactions, liSortBy, liCategoryBy){
 
     const btnMenuCategoryText = document.querySelector('.button-sort.category .text'); 
     btnMenuCategoryText.textContent = dataCategory;
-
     const searchByName = document.querySelector('input').value;
 
     const transactionFilter = [...transactions].filter( (transaction) => {
-
         const name = transaction.name.toLowerCase();
-
         if( name.startsWith(searchByName) ){
             return transaction;
         }
-
     }).filter(t => dataCategory === 'All transactions' || t.category.toLowerCase() === dataCategory.toLowerCase())
     .sort( (a, b) => {
-
         let valueA = new Date(a.date);
         let valueB = new Date(b.date);
-
         switch(dataSort){
             case 'Latest': return valueB - valueA;
             case 'Oldest': return valueA - valueB;
@@ -453,7 +325,6 @@ export function transactionSliceBy(transactions, liSortBy, liCategoryBy){
             case 'Lowest': return Math.abs(a.amount) - Math.abs(b.amount);
             default: return valueB - valueA;
         }
-
     });
 
 
@@ -463,25 +334,17 @@ export function transactionSliceBy(transactions, liSortBy, liCategoryBy){
 
     containerTemplateTransactions.textContent = '';
 
-
     transactionFilter.slice(0, 10).forEach( (transaction) => {
-
         const clone = templateTransaction.content.cloneNode(true);
-
         if(transaction.avatar && transaction.avatar.startsWith('../')){
             clone.querySelector('.avatar').src = transaction.avatar;            
         }
-
         clone.querySelector('.cell-name .text').textContent = transaction.name;
         clone.querySelector('.cell-amount .text').textContent = `$${Math.abs(transaction.amount).toFixed(2)}`;
-
         clone.querySelector('.cell-category .text').textContent = transaction.category;
-
         const transactionDate = new Date(transaction.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
         clone.querySelector('.cell-date time').textContent = transactionDate;        
-
         fragmentTransaction.appendChild(clone);
-
     });
 
     containerTemplateTransactions.appendChild(fragmentTransaction);
@@ -568,7 +431,6 @@ export function choosePageNavbar(li, data){
     liPages[currentPage].classList.remove('active');
     liPages[numberPage].classList.add('active');
 
-
     if( numberPage !== 1 || numberPage !== lastPage ){
         liPages[0].classList.remove('disabled');
         liPages[0].querySelector('.button').disabled = false;
@@ -585,7 +447,6 @@ export function choosePageNavbar(li, data){
         liPages[liPages.length-1].classList.add('disabled');
         liPages[liPages.length-1].querySelector('.button').disabled = true;
     }
-
 
     if( numberPage ){
 
@@ -635,7 +496,7 @@ export function createListHTMLCategory(data, listForModal){
     });
 
     const categoryList = Array.from(categoryMapList.values());
-    console.log('categoryList', categoryList);
+    // console.log('categoryList', categoryList);
 
     categoryList.forEach( (transaction) => {
 
@@ -644,7 +505,6 @@ export function createListHTMLCategory(data, listForModal){
         li.setAttribute('role', 'option');
         li.setAttribute('aria-selected', 'false');
         li.setAttribute('data-category', `${transaction}`);
-        // li.textContent = `${transaction}`;
 
         if(listForModal){
 
@@ -660,15 +520,12 @@ export function createListHTMLCategory(data, listForModal){
 
         }
         else{
-
             li.textContent = `${transaction}`;
-
         }
 
         categoryHTMLList.appendChild(li);
 
     });
-
 
 }
 
@@ -694,9 +551,6 @@ export function chooseLiColorCategory(li){
     li.classList.add('selected');
     li.setAttribute('aria-selected', 'true');
 
-/* <button type="button" class="button button-sort category" aria-label="choose category" aria-haspopup="listbox" aria-expanded="false" aria-controls="category-list"><span class="category-name public-sans-regular text-preset-4">Entertainement</span><img src="../assets/images/icon-caret-down.svg" alt="" class="caret"></button>
-<button type="button" class="button button-sort color" aria-label="choose color-tag" aria-haspopup="listbox" aria-expanded="false" aria-controls="sort-list"><span class="color-tag"></span><span class="color-name public-sans-regular text-preset-4">Green</span><img src="../assets/images/icon-caret-down.svg" alt="" class="caret"></button> */
-
     if(btnSort.classList.contains('category')){
         btnSort.querySelector('.category-name').textContent = li.querySelector('.category-name').textContent;        
     }
@@ -705,21 +559,23 @@ export function chooseLiColorCategory(li){
         btnSort.querySelector('.color-name').textContent = li.querySelector('.color-name').textContent;        
     }
 
-
     btnSort.setAttribute('aria-expanded', 'false');
     btnSort.classList.remove('expanded');
-
     listContainer.classList.remove('active');
-
 
 }
 
 
 
 
+/**
+ * Crée un graphique SVG basé sur les données budgétaires.
+ * @param {Array<Object>} data - Liste des objets budget (category, maximum, theme).
+ * @param {Map<string, number>} budgetAmountbyCategory - Map associant catégorie et montant dépensé.
+ */
+
 
 export function createSVGChart(data, budgetAmountbyCategory){
-
 
     function createCircle(r, colorStroke, dashArray, dashOffset){
         const circle = document.createElementNS("http://www.w3.org/2000/svg", 'circle');
@@ -733,7 +589,6 @@ export function createSVGChart(data, budgetAmountbyCategory){
         circle.setAttribute('stroke-dashoffset', dashOffset);
         return circle;
     }
-
 
     const chart = document.querySelector('.chart');
     chart.textContent = '';
@@ -755,6 +610,8 @@ export function createSVGChart(data, budgetAmountbyCategory){
     const chartHoverCategory = chartHover.querySelector('.category');
     const chartHoverCategoryAmount = chartHover.querySelector('.category-amount');
     const chartHoverCategoryTotal = chartHover.querySelector('.category-total-amount');
+
+    let rect;
 
     data.forEach( (budget) => {
 
@@ -795,10 +652,14 @@ export function createSVGChart(data, budgetAmountbyCategory){
             chartHoverCategoryAmount.textContent = `Budget Spent: $${budgetAmountbyCategory.get(budget.category)}`;
             chartHoverCategoryTotal.textContent = `Budget Maximum: $${budget.maximum}`;
 
+            rect = g.getBoundingClientRect();//AJOUT ICI
+
         });
 
         g.addEventListener('mousemove', (event) => {
-            const rect = g.getBoundingClientRect();
+
+            // const rect = g.getBoundingClientRect();
+
             const mouseXRelative = event.clientX - rect.left;
             const mouseYRelative = event.clientY - rect.top;
             chartHover.style.transform = `translate3d(${mouseXRelative + 25}px, ${mouseYRelative + 25}px, 0)`;//VOIR POUR UTILISER TRANSLATE AU LIEU DE TRANSLATE3D
@@ -811,9 +672,58 @@ export function createSVGChart(data, budgetAmountbyCategory){
 
     });
 
-
-
-
-
-
 }
+
+
+
+
+
+
+
+
+
+export function validateInput(input, element){
+
+    // console.log('input', input);
+    
+    if (input.validity.valueMissing) {
+
+        element.classList.add('error');
+        element.querySelector('.message-error').textContent = `This field is required`;
+
+        return false;
+
+    }
+
+    // if (input.type === 'email' && input.validity.typeMismatch) {
+    if (input.validity.patternMismatch) {
+       
+        element.classList.add('error');
+        element.querySelector('.message-error').textContent = `Please enter a valid pattern`;
+
+        return false;
+
+    }
+
+    // if (input.validity.tooShort) {
+    //     // input.classList.add('error-input');
+    //     // document.querySelectorAll('.container-input span.error')[index].textContent = `Input too short, minimum ${input.minLength} characters needed.`;
+    //     return false;
+    // }
+
+    if (input.validity.tooLong) {
+        // input.classList.add('error-input');
+        // document.querySelectorAll('.container-input span.error')[index].textContent = `Input too long, maximum ${input.maxLength} characters allowed.`;
+
+        return false;
+
+    }
+
+    // input.classList.remove('error-input');
+    // document.querySelectorAll('.container-input span.error')[index].textContent = '';
+    return true;
+
+}            
+
+
+

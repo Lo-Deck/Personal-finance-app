@@ -38,13 +38,11 @@
         <button class="button button-extend-menu public-sans-bold text-preset-3"><img src="../assets/images/icon-minimize-menu.svg" alt="hide menu"><span>Minimize Menu</span></button>
       </header>
 
-
       <main class="container-main">
         <div class="container-main-title">
           <h1 class="title public-sans-bold text-preset-1">Pots</h1> 
           <button class="button open-add-modal add-pot public-sans-bold text-preset-4">+ Add New Pot</button>         
         </div>
-
         <template id="template-pot">
           <article class="container-article">
             <header class="container-header-title">
@@ -75,32 +73,26 @@
             </div>
           </article>
         </template>
-
       </main>
 
-      
       <dialog class="modal modal-add">
-
         <div class="container-title">
           <h3 class="title public-sans-bold text-preset-1 text-preset-2"></h3>
           <form method="dialog">  
             <button type="submit" class="button close-modal"><img src="../assets/images/icon-close-modal.svg" alt=""></button>   
           </form>
         </div>
-
         <p class="text public-sans-regular text-preset-4"></p>
-
-        <form method="dialog" id="createForm" class="search-field"> <!--  -->
-
+        <form method="dialog" id="createForm" class="search-field" novalidate>
           <label for="potName"><span class="text public-sans-bold text-preset-5">Pot Name</span>
-            <input type="text" name="potName" id="potName" placeholder="e.g. New Laptop" class="public-sans-regular" maxlength="30"> 
+            <input type="text" name="potName" id="potName" placeholder="e.g. New Laptop" class="public-sans-regular" maxlength="30" required> 
             <p class="char-limit public-sans-regular text-preset-5"><span class="charLeft">30</span> characters left</p>
+            <p class="message-error public-sans-regular text-preset-5"></p>
           </label>
-
           <label for="maxspend"><span class="text public-sans-bold text-preset-5">Target</span>
-            <input type="text" name="maxspend" id="maxspend" placeholder=" e.g. 2000" inputmode="numeric" maxlength="8" pattern="[0-9]+" class="public-sans-regular">
+            <input type="text" name="maxspend" id="maxspend" placeholder=" e.g. 2000" inputmode="numeric" maxlength="8" pattern="[0-9]+" class="public-sans-regular" required>
+            <p class="message-error public-sans-regular text-preset-5"></p>
           </label>
-
           <div class="container-sort">
             <p class="text public-sans-bold text-preset-5">Theme</p>
             <button type="button" class="button button-sort color" aria-label="choose color-tag" aria-haspopup="listbox" aria-expanded="false" aria-controls="sort-list"><span class="color-tag"></span><span class="color-name public-sans-regular text-preset-4">Green</span><img src="../assets/images/icon-caret-down.svg" alt="" class="caret"></button>
@@ -122,14 +114,9 @@
               <li class="li-sort" role="option" aria-selected="false" data-sort="#BE6C49"><span class="color-tag orange"></span><span class="color-name">Orange</span><span class="isUsed">Already Used</span></li>
             </ul>
           </div>
-
-          <!-- <button type="submit" class="button button-submit-modal public-sans-bold text-preset-4"></button> -->
           <button type="submit" form="createForm" class="button button-submit-modal public-sans-bold text-preset-4"></button>
-
         </form>
-
       </dialog>
-
 
       <dialog class="modal modal-delete">
         <div class="container-title">
@@ -151,7 +138,6 @@
         </form>
       </dialog>
 
-
       <dialog class="modal modal-addwithdraw-money">
         <div class="container-title">
           <h3 class="title public-sans-bold text-preset-1 text-preset-2"></h3>
@@ -163,38 +149,23 @@
         <div class="amount-saved">
           <div class="import-modal"></div>
           <div class="container-withdraw">
-            <form id="addWithdrawForm" method="dialog" class="search-field">
-              <label for="amountToAddWithdraw"><span class="text public-sans-bold text-preset-5"></span>
-                <!-- <input type="number" name="amountToAddWithdraw" id="amountToAddWithdraw" placeholder=" e.g. 2000" inputmode="numeric" min="0" max="99999999" class="public-sans-regular"> -->
-                <input type="text" name="amountToAddWithdraw" id="amountToAddWithdraw" placeholder=" e.g. 2000" inputmode="numeric" maxlength="8" pattern="[0-9]+" class="public-sans-regular">
+            <form id="addWithdrawForm" method="dialog" class="search-field" novalidate>
+
+              <label for="amountToAddWithdraw"><span class="text public-sans-bold text-preset-5"></span> 
+                <input type="text" name="amountToAddWithdraw" id="amountToAddWithdraw" placeholder=" e.g. 2000" inputmode="numeric" maxlength="8" pattern="[0-9]+" class="public-sans-regular" required>
+                <p class="message-error public-sans-regular text-preset-5"></p>
               </label>
+
+            <!-- <label for="maxspend" class="container-input"><span class="text public-sans-bold text-preset-5">Maximum Spending</span>
+              <input type="text" name="maxspend" id="maxspend" placeholder=" e.g. 2000" inputmode="numeric" maxlength="8" pattern="[0-9]+" class="public-sans-regular" required>
+              <p class="message-error public-sans-regular text-preset-5">Can't stay empty</p>
+            </label> -->
+
               <button type="submit" class="button button-submit-modal public-sans-bold text-preset-4"></button>
             </form>
           </div>
         </div>
       </dialog>
-
-
-      <!-- <dialog class="modal modal-add-money">
-        <div class="container-title">
-          <h3 class="title public-sans-bold text-preset-1 text-preset-2"></h3>
-          <form method="dialog">
-            <button type="submit" class="button close-modal"><img src="../assets/images/icon-close-modal.svg" alt=""></button>   
-          </form>
-        </div>
-        <p class="text public-sans-regular text-preset-4">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Phasellus  hendrerit. Pellentesque aliquet nibh nec urna. In nisi neque, aliquet.</p>
-        <div class="amount-saved">
-          <div class="import-modal"></div>
-          <div class="container-withdraw">
-            <form method="dialog" class="search-field">
-              <label for="amountToWithdraw"><span class="text public-sans-bold text-preset-5">Amount to Add</span>
-                <input type="text" name="maxspend" id="amountToWithdraw" placeholder="e.g. 2000" class="public-sans-regular">
-              </label>
-              <button type="submit" class="button button-submit-modal public-sans-bold text-preset-4">Confirm Addition</button>
-            </form>
-          </div>
-        </div>
-      </dialog> -->
 
     <script src="../scripts/pots.js" type="module"></script>
 

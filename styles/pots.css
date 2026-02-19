@@ -1,7 +1,5 @@
 
 
-
-
 :root{
 
   /*COLORS*/
@@ -52,25 +50,19 @@
 }
 
 
-
-
 .pots-page{
-
     .container-main{
         @media screen and (min-width: 70rem){
             grid-template-rows: auto;
             justify-content: space-between;            
         }
     }
-
     .container-main-title{
         .title{
             margin: var(--space-40px) 0 var(--space-40px);
         }
     }
-
     .container-article{
-        
         margin-bottom: var(--space-24px);
         .container-header-title{
             .container-title{
@@ -92,34 +84,6 @@
                 }
             }
         }
-
-        /* .amount-saved{
-            margin-top: var(--space-40px);
-            .text{
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                color: var(--grey-500);
-                margin-bottom: var(--space-16px);
-                &:nth-of-type(1) span{
-                    color: var(--grey-900);
-                }
-            }
-        }
-
-        .graph{
-            width: 100%;
-            height: 0.5rem;
-            background: var(--beige-100);
-            margin-bottom: var(--space-16px);
-            .line-graph{
-                background: var(--secondary-green);
-                width: 25%;
-                height: 100%;
-                border-radius: 0.25rem;
-            }
-        } */
-
         .container-button{
             display: flex;
             justify-content: space-between;
@@ -135,11 +99,8 @@
                     background: var(--white);
                     border: 0.0625rem solid var(--grey-900);
                 }
-
             }           
-
         }
-
         @media screen and (min-width: 70rem){
             width: 32.375rem;
             padding: var(--space-24px);
@@ -147,11 +108,8 @@
                 margin: var(--space-40px) auto 0;
             }
         }
-
     }
-
 }
-
 
 
 .amount-saved{

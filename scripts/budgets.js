@@ -1,24 +1,14 @@
 
 
 import { getData, sendData } from './data-service.js';
-import { setupSideMenu, openSortListModal, toggleDropdownMenu, closeModalAddEdit, closeAllDropdowns, createListHTMLCategory, chooseLiColorCategory, createSVGChart } from './ui-utils.js';
-
+import { setupSideMenu, toggleDropdownMenu, closeModalAddEdit, closeAllDropdowns, createListHTMLCategory, chooseLiColorCategory, createSVGChart, validateInput } from './ui-utils.js';
 
 
 const colorTagsMap = {};//keep track of the color
 const listHTMLColorTag = document.querySelectorAll('.list-sort.color .li-sort');
 
 const referenceBudgetId = new WeakMap();
-
-
-
-
-
-// const categoryTagsMap = {};//keep track of the category
 let listHTMLCategoryTag;
-
-
-
 
 
 ( async () => {
@@ -26,9 +16,6 @@ let listHTMLCategoryTag;
     try{
 
         setupSideMenu();
-
-        // const data = await getData.fetchData('../data.json');
-        // const data = await getData.fetchData('http://localhost:3000/db');
 
         const [ transactions, budgets ] = await Promise.all([
             getData.fetchData('http://localhost:3000/transactions'),
@@ -40,11 +27,6 @@ let listHTMLCategoryTag;
             budgets: budgets
         };
 
-        // listHTMLColorTag.forEach( (li) => {
-        //     colorTagsMap[li.dataset.sort] = li;
-        // });
-
-        // console.log(data);
         feedbudgetPage(data);
 
 
@@ -84,143 +66,16 @@ function feedbudgetPage(data){
         }
     });
 
-
-
-
-
+    //CREATE SVG CHART
     createSVGChart(data.budgets, budgetAmountbyCategory);
-
-
-
-   /**********************************/
-   /********* chart create SVG *******/
-   /**********************************/
-
-    // function createCircle(r, colorStroke, dashArray, dashOffset){
-    //     const circle = document.createElementNS("http://www.w3.org/2000/svg", 'circle');
-    //     circle.setAttribute('cx', '50');
-    //     circle.setAttribute('cy', '50');
-    //     circle.setAttribute('r', r);
-    //     circle.setAttribute('fill', 'none');
-    //     circle.setAttribute('stroke', colorStroke);
-    //     circle.setAttribute('stroke-width', r === 40 ? '16' : '8');
-    //     circle.setAttribute('stroke-dasharray', dashArray);
-    //     circle.setAttribute('stroke-dashoffset', dashOffset);
-    //     return circle;
-    // }
-
-
-    // const chart = document.querySelector('.chart');
-
-    // const maxBudget = data.budgets.reduce( (acc, budget) => {
-    //     return acc + budget.maximum;
-    // }, 0)
-
-    // //circonference of the circle color 40 et opacity 35
-    // const circonference40 = Math.ceil(2 * Math.PI * 40);
-    // const circonference35 = Math.ceil(2 * Math.PI * 35);
-
-    // // offset used to when start the next ring
-    // let dashOffset40 = 0;
-    // let dashOffset35 = 0;
-
-    // const chartHover = document.querySelector('.chart-hover');
-    // const chartHoverIcon = chartHover.querySelector('.chart-icon');
-    // const chartHoverCategory = chartHover.querySelector('.category');
-    // const chartHoverCategoryAmount = chartHover.querySelector('.category-amount');
-    // const chartHoverCategoryTotal = chartHover.querySelector('.category-total-amount');
-
-    // data.budgets.forEach( (budget) => {
-
-    //     const g = document.createElementNS("http://www.w3.org/2000/svg", 'g');
-    //     g.classList.add('segment');
-
-    //     //create className with category
-    //     g.classList.add(`${(budget.category).replace(' ', '-').toLowerCase()}`);
-    //     const percentBudget = budget.maximum / maxBudget * 100;
-
-    //     //length of the color ring and opacity
-    //     const strokeDasharray40 = ((percentBudget / 100) * circonference40).toFixed(2);
-    //     const strokeDasharray35 = ((percentBudget / 100) * circonference35).toFixed(2);
-
-    //     //length of the ring and the transparent ring transform into text
-    //     const strokeDasharray40Text = `${strokeDasharray40} ${(circonference40 - strokeDasharray40).toFixed(2)}`;
-    //     const strokeDasharray35Text = `${strokeDasharray35} ${(circonference35 - strokeDasharray35).toFixed(2)}`;
-
-    //     //offset used in the function
-    //     const dashOffset40Text = `-${dashOffset40.toFixed(2)}`;
-    //     const dashOffset35Text = `-${dashOffset35.toFixed(2)}`;
-
-    //     //creating circle
-    //     g.appendChild(createCircle(40, budget.theme, strokeDasharray40Text, dashOffset40Text));
-    //     g.appendChild(createCircle(35, "rgba(255, 255, 255, 0.3)", strokeDasharray35Text, dashOffset35Text));
-    //     chart.insertAdjacentElement('beforeend', g);        
-
-    //     //calculation for the next offset where to start the next ring
-    //     dashOffset40 += Number(strokeDasharray40);
-    //     dashOffset35 += Number(strokeDasharray35);
-
-    //     //hover svg chart
-
-    //     g.addEventListener('mouseenter', () => {
-    //         chartHover.style.opacity = 1;
-    //         chartHover.style.visibility = 'visible';
-    //         chartHoverIcon.style.backgroundColor = budget.theme
-    //         chartHoverCategory.textContent = budget.category;
-    //         chartHoverCategoryAmount.textContent = `Budget Spent: $${budgetAmountbyCategory.get(budget.category)}`;
-    //         chartHoverCategoryTotal.textContent = `Budget Maximum: $${budget.maximum}`;
-
-    //     });
-
-    //     g.addEventListener('mousemove', (event) => {
-    //         const rect = g.getBoundingClientRect();
-    //         const mouseXRelative = event.clientX - rect.left;
-    //         const mouseYRelative = event.clientY - rect.top;
-    //         chartHover.style.transform = `translate3d(${mouseXRelative + 25}px, ${mouseYRelative + 25}px, 0)`;//VOIR POUR UTILISER TRANSLATE AU LIEU DE TRANSLATE3D
-    //     });
-
-    //     g.addEventListener('mouseleave', () => {
-    //         chartHover.style.opacity = 0;
-    //         chartHover.style.visibility = 'hidden';
-    //     });
-
-    // });
-
-    /**********************************/
-   /***********************************/
-   /***********************************/
-
-
 
     // LIST CATEGORY MODAL
     createListHTMLCategory(data.transactions, true);
 
     // LIST COLOR MODAL
-
-
     listHTMLColorTag.forEach( (li) => {
         colorTagsMap[li.dataset.sort] = li;
     });
-
-
-    // const liSelected = Array.from(listHTMLColorTag).find( li => !li.classList.contains('used'));
-
-    // console.log('liSelected', liSelected);
-
-    // listHTMLColorTag.forEach( (li) => {
-
-    //     if(li === liSelected){
-    //         li.classList.add('selected');
-    //         li.setAttribute('aria-selected', 'true');
-    //     }
-    //     else{
-    //         li.classList.remove('selected');
-    //         li.setAttribute('aria-selected', 'false');
-    //     }
-
-    // });
-
-
 
     const categoryTagsMap = {};//keep track of the category
     listHTMLCategoryTag = document.querySelectorAll('.list-sort.category .li-sort');
@@ -230,16 +85,9 @@ function feedbudgetPage(data){
     });
 
 
-
-
-
-
-
     //list under the svg chart
-
     const budgetCategories = data.budgets.map(budget => budget.category);
     const categorySet = new Set(budgetCategories);
-
     const amountByCategory = data.transactions.reduce( (acc, transaction) => {
 
         if (categorySet.has(transaction.category)) {
@@ -258,13 +106,6 @@ function feedbudgetPage(data){
 
     budgetsSpend.textContent = `$${Math.floor(Math.abs(amountByCategory))}`;
 
-
-
-
-
-
-
-
     const budgetsList = document.querySelector('.section-budgets .list-pots');
     const fragment = document.createDocumentFragment();
     const templateLiPots = document.querySelector('#template-li-pots');
@@ -273,18 +114,7 @@ function feedbudgetPage(data){
 
         const clone = templateLiPots.content.cloneNode(true);
         const li = clone.querySelector('.li-pots');
-
-        
         const colorTheme = budget.theme;
-        // const matchingTag = colorTagsMap[colorTheme];
-
-        // if (matchingTag) {
-        //     matchingTag.classList.add('used');
-        //     const statusLabel = matchingTag.querySelector('.isUsed');
-        //     if (statusLabel) statusLabel.textContent = 'Already Used';
-        // }
-
-
 
         li.querySelector('.border').style.backgroundColor = colorTheme;
         li.querySelector('.budget-category').textContent = budget.category;
@@ -297,7 +127,6 @@ function feedbudgetPage(data){
 
     });
 
-
     budgetsList.appendChild(fragment);
 
 
@@ -308,13 +137,10 @@ function feedbudgetPage(data){
     const fragmentArticleBudget = document.createDocumentFragment();
     const templateArticleBudget = document.querySelector('#template-latest-spending');
 
-
     data.budgets.forEach( (budget) => {
 
         const clone = templateArticleBudget.content.cloneNode(true);
         const header = clone.querySelector('.container-header-title');
-
-
         const colorTheme = budget.theme;
         const matchingColorTag = colorTagsMap[colorTheme];
 
@@ -323,7 +149,6 @@ function feedbudgetPage(data){
             const statusLabel = matchingColorTag.querySelector('.isUsed');
             if (statusLabel) statusLabel.textContent = 'Already Used';
         }
-
 
         const categoryTheme = budget.category;
         const matchingCategoryTag = categoryTagsMap[categoryTheme];
@@ -334,14 +159,11 @@ function feedbudgetPage(data){
             if (statusLabel) statusLabel.textContent = 'Already Used';
         }
 
-
-
         header.querySelector(`.article-title`).textContent = categoryTheme;
         header.querySelector(`.color-tag`).style.backgroundColor = colorTheme;
 
         const containerGraph = clone.querySelector('.container-graph');
         containerGraph.querySelector('.amount-spent').textContent = budget.maximum;
-
 
         const lengthGraph =  Math.min((budgetAmountbyCategory.get(categoryTheme) / budget.maximum ) * 100, 100);
         containerGraph.querySelector('.line-graph').style.width = `${lengthGraph}%`;
@@ -379,22 +201,14 @@ function feedbudgetPage(data){
         });
 
         const article = clone.querySelector('.container-article');
-
         referenceBudgetId.set(article, budget);
-
         fragmentArticleBudget.appendChild(clone);
 
     })
 
     containerArticle.appendChild(fragmentArticleBudget);
 
-
-
-
 }
-
-
-
 
 
 
@@ -403,17 +217,8 @@ function feedbudgetPage(data){
 const modalAdd = document.querySelector('.modal-add');
 const modalDelete = document.querySelector('.modal-delete');
 
-
-// const listSortColorTag = document.querySelectorAll('.list-sort.color .li-sort');
-// const btnChooseColorTag = document.querySelector('.modal-add .button-sort.color');
-
-// const listSortCategory = document.querySelectorAll('.list-sort.category .li-sort');
-// const btnChooseCategory = document.querySelector('.modal-add .button-sort.category');
-
-
 let articleToEdit = null;
 let articleToDelete = null;
-
 
 
 document.addEventListener('click', (event) => {
@@ -424,10 +229,8 @@ document.addEventListener('click', (event) => {
     const btnDeleteBudget = event.target.closest('.button-delete-budget');
     const btnCloseModal = event.target.closest('.close-modal');
     const btnListSort = event.target.closest('.button-sort');
-
     const liCategoryModal = event.target.closest('.list-sort.category .li-sort');
     const liColorTagModal = event.target.closest('.list-sort.color .li-sort');
-
 
     if(btnToggleDropdown){
         event.stopPropagation();
@@ -435,7 +238,6 @@ document.addEventListener('click', (event) => {
     } else {
         closeAllDropdowns();
     }
-
 
     if (btnOpenAddModal) {
         const title = 'Add New Budget';
@@ -445,9 +247,6 @@ document.addEventListener('click', (event) => {
         modalAdd.querySelector('.text:nth-of-type(1)').textContent = descriptionText;
         modalAdd.querySelector('.button-submit-modal').textContent = buttonText;
 
-
-
-        /*********FAIRE SELECTION AUTOMATIQUE BUTTON + selected on LIST **********/
         //select color tag
         const btnColorTag = modalAdd.querySelector('.button-sort.color');
         const firstColorAvailable = Array.from(listHTMLColorTag).find(li => !li.classList.contains('used'));
@@ -465,7 +264,6 @@ document.addEventListener('click', (event) => {
             btnColorTag.querySelector('.color-name').textContent = themeName;
         }
 
-        
         //select category 
         const btnCategoryTag = modalAdd.querySelector('.button-sort.category');
         const firstThemeAvailable = Array.from(listHTMLCategoryTag).find(li => !li.classList.contains('used'));
@@ -481,10 +279,7 @@ document.addEventListener('click', (event) => {
             btnCategoryTag.querySelector('.category-name').textContent = themeName;
         }
 
-
-
         modalAdd.showModal();
-
 
     }
 
@@ -501,20 +296,13 @@ document.addEventListener('click', (event) => {
 
         event.target.closest('.dropdown').classList.remove('active');        
 
-
         const containerBudget = event.target.closest('.container-article');
 
         articleToEdit = containerBudget;
-        const potData = referenceBudgetId.get(containerBudget);
-
-        const  { category, maximum, theme, id } = potData;
-
+        const budgetData = referenceBudgetId.get(containerBudget);
+        const  { category, maximum, theme, id } = budgetData;
 
         modalAdd.dataset.id = id;
-
-
-        // console.log('referenceBudgetId', referenceBudgetId);
-        // console.log('potData', potData);
 
         listHTMLCategoryTag.forEach( (li) => {
 
@@ -539,14 +327,11 @@ document.addEventListener('click', (event) => {
         btnCategoryList.style.pointerEvents = 'none';
         btnCategoryList.style.cursor = 'not-allowed';
 
-
         const input = modalAdd.querySelector('label[for="maxspend"] input');
         input.value = maximum;
 
-    
         const btnColorList = modalAdd.querySelector('.search-field .container-sort:nth-of-type(2) .button');
         const themeName = colorTagsMap[theme].querySelector('.color-name').textContent ?? 'Unknown';
-
 
         listHTMLColorTag.forEach( (li) => {
 
@@ -561,41 +346,27 @@ document.addEventListener('click', (event) => {
 
         });
 
-
         if(btnColorList){
             btnColorList.querySelector('.color-tag').style.backgroundColor = theme;
             btnColorList.querySelector('.color-name').textContent = themeName;
         }
 
-
         modalAdd.showModal();
 
     }
 
-
-
     if(btnDeleteBudget){
-        // console.log(btnDeleteBudget);
         articleToDelete = event.target.closest('.container-article');
-        const category = referenceBudgetId.get(articleToDelete).category;
-        // console.log('category2',category);
-        // const category = event.target.closest('.container-header-title').querySelector('.article-title').textContent;
+        const category = referenceBudgetId.get(articleToDelete).category;  
         const categoryText = `Delete '${category}'?`;
         const contentText = 'Are you sure you want to delete this budget? This action cannot be reversed, and all the data inside it will be removed forever.';
-
         modalDelete.querySelector('.title').textContent = categoryText;
         modalDelete.querySelector('.text').textContent = contentText;
-
         event.target.closest('.dropdown').classList.remove('active');
         modalDelete.showModal();
-        
     }
 
-
-
-
     if(btnListSort){
-
         const modal = event.target.closest('.modal');
         const containerAll = modal.querySelectorAll('.container-sort');
         const isOpening = btnListSort.classList.contains('expanded');
@@ -609,10 +380,8 @@ document.addEventListener('click', (event) => {
         }
 
         containerAll.forEach( (container) => {
-
             const btn = container.querySelector('.button-sort');
             const list = container.querySelector('.list-sort');
-
             if(btn.classList.contains('expanded')){
                 btn.setAttribute('aria-expanded', 'true');
                 list.classList.add('active');
@@ -621,9 +390,7 @@ document.addEventListener('click', (event) => {
                 btn.setAttribute('aria-expanded', 'false');
                 list.classList.remove('active');
             }
-
         });
-
     }
 
     if(btnCloseModal){
@@ -638,7 +405,6 @@ document.addEventListener('click', (event) => {
         chooseLiColorCategory(liColorTagModal);
     }
 
-
 });
 
 
@@ -646,6 +412,8 @@ document.addEventListener('click', (event) => {
 
 
 
+
+/**********SUBMIT**********/
 
 const formPot = document.querySelector('#createForm');
 
@@ -654,41 +422,59 @@ formPot.addEventListener('submit', async (event) => {
     event.preventDefault();
     event.stopPropagation();
 
-    console.log(document.querySelector('.list-sort.category .selected'));
+    const form = event.target;
+
+    // console.log('form', form);
+    // console.log('form', form.checkValidity());
+
+    const label = form.querySelectorAll('label');
+
+    // console.log('label', label);
     
+    const inputs = form.querySelectorAll('input');
 
-    const formData = new FormData(event.target);
+    const results = Array.from(inputs).map( (input, index) => {
+        // console.log(label[index]);
+        // console.log('input', validateInput(input, label[index]));
+        return validateInput(input, label[index]);
+    });
 
-    const potData = {
-        category: document.querySelector('.list-sort.category .selected').dataset.category, 
+    const isValid = results.every(res => res === true);
+
+    if(!isValid){
+        console.log('INVALID FORM');
+        return;
+    }
+
+    console.log('VALID FORM');
+    
+    const formData = new FormData(form);
+    console.log('formData', formData);
+
+    const category = document.querySelector('.list-sort.category .selected').dataset.category || null;
+    const theme = document.querySelector('.list-sort.color .selected').dataset.sort || null;
+
+    if(category === null || theme === null){
+        return;
+    }
+
+    const budgetData = {
+        category: category, 
         maximum: Number(formData.get('maxspend')),
-        theme: document.querySelector('.list-sort.color .selected').dataset.sort
+        theme: theme
     };
-
-
-    console.log('referenceBudgetId', referenceBudgetId);
-    console.log('potData', potData);
-
 
     const id = modalAdd.dataset.id;
 
     try{
 
         if(id){
-
             const oldPotData = referenceBudgetId.get(articleToEdit);
-            console.log('oldPotData', oldPotData);
-
             //compare object to send
-            const keysToCompare = Object.keys(potData);
-            console.log('keysToCompare', keysToCompare);
-            const hasChange = keysToCompare.some( key => potData[key] !== oldPotData[key] );
-
+            const keysToCompare = Object.keys(budgetData);
+            const hasChange = keysToCompare.some( key => budgetData[key] !== oldPotData[key] );
             if(hasChange){
-
-                const updatedPot = await sendData(`http://localhost:3000/budgets/${id}`, potData, 'PATCH');
-                console.log('DATA PATCH SEND');                
-
+                const updatedPot = await sendData(`http://localhost:3000/budgets/${id}`, budgetData, 'PATCH');              
                 if(oldPotData.theme !== updatedPot.theme){
                     const liOldTag = colorTagsMap[oldPotData.theme];
                     if (liOldTag) {
@@ -697,35 +483,24 @@ formPot.addEventListener('submit', async (event) => {
                         if (statusLabel) statusLabel.textContent = '';
                     }
                 }
-
                 window.location.reload();
                 articleToEdit = null;
-
-                console.log('articleToEdit is (have to be null)', articleToEdit);
-
             }
-
         }
         else{
-            const newBudget = await sendData('http://localhost:3000/budgets', potData, 'POST');
+            const newBudget = await sendData('http://localhost:3000/budgets', budgetData, 'POST');
             window.location.reload();
-            // console.log(newBudget);
         }
-
 
     } catch(error) {
         console.error('Error sending data :', error.message);
         alert(`Impossible to create new Pot : ${error.message}`);
     }
 
-
     modalAdd.querySelector('#createForm').reset();
     modalAdd.close();
 
-
 });
-
-
 
 
 
@@ -735,8 +510,6 @@ formDelete.addEventListener('submit', async (event) => {
 
     event.preventDefault();
     event.stopPropagation();
-
-    console.log('articleToDelete', articleToDelete);
 
     const reference = referenceBudgetId.get(articleToDelete);
     const id = reference.id;
@@ -754,6 +527,7 @@ formDelete.addEventListener('submit', async (event) => {
         alert(`Impossible to create new Pot : ${error.message}`);
     }
 
+    window.location.reload();
     modalDelete.close();
 
 });
@@ -761,5 +535,15 @@ formDelete.addEventListener('submit', async (event) => {
 
 
 
-/********* METTRE A JOUR ADRESSE FETCH, SVG PAGE ACCUEIL A MODIFIER  **********/
+
+/****INPUT****/
+
+const labels = document.querySelectorAll('label');
+
+labels.forEach( (label) =>  {
+    const input = label.querySelector('input');
+    input.addEventListener('input', () => {
+        label.classList.remove('error');
+    });
+});
 

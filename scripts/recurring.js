@@ -1,16 +1,9 @@
 
-
 import { getData } from './data-service.js';
 import { setupSideMenu, toggleSortMenu, closeAllSortMenu, billSortBy } from './ui-utils.js';
 
 
-
-
-
-let data;
 let recurringBill;
-
-
 let recurringBillSort;
 
 
@@ -20,7 +13,15 @@ let recurringBillSort;
 
         setupSideMenu();
 
-        data = await getData.fetchData('../data.json');
+        const data = {
+            transactions: await getData.fetchData('http://localhost:3000/transactions')
+        };
+
+
+        /**********************/
+        /********** VOIR POUR OLDEST ET LATEST ET TRIER A PARTIR DERNIERE DATE 14 08  ********** /
+        /**********************/
+
 
         //extract recurring bills data
         let recurringTransactions = data.transactions.filter(transaction => transaction.recurring);
@@ -33,7 +34,6 @@ let recurringBillSort;
         //set page
         feedRecurringPage(recurringBill);
 
-
     } catch(error) {
 
         console.error('CRITICAL APP ERROR:', error.message);
@@ -44,8 +44,6 @@ let recurringBillSort;
                 <p style="font-size: 2rem; margin-top: 5rem; color: red;"> !!! Impossible to download data !!! </p>
                 <button onclick="location.reload()" style="font-size: 2rem; margin-top: 1rem; padding: 0.5rem; border: 2px solid red; color: red;">Retry</button>
             </div>`;
-
-            //****************************ATTENTION INNER HTML SECURITY******************
 
     }
 
@@ -69,7 +67,6 @@ function feedRecurringPage(recurringBill){
 
     dayPlusFive.setDate(referenceDate.getDate() + 5);
     const daydueSoon = dayPlusFive.getDate();
-
 
     let paidBills = 0;
     let paid = 0;
@@ -130,23 +127,17 @@ document.addEventListener('click', (event) => {
 
 
 
-const searchByName = document.querySelector('input');
-let wordInput;
 
+/***** INPUT *****/
+
+const searchByName = document.querySelector('input');
 
 if(searchByName){
 
-    const liSortBy = document.querySelector('.li-sort');
-
     searchByName.addEventListener('input', (event) => {
-
-        console.log('***************************');
-        console.log('searchByName', searchByName);
-
+        const liSortBy = document.querySelector('.li-sort.selected');
         recurringBillSort = billSortBy(recurringBill, liSortBy);
-
     });
-    
 
 }
 

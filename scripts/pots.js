@@ -1,8 +1,7 @@
 
 
 import { getData, sendData } from './data-service.js';
-import { setupSideMenu, addWithrawMoney, openSortListModal, toggleDropdownMenu, closeAllDropdowns, closeModalAddEdit, chooseLiColorCategory } from './ui-utils.js';
-
+import { setupSideMenu, addWithrawMoney, toggleDropdownMenu, closeAllDropdowns, closeModalAddEdit, chooseLiColorCategory, validateInput } from './ui-utils.js';
 
 
 const colorTagsMap = {};//keep track of the color
@@ -14,23 +13,15 @@ const listHTMLColorTag = document.querySelectorAll('.list-sort.color .li-sort');
 
     try{
 
-        setupSideMenu()//ajout ici 
+        setupSideMenu()
 
-        // const data = await getData.fetchData('../data.json');
         const data = await getData.fetchData('http://localhost:3000/pots');
-
-
-        // console.log('listHTMLColorTag', listHTMLColorTag);
 
         listHTMLColorTag.forEach( (li) => {
             colorTagsMap[li.dataset.sort] = li;
         });
 
-        // console.log(colorTagsMap);
-
-        // console.log(data);
         feedPotsPage(data);
-
 
     } catch(error) {
 
@@ -48,7 +39,6 @@ const listHTMLColorTag = document.querySelectorAll('.list-sort.color .li-sort');
     }
 
 })()
-
 
 
 
@@ -125,11 +115,7 @@ function feedPotsPage(data){
 
     });
 
-    // Array.from(listHTMLColorTag).find( li => !li.classList.contains('used')).classList.add('selected');
-
 }
-
-
 
 
 
@@ -139,13 +125,9 @@ const modalAdd = document.querySelector('.modal-add');
 const modalDelete = document.querySelector('.modal-delete');
 const modalAddwithdrawMoney = document.querySelector('.modal-addwithdraw-money');
 
-const listSortColorTag = document.querySelectorAll('.list-sort.color .li-sort');
-const btnChooseColorTag = document.querySelector('.modal-add .button-sort');
-
 let articleToEdit = null;
 let articleToAddWithdraw = null;
 let articleToDelete = null;
-
 
 
 document.addEventListener('click', async (event) => {
@@ -154,17 +136,11 @@ document.addEventListener('click', async (event) => {
     const btnOpenAddModal = event.target.closest('.open-add-modal');
     const btnOpenEditModal = event.target.closest('.open-edit-modal');
     const btnDeletePot = event.target.closest('.button-delete-budget');
-
     const btnAdd = event.target.closest('.button-add-money');
     const btnWithdraw = event.target.closest('.button-withdraw-money');
-
     const btnListSort = event.target.closest('.button-sort');
     const liColorTagModal = event.target.closest('.list-sort.color .li-sort');
-
     const btnCloseModal = event.target.closest('.close-modal');
-
-
-    // const btnSubmit = event.target.closest('.modal-add .button-submit-modal');
 
     if(btnToggleDropdown){
         event.stopPropagation();
@@ -173,77 +149,52 @@ document.addEventListener('click', async (event) => {
         closeAllDropdowns();
     }
 
-
     if (btnOpenAddModal) {
-
         const title = 'Add New Pot';
         const descriptionText = 'Create a pot to set savings targets. These can help keep you on track as you save for special purchases.';
         const buttonText = 'Add Pot';
         modalAdd.querySelector('.title').textContent = title;
         modalAdd.querySelector('.text:nth-of-type(1)').textContent = descriptionText;
         modalAdd.querySelector('.button-submit-modal').textContent = buttonText;
-
         const btnColorTag = modalAdd.querySelector('.button-sort.color');
-
         const firstAvailable = Array.from(listHTMLColorTag).find(li => !li.classList.contains('used'));
-
         listHTMLColorTag.forEach(li => {
             const isTarget = (li === firstAvailable);
             li.classList.toggle('selected', isTarget);
             li.setAttribute('aria-selected', isTarget);
         });
-
         if (firstAvailable) {
             const theme = firstAvailable.dataset.sort;
             const themeName = firstAvailable.querySelector('.color-name').textContent;
             btnColorTag.querySelector('.color-tag').style.backgroundColor = theme;
             btnColorTag.querySelector('.color-name').textContent = themeName;
         }
-
         modalAdd.showModal();
-
     }
 
-
-
-
     if(btnOpenEditModal){
-
         const title = 'Edit Pot';
         const descriptionText = 'If your saving targets change, feel free to update your pots.';
         const buttonText = 'Save Changes';
-
         modalAdd.querySelector('.title').textContent = title;
         modalAdd.querySelector('.text:nth-of-type(1)').textContent = descriptionText;
         modalAdd.querySelector('.button-submit-modal').textContent = buttonText;
 
-
         //get the info
         const containerPot = event.target.closest('.container-article');
-
         articleToEdit = containerPot;
-
         const potData = referencePotId.get(containerPot);
-
         const  { name, target, theme, id } = potData;
-
         modalAdd.dataset.id = id;
-
         const labelCategory =  modalAdd.querySelector('.search-field label[for="potName"]');
         const inputCategory = labelCategory.querySelector('input');
-
-        if(labelCategory){
-            // labelCategory.classList.add('is-disabled');
-            // inputCategory.style.pointerEvents = 'none';
-            // inputCategory.disabled = true;     
+        if(labelCategory){   
             inputCategory.value = name;
         }
-
         const inputTarget =  modalAdd.querySelector('.search-field label[for="maxspend"] input');
         if(inputTarget){
             inputTarget.value = target;
         }
-
         const themeName = colorTagsMap[theme].querySelector('.color-name').textContent ?? 'Unknown';
 
         listHTMLColorTag.forEach( (li) => {
@@ -267,10 +218,7 @@ document.addEventListener('click', async (event) => {
 
         event.target.closest('.dropdown').classList.remove('active');
         modalAdd.showModal();
-
     }
-
-
 
     if(btnAdd || btnWithdraw){
         //get the info
@@ -280,13 +228,9 @@ document.addEventListener('click', async (event) => {
         addWithrawMoney(data, btnAdd || btnWithdraw, modalAddwithdrawMoney);
     } 
 
-
     if(btnDeletePot){
         articleToDelete = event.target.closest('.container-article');
-        // console.log('referencePotId.get(articleToDelete)', referencePotId.get(articleToDelete));
         const category = referencePotId.get(articleToDelete).name;
-        // const category = event.target.closest('.container-header-title').querySelector('.article-title').textContent;
-        // console.log(category);
         const categoryText = `Delete '${category}'?`;
         const contentText = 'Are you sure you want to delete this pot? This action cannot be reversed, and all the data inside it will be removed forever.';
         modalDelete.querySelector('.title').textContent = categoryText;
@@ -295,14 +239,11 @@ document.addEventListener('click', async (event) => {
         modalDelete.showModal();
     }
 
-
     //open the list to choose the color tag
     if(btnListSort){
-
         const container = event.target.closest('.container-sort');
         const currentList = container.querySelector('.list-sort');
         const isExpanded = btnListSort.classList.toggle('expanded');       
-
         if(isExpanded){
             btnListSort.setAttribute('aria-expanded', 'true');
             currentList.classList.add('active');
@@ -311,43 +252,16 @@ document.addEventListener('click', async (event) => {
             btnListSort.setAttribute('aria-expanded', 'false');
             currentList.classList.remove('active');
         }
-
     }
-
 
     //choose the color tag for the new pot
     if(liColorTagModal){
-
-        // const container = liColorTagModal.closest('.container-sort');
-        // const btnSort = container.querySelector('.button-sort.color');
-        // const listContainer = container.querySelector('.list-sort.color');
-        // const liColor = listContainer.querySelectorAll('.li-sort');
-
-
-        // liColor.forEach( (li) => {
-        //     li.classList.remove('selected');
-        //     li.setAttribute('aria-selected', 'false');
-        // });
-
-        // liColorTagModal.classList.add('selected');
-        // liColorTagModal.setAttribute('aria-selected', 'true');
-
-        // btnSort.querySelector('.color-tag').style.backgroundColor = liColorTagModal.dataset.sort;
-        // btnSort.querySelector('.color-name').textContent = liColorTagModal.querySelector('.color-name').textContent;
-        // btnSort.setAttribute('aria-expanded', 'false');
-        // btnSort.classList.remove('expanded');
-
-        // listContainer.classList.remove('active');
-
         chooseLiColorCategory(liColorTagModal);
-
     }
-
 
     if(btnCloseModal){
         closeModalAddEdit(btnCloseModal, event);
     }
-
 
 });
 
@@ -359,23 +273,18 @@ const charLeftText = document.querySelector('.charLeft');
 const inputName = document.querySelector('input[name="potName"]');
 
 inputName.addEventListener('input', () => {
-
     const charLeftNumber = 30 - inputName.value.length;
-    // console.log(charLeftNumber);
     charLeftText.textContent = charLeftNumber;
-
 });
 
 
 
-
-
-
-
-
-
+/************************************ */
+/****************POT GROCERIES BUG AFFICHAGE AVEC POT ******************** */
+/************************************ */
 
 /* SUBMIT */
+
 
 const formPot = document.querySelector('#createForm');
 
@@ -384,13 +293,44 @@ formPot.addEventListener('submit', async (event) => {
     event.preventDefault();
     event.stopPropagation();
 
-    const formData = new FormData(event.target);
+    const form = event.target;
+
+    // console.log(form);
+    
+    const label = form.querySelectorAll('label');
+    // console.log('label', label);
+    
+    const inputs = form.querySelectorAll('input');
+
+    const results = Array.from(inputs).map( (input, index) => {
+        // console.log(label[index]);
+        // console.log('input', validateInput(input, label[index]));
+        return validateInput(input, label[index]);
+    });
+
+    const isValid = results.every(res => res === true);
+
+    if(!isValid){
+        console.log('INVALID FORM');
+        return;
+    }
+
+    console.log('VALID FORM');
+
+    const theme = document.querySelector('.list-sort.color .selected').dataset.sort || null;
+
+    if(theme === null){
+        return;
+    }
+
+    const formData = new FormData(form);
 
     const potData = {
         name: formData.get('potName'),
         target: Number(formData.get('maxspend')),
-        theme: document.querySelector('.list-sort.color .selected').dataset.sort
+        theme: theme
     };
+
 
     const potId = modalAdd.dataset.id;
 
@@ -406,13 +346,11 @@ formPot.addEventListener('submit', async (event) => {
 
             //compare object to send
             const keysToCompare = Object.keys(potData);
-            // console.log('keysToCompare', keysToCompare);
             const hasChange = keysToCompare.some( key => potData[key] !== oldPotData[key] );
 
             if(hasChange){
 
-                const updatedPot = await sendData(`http://localhost:3000/pots/${potId}`, potData, 'PATCH');
-                console.log('DATA PATCH SEND');                
+                const updatedPot = await sendData(`http://localhost:3000/pots/${potId}`, potData, 'PATCH');              
 
                 if(oldPotData.theme !== updatedPot.theme){
                     const liOldTag = colorTagsMap[oldPotData.theme];
@@ -439,9 +377,7 @@ formPot.addEventListener('submit', async (event) => {
             feedPotsPage([newPot]);
         }
 
-
         modalAdd.querySelector('#createForm').reset();
-        // event.target.closest('.modal').querySelector('form').reset();
 
         modalAdd.close();
         delete modalAdd.dataset.id;
@@ -457,18 +393,6 @@ formPot.addEventListener('submit', async (event) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 const formAddWithdraw = document.querySelector('#addWithdrawForm');
 
 formAddWithdraw.addEventListener('submit', async (event) => {
@@ -476,13 +400,34 @@ formAddWithdraw.addEventListener('submit', async (event) => {
     event.preventDefault();
     event.stopPropagation();
 
+    const form = event.target;
+
     const reference = referencePotId.get(articleToAddWithdraw);
     const id = reference.id;
     const currentTotal = reference.total;
+    const operator =  modalAddwithdrawMoney.dataset.operator;//plus or minus
 
-    const operator =  modalAddwithdrawMoney.dataset.operator;
 
-    const formData = new FormData(event.target);
+    const label = form.querySelectorAll('label');
+    const inputs = form.querySelectorAll('input');
+
+    const results = Array.from(inputs).map( (input, index) => {
+        // console.log(label[index]);
+        // console.log('input', validateInput(input, label[index]));
+        return validateInput(input, label[index]);
+    });
+
+    const isValid = results.every(res => res === true);
+
+    if(!isValid){
+        console.log('INVALID FORM');
+        return;
+    }
+
+    console.log('VALID FORM');
+
+
+    const formData = new FormData(form);
     let newTotal;
 
     if(operator === 'minus'){
@@ -496,11 +441,9 @@ formAddWithdraw.addEventListener('submit', async (event) => {
         total: Math.max( 0, currentTotal + newTotal )
     };
 
-
     // console.log(reference.total);
     const isTotalDifferent = reference.total !== amountData.total;
     console.log('isTotalDifferent', isTotalDifferent);
-
 
     try{
 
@@ -509,13 +452,9 @@ formAddWithdraw.addEventListener('submit', async (event) => {
             const updatedPot = await sendData(`http://localhost:3000/pots/${id}`, amountData, 'PATCH');
             const articleUpdated = createArticle([updatedPot]).firstElementChild;
 
-            // console.log('PATCH');
-
             if(articleUpdated){
                 articleToAddWithdraw.replaceWith(articleUpdated);                  
             }
-
-            // articleToAddWithdraw = null;
 
         }
 
@@ -524,11 +463,9 @@ formAddWithdraw.addEventListener('submit', async (event) => {
         alert(`Impossible to create new Pot : ${error.message}`);
     }
 
-
     articleToAddWithdraw = null;
-
     delete modalAddwithdrawMoney.dataset.operator;
-
+    
     modalAddwithdrawMoney.querySelector('#addWithdrawForm').reset();
     modalAddwithdrawMoney.close();
 
@@ -537,19 +474,14 @@ formAddWithdraw.addEventListener('submit', async (event) => {
 
 
 
-
 const formDelete = document.querySelector('#deletePot');
 
 formDelete.addEventListener('submit', async (event) => {
-
     event.preventDefault();
     event.stopPropagation();
-
     console.log('articleToDelete', articleToDelete);
-
     const reference = referencePotId.get(articleToDelete);
     const id = reference.id;
-
     try{
 
         if(id){
@@ -562,7 +494,37 @@ formDelete.addEventListener('submit', async (event) => {
         console.error('Error sending data :', error.message);
         alert(`Impossible to create new Pot : ${error.message}`);
     }
-
     modalDelete.close();
-
 });
+
+
+
+
+
+/****INPUT****/
+
+const labels = document.querySelectorAll('label');
+
+labels.forEach( (label) =>  {
+    const input = label.querySelector('input');
+    input.addEventListener('input', () => {
+        label.classList.remove('error');
+    });
+});
+
+
+
+
+
+/********************************************/
+/********************************************/
+/* - Pots
+  - Adding money to a pot should deduct the given amount from the current balance (seen on the Overview page).
+  - Withdrawing money from a pot should add that amount to the current balance.
+  - Deleting a pot should return all the money from the pot to the current balance. */
+/********************************************/
+/********************************************/
+
+
+
+

@@ -50,7 +50,7 @@
     /*NAV PAGES*/
 
     .pages{
-        display: block;  /* AJOUT ICI POUR FAIRE JS */
+        display: block;
         width: 100%;
         margin-top: var(--space-48px);
     }

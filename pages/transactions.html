@@ -5,12 +5,9 @@
       <meta name="description" content="Exercise Frontend Mentor, exercise Personal finance app">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <link rel="icon" type="image/png" sizes="32x32" href="../assets/images/favicon-32x32.png">
-
       <link href="../styles/styles.css" rel="stylesheet" type="text/css">
       <link href="../styles/transactions.css" rel="stylesheet" type="text/css">
-
       <title>Frontend Mentor | Personal finance app - Transactions</title>
-
     </head>
     <body class="transactions-page">
 
@@ -41,25 +38,18 @@
         <button class="button button-extend-menu public-sans-bold text-preset-3"><img src="../assets/images/icon-minimize-menu.svg" alt="hide menu"><span>Minimize Menu</span></button>
       </header>
 
-
       <main class="container-main">
-
         <div class="container-main-title">
           <h1 class="title public-sans-bold text-preset-1">Transactions</h1>
         </div>
-
         <div class="form-and-transaction">
-
           <search class="search-field">
-        
             <label for="search"><span>Search Transactions</span>
                 <input type="search" name="search" id="search" placeholder="Search transaction" class="public-sans-regular" aria-label="Search transactions">
             </label>
-
             <div class="container-sort">
               <p class="text public-sans-regular text-preset-4">Sort by</p>
               <button class="button button-sort sort" aria-label="Sort by Latest" aria-haspopup="listbox" aria-expanded="false" aria-controls="sort-list"><img src="../assets/images/icon-sort-mobile.svg" alt="" class="mobile"><span class="desktop"><span class="text public-sans-regular text-preset-4">Latest</span><img src="../assets/images/icon-caret-down.svg" alt="caret" class="caret" ></span></button>
-
               <ul id="sort-list" class="list list-sort sort text-preset-4 public-sans-regular" role="listbox" aria-label="Sort options" tabindex="-1">            
                 <li class="li-sort selected" role="option" aria-selected="true" data-sort="Latest">Latest</li>
                 <li class="li-sort" role="option" aria-selected="false" data-sort="Oldest">Oldest</li>
@@ -69,27 +59,15 @@
                 <li class="li-sort" role="option" aria-selected="false" data-sort="Lowest">Lowest</li>
               </ul>
             </div>
-
             <div class="container-sort">
               <p class="text public-sans-regular text-preset-4">Category</p>
               <button class="button button-sort category" aria-label="Category All transactions" aria-haspopup="listbox" aria-expanded="false" aria-controls="category-list"><img src="../assets/images/icon-filter-mobile.svg" alt="" class="mobile"><span class="desktop"><span class="text public-sans-regular text-preset-4">All transactions</span><img src="../assets/images/icon-caret-down.svg" alt="caret" class="caret"></span></button>
               <ul id="category-list" class="list list-sort category text-preset-4 public-sans-regular" role="listbox" aria-label="Category options" tabindex="-1">
                 <li class="li-sort selected" role="option" aria-selected="true" data-category="All transactions">All transactions</li>
-               <!--  <li class="li-sort" role="option" aria-selected="false" data-category="Entertainment">Entertainement</li>
-                <li class="li-sort" role="option" aria-selected="false" data-category="Bills">Bills</li>
-                <li class="li-sort" role="option" aria-selected="false" data-category="Groceries">Groceries</li>
-                <li class="li-sort" role="option" aria-selected="false" data-category="Dining Out">Dining Out</li>
-                <li class="li-sort" role="option" aria-selected="false" data-category="Transportation">Transportation</li>
-                <li class="li-sort" role="option" aria-selected="false" data-category="Personal Care">Personal Care</li> -->
               </ul>
             </div>
-
           </search>
-
-
-
           <div class="container-transactions table" role="table" aria-label="Transactions">
-
             <div class="transactions transactions-header hide-mobile" role="row">
               <div class="cell-name" role="cell">  
                 <p class="text  public-sans-regular text-preset-5">Recipient / Sender</p>
@@ -104,9 +82,7 @@
                 <p class="text public-sans-regular text-preset-5">Transaction <span>Date</span></p>
               </div>
             </div>
-
             <template id="template-transaction">
-
               <div class="transactions" role="row">
                 <div class="container-avatar">
                   <img src="" alt="avatar" class="avatar">
@@ -124,19 +100,12 @@
                   <time datetime="2024-08-19" class="text public-sans-regular text-preset-5"></time>
                 </div>
               </div>    
-
             </template>
-
             <div class="container-template-transactions"></div>
-
           </div>
-
           <div class="container-nav-pages"></div>
-
         </div>
-
       </main>
-
 
     <script src="../scripts/transactions.js" type="module"></script>
 

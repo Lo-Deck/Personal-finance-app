@@ -48,7 +48,6 @@
 
         <article class="container-article article-budgets">
           <div class="section-budgets">
-
             <div class="budget-chart">
               <div class="container-chart">
                 <svg class="chart" viewBox="0 0 100 100"></svg>
@@ -63,8 +62,6 @@
                 <p class="category-total-amount public-sans-regular text-preset-4"></p>
               </div>
             </div>
-
-
             <div>
               <h2 class="title public-sans-bold text-preset-2">Spending Summary</h2>
               <ul class="list list-pots">
@@ -80,7 +77,6 @@
           </div>
         </article>
         
-
         <div class="display-container-article">
           <template id="template-latest-spending">
             <article class="container-article">
@@ -145,19 +141,18 @@
         </div>
         <p class="text public-sans-regular text-preset-4"></p>
 
-        <form method="dialog" id="createForm" class="search-field">
-        
+
+        <form method="dialog" id="createForm" class="search-field" novalidate>
           <div class="container-sort">
             <p class="text public-sans-bold text-preset-5">Budget Category</p>
             <button type="button" class="button button-sort category" aria-label="choose category" aria-haspopup="listbox" aria-expanded="false" aria-controls="category-list"><span class="category-name public-sans-regular text-preset-4">Entertainement</span><img src="../assets/images/icon-caret-down.svg" alt="" class="caret"></button>
             <ul id="category-list" class="list list-sort category text-preset-4 public-sans-regular" role="listbox" aria-label="Category options" tabindex="-1">
             </ul>
           </div>
-
-          <label for="maxspend"><span class="text public-sans-bold text-preset-5">Maximum Spending</span>
-            <input type="text" name="maxspend" id="maxspend" placeholder=" e.g. 2000" inputmode="numeric" maxlength="8" pattern="[0-9]+" class="public-sans-regular">
+          <label for="maxspend" class="container-input"><span class="text public-sans-bold text-preset-5">Maximum Spending</span>
+            <input type="text" name="maxspend" id="maxspend" placeholder=" e.g. 2000" inputmode="numeric" maxlength="8" pattern="[0-9]+" class="public-sans-regular" required>
+            <p class="message-error public-sans-regular text-preset-5"></p>
           </label>
-
           <div class="container-sort">
             <p class="text public-sans-bold text-preset-5">Theme</p>
             <button type="button" class="button button-sort color" aria-label="choose color-tag" aria-haspopup="listbox" aria-expanded="false" aria-controls="sort-list"><span class="color-tag"></span><span class="color-name public-sans-regular text-preset-4">Green</span><img src="../assets/images/icon-caret-down.svg" alt="" class="caret"></button>
@@ -179,30 +174,9 @@
               <li class="li-sort" role="option" aria-selected="false" data-sort="#BE6C49"><span class="color-tag orange"></span><span class="color-name">Orange</span><span class="isUsed">Already Used</span></li>
             </ul>
           </div>
-
           <button type="submit" form="createForm" class="button button-submit-modal public-sans-bold text-preset-4"></button>
-
         </form>
-
       </dialog>
-
-
-      <!-- <dialog class="modal modal-delete">
-        <div class="container-title">
-          <h3 class="title public-sans-bold text-preset-1 text-preset-2"></h3>
-          <form method="dialog">
-            <button type="submit" class="button close-modal"><img src="../assets/images/icon-close-modal.svg" alt=""></button>   
-          </form>
-        </div>
-        <p class="text public-sans-regular text-preset-4"></p>
-        <form action="" class="search-field">
-          <div class="container-modal-button public-sans-bold text-preset-4">
-            <button class="button button-submit-modal">Yes, Confirm Deletion</button>
-            <button class="button button-submit-modal">No, Go Back</button>
-          </div>
-        </form>
-      </dialog> -->
-
 
       <dialog class="modal modal-delete">
         <div class="container-title">
@@ -223,7 +197,6 @@
           </div>
         </form>
       </dialog>
-
 
     <script src="../scripts/budgets.js" type="module"></script>
 

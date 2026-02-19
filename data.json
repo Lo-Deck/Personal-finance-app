@@ -475,7 +475,7 @@
     {
       "id": "4833",
       "category": "Groceries",
-      "maximum": 400,
+      "maximum": 350,
       "theme": "#C94736"
     }
   ],
@@ -517,8 +517,8 @@
     },
     {
       "id": "158d",
-      "name": "Rocket",
-      "target": 2222,
+      "name": "Rocketta",
+      "target": 6552,
       "theme": "#CAB361",
       "total": 143
     }
