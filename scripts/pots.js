@@ -9,19 +9,34 @@ const referencePotId = new WeakMap();
 const listHTMLColorTag = document.querySelectorAll('.list-sort.color .li-sort');
 
 
+let data;
+
 ( async () => {
 
     try{
 
         setupSideMenu()
 
-        const data = await getData.fetchData('http://localhost:3000/pots');
 
+        // const data = await getData.fetchData('http://localhost:3000/pots');
+
+        const [ balance, pots ] = await Promise.all ([
+            getData.fetchData('http://localhost:3000/balance'),
+            getData.fetchData('http://localhost:3000/pots')
+        ]);
+
+        data = {
+            balance: balance,
+            pots: pots
+        };
+
+        // console.log('data', data);
+        
         listHTMLColorTag.forEach( (li) => {
             colorTagsMap[li.dataset.sort] = li;
         });
 
-        feedPotsPage(data);
+        feedPotsPage(data.pots);
 
     } catch(error) {
 
@@ -350,7 +365,7 @@ formPot.addEventListener('submit', async (event) => {
 
             if(hasChange){
 
-                const updatedPot = await sendData(`http://localhost:3000/pots/${potId}`, potData, 'PATCH');              
+                const updatedPot = await sendData(`http://localhost:3000/pots/${potId}`, potData, 'PATCH');  
 
                 if(oldPotData.theme !== updatedPot.theme){
                     const liOldTag = colorTagsMap[oldPotData.theme];
@@ -430,11 +445,26 @@ formAddWithdraw.addEventListener('submit', async (event) => {
     const formData = new FormData(form);
     let newTotal;
 
+    // console.log(data);
+    
+    const balanceData = {
+        current: data.balance.current
+    };
+
+    // console.log('balanceData.current', balanceData.current);
+
+    console.log('BEFORE MODIF.  balanceData', balanceData);
+    console.log('balanceData.current', balanceData.current);
+    console.log('Number(formData.get(amountToAddWithdraw))', Number(formData.get('amountToAddWithdraw')));
+    // console.log('balanceData.current', balanceData.current -= Number(formData.get('amountToAddWithdraw')));
+    
     if(operator === 'minus'){
         newTotal = -Number(formData.get('amountToAddWithdraw'));
+        balanceData.current += Number(formData.get('amountToAddWithdraw'));
     }
     else{
         newTotal = Number(formData.get('amountToAddWithdraw'));
+        balanceData.current -= Number(formData.get('amountToAddWithdraw'));
     }
 
     const amountData = {
@@ -443,13 +473,38 @@ formAddWithdraw.addEventListener('submit', async (event) => {
 
     // console.log(reference.total);
     const isTotalDifferent = reference.total !== amountData.total;
-    console.log('isTotalDifferent', isTotalDifferent);
+    // console.log('isTotalDifferent', isTotalDifferent);
 
     try{
 
         if(id && isTotalDifferent){
 
-            const updatedPot = await sendData(`http://localhost:3000/pots/${id}`, amountData, 'PATCH');
+        /* - Pots
+    - Adding money to a pot should deduct the given amount from the current balance (seen on the Overview page).
+    - Withdrawing money from a pot should add that amount to the current balance.
+    - Deleting a pot should return all the money from the pot to the current balance.
+
+        "balance": {
+            "current": 4836,
+            "income": 3814.25,
+            "expenses": 1700.5
+        },
+
+    */ 
+            // const updatedBalance = await sendData(`http://localhost:3000/balance/`, balanceData, 'PATCH');    
+            // const updatedPot = await sendData(`http://localhost:3000/pots/${id}`, amountData, 'PATCH');
+
+            const [ updatedBalance, updatedPot ] = await Promise.all ([
+                sendData(`http://localhost:3000/balance/`, balanceData, 'PATCH'),
+                sendData(`http://localhost:3000/pots/${id}`, amountData, 'PATCH')
+            ]);
+
+            console.log('New balance', updatedBalance);
+            console.log('Modif. Pot', amountData);
+
+
+            data.balance.current  = updatedBalance.current;
+    
             const articleUpdated = createArticle([updatedPot]).firstElementChild;
 
             if(articleUpdated){
@@ -473,30 +528,62 @@ formAddWithdraw.addEventListener('submit', async (event) => {
 
 
 
-
 const formDelete = document.querySelector('#deletePot');
 
 formDelete.addEventListener('submit', async (event) => {
+
     event.preventDefault();
     event.stopPropagation();
+
     console.log('articleToDelete', articleToDelete);
+
     const reference = referencePotId.get(articleToDelete);
     const id = reference.id;
+
+
+    const balanceData = {
+        current: data.balance.current
+    };
+
+
+    console.log('balanceData', balanceData);
+    console.log('reference', reference);
+
+    balanceData.current += Number(reference.total);
+
+    console.log('balanceData.current', balanceData.current);
+
+
     try{
 
         if(id){
-            const updatedPot = await sendData(`http://localhost:3000/pots/${id}`, null, 'DELETE');
+
+            // const updatedPot = await sendData(`http://localhost:3000/pots/${id}`, null, 'DELETE');
+
+            const [ updatedBalance, updatedPot ] = await Promise.all ([
+                sendData(`http://localhost:3000/balance/`, balanceData, 'PATCH'),
+                sendData(`http://localhost:3000/pots/${id}`, null, 'DELETE')
+            ]);
+
+            console.log('New balance', updatedBalance);
+            console.log('Deleted Pot', updatedPot);
+
+            data.balance.current  = updatedBalance.current;
+
             articleToDelete.remove();
             articleToDelete = null;
+
         }
+
 
     } catch(error){
         console.error('Error sending data :', error.message);
         alert(`Impossible to create new Pot : ${error.message}`);
     }
-    modalDelete.close();
-});
 
+    modalDelete.close();
+
+});
 
 
 
@@ -513,17 +600,6 @@ labels.forEach( (label) =>  {
 });
 
 
-
-
-
-/********************************************/
-/********************************************/
-/* - Pots
-  - Adding money to a pot should deduct the given amount from the current balance (seen on the Overview page).
-  - Withdrawing money from a pot should add that amount to the current balance.
-  - Deleting a pot should return all the money from the pot to the current balance. */
-/********************************************/
-/********************************************/
 
 
 

@@ -28,7 +28,7 @@ export function addWithrawMoney(data, btn, modal){
 
     const { name } = data;
     const category = name;
-    console.log('category', category);
+    // console.log('category', category);
 
     if(btn.classList.contains('button-add-money')){
         modal.querySelector('.title').textContent = `Add from '${category}'`;

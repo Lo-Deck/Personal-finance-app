@@ -29,7 +29,6 @@ let listHTMLCategoryTag;
 
         feedbudgetPage(data);
 
-
     } catch(error) {
 
         console.error('CRITICAL APP ERROR:', error.message);
@@ -45,6 +44,16 @@ let listHTMLCategoryTag;
     }
 
 })()
+
+
+
+
+/******************************/
+
+/***********  - Clicking "See All" on a budget should navigate to the Transactions page with the filter set to the relevant category.
+ *  For example, clicking "See All" on Entertainment should only show transactions with the Entertainment category.*******************/
+
+/******************************/
 
 
 
