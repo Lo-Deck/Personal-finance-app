@@ -139,7 +139,7 @@ export function closeAllSortMenu(){
         const btn = menu.closest('.container-sort').querySelector('.button-sort');
         const caret = btn.querySelector('.caret');
         caret.style.transform = "rotate(0deg)";
-        btn.setAttribute('aria-expanded', 'false'); 
+        btn.setAttribute('aria-expanded', 'false');
     });
 }
 
@@ -274,12 +274,14 @@ export function transactionSliceBy(transactions, liSortBy, liCategoryBy){
         document.querySelectorAll('.list-sort.sort .li-sort').forEach( (li) => {
             li.classList.remove('selected');
             li.setAttribute('aria-selected', 'false');
+
+            li.setAttribute('tabindex', '-1');
+
         });
         liSortBy.classList.add('selected');
         liSortBy.setAttribute('aria-selected', 'true');
         document.querySelector('.button-sort.sort').setAttribute('aria-label', `Sort by ${dataSort}`);        
-    } 
-
+    }
     else {
         dataSort = document.querySelector('.list-sort.sort .li-sort.selected').dataset.sort;
     }
@@ -294,6 +296,9 @@ export function transactionSliceBy(transactions, liSortBy, liCategoryBy){
         document.querySelectorAll('.list-sort.category .li-sort').forEach( (li) => {
             li.classList.remove('selected');
             li.setAttribute('aria-selected', 'false');
+
+            li.setAttribute('tabindex', '-1');
+
         });
         liCategoryBy.classList.add('selected');
         liCategoryBy.setAttribute('aria-selected', 'true');
@@ -506,6 +511,10 @@ export function createListHTMLCategory(data, listForModal){
         li.setAttribute('aria-selected', 'false');
         li.setAttribute('data-category', `${transaction}`);
 
+
+        li.setAttribute('tabindex', '-1');
+        
+
         if(listForModal){
 
             const spanTextContent = document.createElement('span');
@@ -677,53 +686,213 @@ export function createSVGChart(data, budgetAmountbyCategory){
 
 
 
-
-
-
-
+/**
+ * Verification of the input.
+ * @param {HTMLInputElement} input - input to check validity.
+ * @param {HTMLLabelElement} element - container to display the error message.
+ */
 
 export function validateInput(input, element){
 
-    // console.log('input', input);
-    
     if (input.validity.valueMissing) {
-
         element.classList.add('error');
         element.querySelector('.message-error').textContent = `This field is required`;
-
         return false;
-
     }
 
-    // if (input.type === 'email' && input.validity.typeMismatch) {
     if (input.validity.patternMismatch) {
-       
         element.classList.add('error');
         element.querySelector('.message-error').textContent = `Please enter a valid pattern`;
-
         return false;
-
     }
-
-    // if (input.validity.tooShort) {
-    //     // input.classList.add('error-input');
-    //     // document.querySelectorAll('.container-input span.error')[index].textContent = `Input too short, minimum ${input.minLength} characters needed.`;
-    //     return false;
-    // }
 
     if (input.validity.tooLong) {
-        // input.classList.add('error-input');
-        // document.querySelectorAll('.container-input span.error')[index].textContent = `Input too long, maximum ${input.maxLength} characters allowed.`;
-
+        element.classList.add('error');
+        element.querySelector('.message-error').textContent = `Please enter a shorter text`;
         return false;
-
     }
 
-    // input.classList.remove('error-input');
-    // document.querySelectorAll('.container-input span.error')[index].textContent = '';
     return true;
 
 }            
 
 
 
+
+/**
+ * Manual navigation using keyboard.
+ * right and left to go through the focus
+ * up and down to go through list
+ */
+
+
+export function goThroughFocus(){
+
+    let horizontalIndex = 0;
+    let currentIndex = 0;
+
+    let indexBtnEdit;//save index when open modal
+    let takeFocus;//save when open modal
+
+    document.addEventListener('keydown', (event) => {
+
+        const menu = document.querySelectorAll('.list-sort.active .li-sort');
+        const openModal = document.querySelector('dialog[open]');
+        let arrayTabIndex;
+
+        if(openModal){
+
+            arrayTabIndex = Array.from(openModal.querySelectorAll('a, button, input')).filter( (element) => {
+                const style = window.getComputedStyle(element);
+                const isNotHidden = style.opacity !== "0" && style.visibility !== "hidden";                
+                const isNotDisabled = !element.disabled;
+                return isNotHidden && isNotDisabled;
+            });
+
+        }
+        else{
+
+            arrayTabIndex = Array.from(document.querySelectorAll('a, button, input')).filter( (element) => {
+                const style = window.getComputedStyle(element);
+                const isNotDisabled = !element.disabled;
+                const isNotHidden = style.opacity !== "0" && style.visibility !== "hidden";
+                const modal = element.closest('dialog');
+                const isVisibleInModal = modal ? modal.hasAttribute('open') : true;
+                return isVisibleInModal && isNotHidden && isNotDisabled;
+            });
+
+        }
+
+
+        if(menu.length > 0){
+
+
+            // if(event.key === 'ArrowDown' || event.key === 'ArrowUp'){
+            if(event.key === 'ArrowRight' || event.key === 'ArrowLeft'){
+            
+                event.preventDefault();
+
+                if(menu){
+
+                    // if(event.key === 'ArrowDown'){
+                    if(event.key === 'ArrowRight'){
+                        currentIndex = currentIndex < menu.length-1 ? (currentIndex + 1 ) : 0;
+                    }
+                    else{
+                        currentIndex = currentIndex > 0 ? (currentIndex - 1 ) : menu.length-1;
+                    }
+                    menu.forEach(li => li.setAttribute('tabindex', '-1'));
+                    menu[currentIndex].setAttribute('tabindex', '0');
+                    menu[currentIndex].focus();
+
+                }
+
+
+            }
+
+
+
+            else if (event.key === 'Enter') {
+                event.preventDefault();
+                const currentBtn = menu[currentIndex].closest('.container-sort').querySelector('.button');
+
+                if(!menu[currentIndex].classList.contains('used')){
+                    menu[currentIndex].click();
+                }
+
+                setTimeout(() => {
+                    currentBtn.focus();
+                }, 0);
+
+            }
+
+
+
+            else if (event.key === 'Escape') {
+                event.preventDefault();
+                menu[currentIndex].parentElement.classList.remove('active');
+                setTimeout(() => {
+                    menu[currentIndex].closest('.container-sort').querySelector('.button').focus();
+                }, 0);
+                currentIndex = 0;
+            }
+
+
+
+        }
+
+        if(arrayTabIndex.length > 0){
+
+
+
+            // if(event.key === 'ArrowRight' || event.key === 'ArrowLeft'){
+            
+            if(event.key === 'ArrowDown' || event.key === 'ArrowUp'){
+            
+
+                // const isTextInput = document.activeElement.tagName === 'INPUT' && 
+                //        (document.activeElement.type === 'text' || 
+                //         document.activeElement.type === 'search' || 
+                //         document.activeElement.type === 'email');
+
+                // if (isTextInput) {
+                //     return;
+                // }
+
+
+                event.preventDefault();
+                if(menu.length > 0){
+                    const list = menu[currentIndex].closest('.container-sort').querySelector('.list-sort');
+                    const isActive = list.classList.contains('active');
+                    if(isActive){
+                        list.classList.remove('active');
+                        const btn = menu[currentIndex].closest('.container-sort').querySelector('.button-sort');
+                        const caret = btn.querySelector('.caret');
+                        caret.style.transform = "rotate(0deg)";
+                        btn.setAttribute('aria-expanded', 'false');
+                    }
+                }
+                // if(event.key === 'ArrowRight'){
+                if(event.key === 'ArrowDown'){
+                    horizontalIndex = horizontalIndex < arrayTabIndex.length-1 ? (horizontalIndex + 1) : 0;
+                }
+                else{
+                    horizontalIndex = horizontalIndex > 0 ? (horizontalIndex - 1) : arrayTabIndex.length-1;
+                }
+                arrayTabIndex[horizontalIndex].focus();
+            }
+
+            else if (event.key === 'Enter') {
+                const btnMenu = document.activeElement.closest('.button-edit');
+                if(btnMenu){
+                    indexBtnEdit =  arrayTabIndex.indexOf( btnMenu );
+                    takeFocus = btnMenu;
+                }
+                if(openModal){
+                    setTimeout(() => {
+                        
+                        const closeModal = !document.querySelector('dialog[open]');
+
+                        if(closeModal){
+
+                            horizontalIndex = indexBtnEdit;
+                            takeFocus.focus(); 
+
+                        }
+
+
+                    }, 0);
+                    
+                }
+
+            }
+
+
+
+
+
+        }
+
+    });
+
+}

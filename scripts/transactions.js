@@ -1,6 +1,6 @@
 
 import { getData } from './data-service.js';
-import { setupSideMenu, toggleSortMenu, closeAllSortMenu, transactionSliceBy, createNavBar, choosePageNavbar, createListHTMLCategory } from './ui-utils.js';
+import { setupSideMenu, toggleSortMenu, closeAllSortMenu, transactionSliceBy, createNavBar, choosePageNavbar, createListHTMLCategory, goThroughFocus } from './ui-utils.js';
 
 
 let transactions;//keep the data transactions
@@ -44,15 +44,48 @@ const containerNavPages = document.querySelector('.container-nav-pages');
 
 
 function feedTransactionPage(transactions){
+
+    const cat = new URLSearchParams(window.location.search);
+
+    let extractCategory = cat.get('cat');
+
+    if(!extractCategory){
+    
+        extractCategory = 'All Transactions'; 
+        const url = new URL(location);     
+        console.log('url', url);
+        url.searchParams.set("cat", extractCategory);
+        history.replaceState({}, "", url);
+
+    }
+
+    createListHTMLCategory(transactions, false);
+
     const currentLiSort = document.querySelector('.search-field .list-sort.sort .li-sort.selected');
-    const currentLiCategory = document.querySelector('.search-field .list-sort.category .li-sort.selected');
+    let currentLiCategory;
+
+    if(extractCategory){
+
+        document.querySelectorAll('.list-sort.category .li-sort').forEach( (li) => {
+            if( li.dataset.category === extractCategory){
+                currentLiCategory = li;
+            }
+        });
+
+    }
+    else{
+        currentLiCategory = document.querySelector('.search-field .list-sort.category .li-sort.selected');    
+    }
+
     transactionsFilter = transactionSliceBy(transactions, currentLiSort, currentLiCategory);
+
     containerNavPages.textContent = '';
     if(transactionsFilter.length > 10){
         createNavBar(containerNavPages, transactionsFilter.length);
     }
-    createListHTMLCategory(transactionsFilter, false);
+
 }
+
 
 
 /* LISTENER */
@@ -65,25 +98,54 @@ document.addEventListener('click', (event) => {
     const liPage = event.target.closest('.li-page');
 
     if(btnSort){
+
         //to have only one menu open
         const container = btnSort.closest('.container-sort');
         const targetList = container.querySelector('.list-sort');
         const isOpen = targetList.classList.contains('active');
+
         closeAllSortMenu();
+
         if (!isOpen) {
             toggleSortMenu(btnSort);
+            targetList.querySelector('.li-sort.selected').setAttribute('tabindex', '0');
         }
+        else{
+            targetList.querySelector('.li-sort.selected').setAttribute('tabindex', '-1');
+        }
+
     }
     else {
         closeAllSortMenu();
     }
 
     if( liSortBy || liCategory ){
+
         transactionsFilter = transactionSliceBy(transactions, liSortBy, liCategory);
         containerNavPages.textContent = '';
         if(transactionsFilter.length > 10){
             createNavBar(containerNavPages, transactionsFilter.length);
         }
+
+        if(liSortBy){
+            liSortBy.setAttribute('tabindex', '0');
+        }
+
+        if(liCategory){
+
+            const extractCategory = liCategory.dataset.category;
+
+            if(extractCategory){
+                const url = new URL(location);
+                console.log('url', url);
+                url.searchParams.set("cat", extractCategory);
+                history.replaceState({}, "", url);
+            }
+
+            liCategory.setAttribute('tabindex', '0');
+
+        }
+
     }
 
     if(liPage){
@@ -92,6 +154,9 @@ document.addEventListener('click', (event) => {
 
 });
 
+
+
+/* INPUT */
 
 const searchByName = document.querySelector('input');
 
@@ -104,3 +169,12 @@ if(searchByName){
         }
     });
 }
+
+
+
+
+/**** FOCUS ****/
+
+goThroughFocus();
+
+

@@ -27,8 +27,6 @@ export const getData = {
 
 
 
-
-
 /**
  * Send data to the server,
  * @param {string} url - address to send the data.

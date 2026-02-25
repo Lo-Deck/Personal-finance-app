@@ -50,25 +50,25 @@
             <div class="container-sort">
               <p class="text public-sans-regular text-preset-4">Sort by</p>
               <button class="button button-sort sort" aria-label="Sort by Latest" aria-haspopup="listbox" aria-expanded="false" aria-controls="sort-list"><img src="../assets/images/icon-sort-mobile.svg" alt="" class="mobile"><span class="desktop"><span class="text public-sans-regular text-preset-4">Latest</span><img src="../assets/images/icon-caret-down.svg" alt="caret" class="caret" ></span></button>
-              <ul id="sort-list" class="list list-sort sort text-preset-4 public-sans-regular" role="listbox" aria-label="Sort options" tabindex="-1">            
-                <li class="li-sort selected" role="option" aria-selected="true" data-sort="Latest">Latest</li>
-                <li class="li-sort" role="option" aria-selected="false" data-sort="Oldest">Oldest</li>
-                <li class="li-sort" role="option" aria-selected="false" data-sort="A to Z">A to Z</li>
-                <li class="li-sort" role="option" aria-selected="false" data-sort="Z to A">Z to A</li>
-                <li class="li-sort" role="option" aria-selected="false" data-sort="Highest">Highest</li>
-                <li class="li-sort" role="option" aria-selected="false" data-sort="Lowest">Lowest</li>
+              <ul id="sort-list" class="list list-sort sort text-preset-4 public-sans-regular" role="listbox" aria-label="Sort options" tabindex="0">            
+                <li class="li-sort selected" role="option" aria-selected="true" data-sort="Latest" tabindex="-1">Latest</li>
+                <li class="li-sort" role="option" aria-selected="false" data-sort="Oldest" tabindex="-1">Oldest</li>
+                <li class="li-sort" role="option" aria-selected="false" data-sort="A to Z" tabindex="-1">A to Z</li>
+                <li class="li-sort" role="option" aria-selected="false" data-sort="Z to A" tabindex="-1">Z to A</li>
+                <li class="li-sort" role="option" aria-selected="false" data-sort="Highest" tabindex="-1">Highest</li>
+                <li class="li-sort" role="option" aria-selected="false" data-sort="Lowest" tabindex="-1">Lowest</li>
               </ul>
             </div>
             <div class="container-sort">
               <p class="text public-sans-regular text-preset-4">Category</p>
               <button class="button button-sort category" aria-label="Category All transactions" aria-haspopup="listbox" aria-expanded="false" aria-controls="category-list"><img src="../assets/images/icon-filter-mobile.svg" alt="" class="mobile"><span class="desktop"><span class="text public-sans-regular text-preset-4">All transactions</span><img src="../assets/images/icon-caret-down.svg" alt="caret" class="caret"></span></button>
-              <ul id="category-list" class="list list-sort category text-preset-4 public-sans-regular" role="listbox" aria-label="Category options" tabindex="-1">
-                <li class="li-sort selected" role="option" aria-selected="true" data-category="All transactions">All transactions</li>
+              <ul id="category-list" class="list list-sort category text-preset-4 public-sans-regular" role="listbox" aria-label="Category options" tabindex="0">
+                <li class="li-sort selected" role="option" aria-selected="true" data-category="All transactions" tabindex="-1">All transactions</li>
               </ul>
             </div>
           </search>
           <div class="container-transactions table" role="table" aria-label="Transactions">
-            <div class="transactions transactions-header hide-mobile" role="row">
+            <div class="transactions transactions-header hide-mobile" role="row">         
               <div class="cell-name" role="cell">  
                 <p class="text  public-sans-regular text-preset-5">Recipient / Sender</p>
               </div>

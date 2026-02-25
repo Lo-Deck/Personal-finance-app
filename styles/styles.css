@@ -958,7 +958,6 @@ body:has(dialog[open]) {
         color: var(--grey-500);
         transform: scale(1.25);
         position: absolute;
-          /* top: 50%; left: 1rem; */
           top: 2.4rem; left: 1rem;
       }
       .message-error{
@@ -967,11 +966,8 @@ body:has(dialog[open]) {
         pointer-events: none;
         color: var(--secondary-red);
         position: absolute;        
-        /* top: 4.75rem; left: 0; */
         top: 0.25rem; right: 0;
-
       }
-
       &.error{
         input{
           border: 0.0625rem solid var(--secondary-red);
@@ -984,7 +980,6 @@ body:has(dialog[open]) {
       }
 
     }
-
     input{
       width: 100%;
       font-size: 1rem;
@@ -992,21 +987,7 @@ body:has(dialog[open]) {
       &[name="maxspend"], &[name="amountToAddWithdraw"]{
         text-indent: 2rem;
       }
-
-      /* &.error{
-        border: 0.0625rem solid var(--secondary-red);
-      } */
-      /* &:hover:not(:disabled, .error){
-          cursor: pointer;
-          border: 0.0625rem solid var(--grey-900);
-      }
-      &:focus{
-          outline: none;
-      } */
-
     }
-
-
     .char-limit{
       width: fit-content;      
       color: var(--grey-500);
@@ -1032,21 +1013,6 @@ body:has(dialog[open]) {
           width: 100%;
       }
     }
-
-
-
-
-    /* .container-input{
-      position: relative;
-      .message-error{
-        color: var(--secondary-red);
-        position: absolute;
-          top: 4.75rem; right: 0;
-      }
-    } */
-
-
-
 
     .list-sort{
       width: 100%;
@@ -1161,7 +1127,10 @@ body:has(dialog[open]) {
           border: 0.0625rem solid var(--grey-900);
       }
       &:focus{
-          outline: none;
+
+          /* outline: none; */
+
+
       }
   }
   .container-sort{

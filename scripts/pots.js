@@ -1,7 +1,7 @@
 
 
 import { getData, sendData } from './data-service.js';
-import { setupSideMenu, addWithrawMoney, toggleDropdownMenu, closeAllDropdowns, closeModalAddEdit, chooseLiColorCategory, validateInput } from './ui-utils.js';
+import { setupSideMenu, addWithrawMoney, toggleDropdownMenu, closeAllDropdowns, closeModalAddEdit, chooseLiColorCategory, validateInput, goThroughFocus } from './ui-utils.js';
 
 
 const colorTagsMap = {};//keep track of the color
@@ -294,10 +294,6 @@ inputName.addEventListener('input', () => {
 
 
 
-/************************************ */
-/****************POT GROCERIES BUG AFFICHAGE AVEC POT ******************** */
-/************************************ */
-
 /* SUBMIT */
 
 
@@ -310,16 +306,11 @@ formPot.addEventListener('submit', async (event) => {
 
     const form = event.target;
 
-    // console.log(form);
-    
     const label = form.querySelectorAll('label');
-    // console.log('label', label);
     
     const inputs = form.querySelectorAll('input');
 
     const results = Array.from(inputs).map( (input, index) => {
-        // console.log(label[index]);
-        // console.log('input', validateInput(input, label[index]));
         return validateInput(input, label[index]);
     });
 
@@ -427,8 +418,6 @@ formAddWithdraw.addEventListener('submit', async (event) => {
     const inputs = form.querySelectorAll('input');
 
     const results = Array.from(inputs).map( (input, index) => {
-        // console.log(label[index]);
-        // console.log('input', validateInput(input, label[index]));
         return validateInput(input, label[index]);
     });
 
@@ -451,13 +440,6 @@ formAddWithdraw.addEventListener('submit', async (event) => {
         current: data.balance.current
     };
 
-    // console.log('balanceData.current', balanceData.current);
-
-    console.log('BEFORE MODIF.  balanceData', balanceData);
-    console.log('balanceData.current', balanceData.current);
-    console.log('Number(formData.get(amountToAddWithdraw))', Number(formData.get('amountToAddWithdraw')));
-    // console.log('balanceData.current', balanceData.current -= Number(formData.get('amountToAddWithdraw')));
-    
     if(operator === 'minus'){
         newTotal = -Number(formData.get('amountToAddWithdraw'));
         balanceData.current += Number(formData.get('amountToAddWithdraw'));
@@ -471,37 +453,16 @@ formAddWithdraw.addEventListener('submit', async (event) => {
         total: Math.max( 0, currentTotal + newTotal )
     };
 
-    // console.log(reference.total);
     const isTotalDifferent = reference.total !== amountData.total;
-    // console.log('isTotalDifferent', isTotalDifferent);
 
     try{
 
         if(id && isTotalDifferent){
 
-        /* - Pots
-    - Adding money to a pot should deduct the given amount from the current balance (seen on the Overview page).
-    - Withdrawing money from a pot should add that amount to the current balance.
-    - Deleting a pot should return all the money from the pot to the current balance.
-
-        "balance": {
-            "current": 4836,
-            "income": 3814.25,
-            "expenses": 1700.5
-        },
-
-    */ 
-            // const updatedBalance = await sendData(`http://localhost:3000/balance/`, balanceData, 'PATCH');    
-            // const updatedPot = await sendData(`http://localhost:3000/pots/${id}`, amountData, 'PATCH');
-
             const [ updatedBalance, updatedPot ] = await Promise.all ([
                 sendData(`http://localhost:3000/balance/`, balanceData, 'PATCH'),
                 sendData(`http://localhost:3000/pots/${id}`, amountData, 'PATCH')
             ]);
-
-            console.log('New balance', updatedBalance);
-            console.log('Modif. Pot', amountData);
-
 
             data.balance.current  = updatedBalance.current;
     
@@ -535,38 +496,23 @@ formDelete.addEventListener('submit', async (event) => {
     event.preventDefault();
     event.stopPropagation();
 
-    console.log('articleToDelete', articleToDelete);
-
     const reference = referencePotId.get(articleToDelete);
     const id = reference.id;
-
 
     const balanceData = {
         current: data.balance.current
     };
 
-
-    console.log('balanceData', balanceData);
-    console.log('reference', reference);
-
     balanceData.current += Number(reference.total);
-
-    console.log('balanceData.current', balanceData.current);
-
 
     try{
 
         if(id){
 
-            // const updatedPot = await sendData(`http://localhost:3000/pots/${id}`, null, 'DELETE');
-
             const [ updatedBalance, updatedPot ] = await Promise.all ([
                 sendData(`http://localhost:3000/balance/`, balanceData, 'PATCH'),
                 sendData(`http://localhost:3000/pots/${id}`, null, 'DELETE')
             ]);
-
-            console.log('New balance', updatedBalance);
-            console.log('Deleted Pot', updatedPot);
 
             data.balance.current  = updatedBalance.current;
 
@@ -601,6 +547,7 @@ labels.forEach( (label) =>  {
 
 
 
+/**** FOCUS ****/
 
-
+goThroughFocus();
 

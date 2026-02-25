@@ -1,7 +1,7 @@
 
 
 import { getData } from './data-service.js';
-import { setupSideMenu, createSVGChart } from './ui-utils.js';
+import { setupSideMenu, createSVGChart, goThroughFocus } from './ui-utils.js';
 
 
 ( async () => {
@@ -207,3 +207,7 @@ function feedIndexPage(data){
 
 }
 
+
+/**** FOCUS ****/
+
+goThroughFocus();

@@ -1,6 +1,6 @@
 
 import { getData } from './data-service.js';
-import { setupSideMenu, toggleSortMenu, closeAllSortMenu, billSortBy } from './ui-utils.js';
+import { setupSideMenu, toggleSortMenu, closeAllSortMenu, billSortBy, goThroughFocus } from './ui-utils.js';
 
 
 let recurringBill;
@@ -142,4 +142,7 @@ if(searchByName){
 }
 
 
+/**** FOCUS ****/
+
+goThroughFocus();
 

@@ -1,6 +1,6 @@
 {
   "balance": {
-    "current": 4836,
+    "current": 4736,
     "income": 3814.25,
     "expenses": 1700.5
   },
@@ -516,11 +516,11 @@
       "id": "ee21"
     },
     {
-      "id": "158d",
-      "name": "Rocketta",
-      "target": 6552,
-      "theme": "#CAB361",
-      "total": 143
+      "id": "b9d7",
+      "name": "ROCKKETTI",
+      "target": 800,
+      "theme": "#597C7C",
+      "total": 100
     }
   ]
 }

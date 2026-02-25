@@ -1,7 +1,7 @@
 
 
 import { getData, sendData } from './data-service.js';
-import { setupSideMenu, toggleDropdownMenu, closeModalAddEdit, closeAllDropdowns, createListHTMLCategory, chooseLiColorCategory, createSVGChart, validateInput } from './ui-utils.js';
+import { setupSideMenu, toggleDropdownMenu, closeModalAddEdit, closeAllDropdowns, createListHTMLCategory, chooseLiColorCategory, createSVGChart, validateInput, goThroughFocus } from './ui-utils.js';
 
 
 const colorTagsMap = {};//keep track of the color
@@ -44,16 +44,6 @@ let listHTMLCategoryTag;
     }
 
 })()
-
-
-
-
-/******************************/
-
-/***********  - Clicking "See All" on a budget should navigate to the Transactions page with the filter set to the relevant category.
- *  For example, clicking "See All" on Entertainment should only show transactions with the Entertainment category.*******************/
-
-/******************************/
 
 
 
@@ -132,6 +122,7 @@ function feedbudgetPage(data){
         li.querySelector('.budget-spent').textContent = `$${spent.toFixed(2)}`;
         li.querySelector('.budget-amount-max').textContent = `$${budget.maximum.toFixed(2)}`;
 
+
         fragment.appendChild(clone);
 
     });
@@ -208,6 +199,13 @@ function feedbudgetPage(data){
             spendingList.appendChild(cloneLi);
 
         });
+
+        // console.log(clone.querySelector('.link-details').href);
+        const url = new URL('./pages/transactions.html', window.location.origin);
+        url.searchParams.append('cat', budget.category);
+        clone.querySelector('.link-details').href = url.href;
+        // clone.querySelector('.link-details').href = `./transactions.html?cat=${budget.category}`;
+
 
         const article = clone.querySelector('.container-article');
         referenceBudgetId.set(article, budget);
@@ -433,18 +431,10 @@ formPot.addEventListener('submit', async (event) => {
 
     const form = event.target;
 
-    // console.log('form', form);
-    // console.log('form', form.checkValidity());
-
     const label = form.querySelectorAll('label');
-
-    // console.log('label', label);
-    
     const inputs = form.querySelectorAll('input');
 
     const results = Array.from(inputs).map( (input, index) => {
-        // console.log(label[index]);
-        // console.log('input', validateInput(input, label[index]));
         return validateInput(input, label[index]);
     });
 
@@ -543,8 +533,6 @@ formDelete.addEventListener('submit', async (event) => {
 
 
 
-
-
 /****INPUT****/
 
 const labels = document.querySelectorAll('label');
@@ -555,4 +543,9 @@ labels.forEach( (label) =>  {
         label.classList.remove('error');
     });
 });
+
+
+/**** FOCUS ****/
+
+goThroughFocus();
 
