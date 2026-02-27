@@ -52,7 +52,8 @@
 
 .pots-page{
     .container-main{
-        @media screen and (min-width: 70rem){
+        /* @media screen and (min-width: 70rem){ */
+        @media screen and (min-width: 72.5rem){
             grid-template-rows: auto;
             justify-content: space-between;            
         }
@@ -101,7 +102,8 @@
                 }
             }           
         }
-        @media screen and (min-width: 70rem){
+        /* @media screen and (min-width: 70rem){ */
+        @media screen and (min-width: 72.5rem){
             width: 32.375rem;
             padding: var(--space-24px);
             .container-button{

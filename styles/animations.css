@@ -1,0 +1,239 @@
+
+
+
+
+
+@media (prefers-reduced-motion: no-preference){
+
+  .transition-width{
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .transition-opacity{
+    transition: opacity 1s ease 0.2s, visibility 0s 0.2s;
+    white-space: nowrap;
+  }
+
+  .transition-rotate{
+    transition: transform 0.5s ease;
+  }
+
+}
+
+
+/* 
+
+
+.container-header{
+  grid-area: header;
+  width: 100%;
+  background: var(--grey-900);
+  border-top-left-radius: 0.5rem; 
+  border-top-right-radius: 0.5rem;
+  padding: var(--space-08px) 0 0;
+
+  .menu{
+    max-width: var(--size343to688);
+    margin: 0 auto;
+  }
+
+  .list-menu{
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .li-menu{
+    width: clamp(4.2875rem, 2.1763rem + 9.0076vw, 6.5rem);
+    height: clamp(2.75rem, 1.438rem + 5.598vw, 4.125rem);
+    a{
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    svg{
+      width: 1.25rem;
+      height: 1.25rem;
+      fill: #b3b3b3;
+    }
+    span{
+      display: block;
+      color: var(--grey-300);
+    }
+    &.selected{
+      background: var(--beige-100);
+      border-bottom: var(--space-04px) solid var(--secondary-green);
+      border-top-left-radius: 0.5rem;
+      border-top-right-radius: 0.5rem;
+      span{
+        color: var(--grey-900);
+      }
+      svg{
+        fill: var(--secondary-green);
+      }
+    }
+    &:hover:not(.selected){
+      svg{
+        fill: var(--grey-100);
+      }
+      span{
+        color: var(--grey-100);
+      }
+    }
+  }
+
+  .button-extend-menu{
+    display: none;
+    color: var(--grey-300);
+    &:hover{
+      img{
+        filter:  brightness(1.4);
+      }
+      span{
+        color: var(--grey-100);
+      }
+    }
+  }
+
+  @media screen and (min-width: 48rem){
+    .li-menu{
+      span{
+        display: block;
+        margin-top: var(--space-08px);
+        color: var(--grey-300);
+      }
+    }
+  }
+
+  @media screen and (min-width: 70rem){
+    width: 18.75rem;
+    border-top-left-radius: 0;
+    border-top-right-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+    margin-right: var(--space-40px);
+    padding-bottom: 4.5rem;
+    display: flex;
+    flex-direction: column;
+
+    .container-logo{
+      display: block;
+      margin: 2.5rem 0 2.5rem 1.7rem;
+      position: relative;
+
+      a .logo-brand-large{
+        width: 7.5rem;
+        height: 1.375rem;
+        opacity: 1;
+        visibility: visible;
+        position: absolute;
+          top: 0; left: 0;
+      }
+
+      a .logo-brand-small{
+        height: 1.375rem;
+        opacity: 1;
+        visibility: visible;
+        position: absolute;
+          top: 0; left: 0;
+      }
+
+    }
+
+    .menu{
+      width: 100%;
+      padding-right: var(--space-24px);
+    }
+
+    .list-menu{
+      flex-direction: column;
+      margin-top: var(--space-24px);
+    }
+
+    .li-menu{
+      width: 100%;
+      height: 3.5rem;
+      border-left: var(--space-04px) solid var(--grey-900);
+      a{
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        padding-left: 1.25rem;
+      }
+      svg{
+        flex-shrink: 0;
+      }
+      span{
+        display: block;             
+        margin-top: 0;
+        margin-left: 1.25rem;
+        font-size: 1rem;
+        color: var(--grey-300);
+      }
+      &.selected{
+        border-bottom: none;
+        border-left: var(--space-04px) solid var(--secondary-green);
+        border-top-left-radius: 0; 
+        border-top-right-radius: 0.5rem;
+        border-bottom-right-radius: 0.5rem;
+      }
+    }
+
+    .button-extend-menu{
+      position: absolute;
+        top: calc(100% - 5rem);
+      display: flex;
+      margin-left: 1.5rem;
+      span{
+        color: var(--grey-300);
+        margin-left: 1.25rem;
+      }
+      img{
+        display: inline-block;
+      }
+    }
+
+    &.reduce{
+      width: 4.5rem;
+      .container-logo{
+        margin: 2.5rem 0 2.5rem 1.6rem;
+        a .logo-brand-large{
+          opacity: 0;
+          visibility: hidden;
+        }
+        a .logo-brand-small{
+          opacity: 1;
+          visibility: visible;
+        }
+      }
+      .menu{
+        padding-right: var(--space-08px);
+      }
+      .li-menu{
+        span{
+          opacity: 0;
+          visibility: hidden;
+          pointer-events: none;
+        }
+      }
+      .button-extend-menu{
+        margin-left: 1.5rem;
+        img{
+          transform: rotateY(180deg);
+        }
+        span{
+          opacity: 0;
+          visibility: hidden;
+          pointer-events: none;
+        }
+      }
+    }
+
+  }
+
+} */

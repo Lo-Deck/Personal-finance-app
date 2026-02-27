@@ -2,7 +2,8 @@
 .transactions-page{
 
     .container-main {
-        @media screen and (min-width: 70rem) {
+        /* @media screen and (min-width: 70rem) { */
+        @media screen and (min-width: 72.5rem){
             display: block;
         }
     }
@@ -14,7 +15,8 @@
     }
 
     .transactions-form input{
-        @media screen and (min-width: 70rem) {
+        /* @media screen and (min-width: 70rem) { */
+        @media screen and (min-width: 72.5rem){
             width: 20rem;
         }
     }

@@ -55,7 +55,8 @@
 .budgets-page{
 
     .container-main{
-        @media screen and (min-width: 70rem){
+        /* @media screen and (min-width: 70rem){ */
+        @media screen and (min-width: 72.5rem){
             display: grid;
             grid-template-areas: "title title"
                                  "budgets article";
@@ -67,7 +68,8 @@
         .title{
             margin: var(--space-40px) 0 var(--space-40px);
         }
-        @media screen and (min-width: 70rem){
+        /* @media screen and (min-width: 70rem){ */
+        @media screen and (min-width: 72.5rem){
             grid-area: title;
         }
     }
@@ -132,7 +134,8 @@
                 }
             }
         }
-        @media screen and (min-width: 70rem){
+        /* @media screen and (min-width: 70rem){ */
+        @media screen and (min-width: 72.5rem){
             grid-area: budgets;
             width: 26.75rem;
             height: min-content;
@@ -268,7 +271,8 @@
     }
 
     .display-container-article{
-        @media screen and (min-width: 70rem){
+        /* @media screen and (min-width: 70rem){ */
+        @media screen and (min-width: 72.5rem){
             grid-area: article;     
             width: 38rem;
         }
