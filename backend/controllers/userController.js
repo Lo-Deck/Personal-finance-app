@@ -9,6 +9,10 @@ const { body, validationResult, matchedData } = require('express-validator')
 
 
 
+const mockData = require('../../frontend/data.json');
+
+
+
 const signupValidation = [
 
     body('name').trim()
@@ -69,9 +73,14 @@ async function registerUser (req, res) {
 
     try{
 
-
         const hashedpasword = await bcrypt.hash(password, 10)
         const newUser = await db.createUser(name, email, hashedpasword)
+
+        console.log('get newUser from DB in fonction registerUser ', newUser);
+        
+
+        //MockData
+        await db.seedUserData(newUser.id, mockData);
 
         res.status(201).json({
             message: 'User created successfully',
@@ -96,8 +105,6 @@ async function registerUser (req, res) {
 
     }
 
-
-
 }
 
 
@@ -106,7 +113,6 @@ async function registerUser (req, res) {
 async function loginUser (req, res) {
 
     const errors = validationResult(req)
-
 
     if(!errors.isEmpty()){
 
@@ -137,16 +143,18 @@ async function loginUser (req, res) {
 
         if (isPasswordValid) {
 
-            // req.session.user = { id: user.id, name: user.name };
+            req.session.user = { id: user.id, name: user.name, email: user.email };
 
-            return res.status(200).json({
+            res.redirect('/')
 
-                message: 'User login with success',
-                userId: user.id,
-                username: user.name,
-                email: user.email
+            // return res.status(200).json({
 
-            })
+            //     message: 'User login with success',
+            //     userId: user.id,
+            //     username: user.name,
+            //     email: user.email
+
+            // })
 
         }
 
@@ -171,7 +179,37 @@ async function loginUser (req, res) {
 }
 
 
+async function logOutUser(req, res){
+
+    req.session.destroy( (error) => {
+
+        if(error){
+            return res.status(500).json({ error: 'Impossible to disconnect' })
+        }
+
+        res.clearCookie('connect.sid')
+
+        return res.status(200).json({ message: 'Disconnected successfully' })
+
+    })
+
+}
+
+
+async function getMe(req, res){
+
+    if(req.session && req.session.user){
+        res.json({
+            loggedIn: true,
+            user: req.session.user
+        })
+    }
+    else{
+        res.status(401).json({ loggedIn: false, error: "Not authorized" })
+    }
+
+}
 
 
 
-module.exports = { signupValidation, loginValidation, registerUser, loginUser }
+module.exports = { signupValidation, loginValidation, registerUser, loginUser, logOutUser, getMe }

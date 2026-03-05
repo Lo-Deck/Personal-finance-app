@@ -4,7 +4,7 @@ const { Router } = require('express')
 const router = Router()
 
 
-const { signupValidation, loginValidation, registerUser, loginUser } = require('../controllers/userController')
+const { signupValidation, loginValidation, registerUser, loginUser, getMe } = require('../controllers/userController')
 
 // const path = require('path')
 
@@ -12,6 +12,12 @@ const { signupValidation, loginValidation, registerUser, loginUser } = require('
 
 router.post('/sign-up', signupValidation, registerUser)
 
-
 router.post('/sign-in', loginValidation, loginUser)
+
+router.get('/me', getMe)
+
+
+module.exports = router
+
+
 
