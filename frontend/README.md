@@ -300,6 +300,203 @@ document.addEventListener('click', async (event) => {
         modalAdd.queryS ......
 ```
 
+###Pure Vanilla SVG Charting###
+
+High-performance data visualization built without third-party dependencies. Features custom-coded circular segments, dynamic offset calculations, and hardware-accelerated tooltips for a seamless, lightweight experience.
+
+```js
+
+export function createSVGChart(data, budgetAmountbyCategory){
+
+    function createCircle(r, colorStroke, dashArray, dashOffset){
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", 'circle');
+        circle.setAttribute('cx', '50');
+        circle.setAttribute('cy', '50');
+        circle.setAttribute('r', r);
+        circle.setAttribute('fill', 'none');
+        circle.setAttribute('stroke', colorStroke);
+        circle.setAttribute('stroke-width', r === 40 ? '16' : '8');
+        circle.setAttribute('stroke-dasharray', dashArray);
+        circle.setAttribute('stroke-dashoffset', dashOffset);
+        return circle;
+    }
+
+    const chart = document.querySelector('.chart');
+    chart.textContent = '';
+
+    const maxBudget = data.reduce( (acc, budget) => {
+        return acc + budget.maximum;
+    }, 0)
+
+    //circonference of the circle color 40 et opacity 35
+    const circonference40 = Math.ceil(2 * Math.PI * 40);
+    const circonference35 = Math.ceil(2 * Math.PI * 35);
+
+    // offset used to when start the next ring
+    let dashOffset40 = 0;
+    let dashOffset35 = 0;
+
+    const chartHover = document.querySelector('.chart-hover');
+    const chartHoverIcon = chartHover.querySelector('.chart-icon');
+    const chartHoverCategory = chartHover.querySelector('.category');
+    const chartHoverCategoryAmount = chartHover.querySelector('.category-amount');
+    const chartHoverCategoryTotal = chartHover.querySelector('.category-total-amount');
+
+    let rect;
+
+    data.forEach( (budget) => {
+
+        const g = document.createElementNS("http://www.w3.org/2000/svg", 'g');
+        g.classList.add('segment');
+
+        //create className with category
+        g.classList.add(`${(budget.category).replace(' ', '-').toLowerCase()}`);
+        const percentBudget = budget.maximum / maxBudget * 100;
+
+        //length of the color ring and opacity
+        const strokeDasharray40 = ((percentBudget / 100) * circonference40).toFixed(2);
+        const strokeDasharray35 = ((percentBudget / 100) * circonference35).toFixed(2);
+
+        //length of the ring and the transparent ring transform into text
+        const strokeDasharray40Text = `${strokeDasharray40} ${(circonference40 - strokeDasharray40).toFixed(2)}`;
+        const strokeDasharray35Text = `${strokeDasharray35} ${(circonference35 - strokeDasharray35).toFixed(2)}`;
+
+        //offset used in the function
+        const dashOffset40Text = `-${dashOffset40.toFixed(2)}`;
+        const dashOffset35Text = `-${dashOffset35.toFixed(2)}`;
+
+        //creating circle
+        g.appendChild(createCircle(40, budget.theme, strokeDasharray40Text, dashOffset40Text));
+        g.appendChild(createCircle(35, "rgba(255, 255, 255, 0.3)", strokeDasharray35Text, dashOffset35Text));
+        chart.insertAdjacentElement('beforeend', g);        
+
+        //calculation for the next offset where to start the next ring
+        dashOffset40 += Number(strokeDasharray40);
+        dashOffset35 += Number(strokeDasharray35);
+
+        //hover svg chart
+        g.addEventListener('mouseenter', () => {
+            chartHover.style.opacity = 1;
+            chartHover.style.visibility = 'visible';
+            chartHoverIcon.style.backgroundColor = budget.theme
+            chartHoverCategory.textContent = budget.category;
+            chartHoverCategoryAmount.textContent = `Budget Spent: $${budgetAmountbyCategory.get(budget.category)}`;
+            chartHoverCategoryTotal.textContent = `Budget Maximum: $${budget.maximum}`;
+
+            rect = g.getBoundingClientRect();
+
+        });
+
+        g.addEventListener('mousemove', (event) => {
+            const mouseXRelative = event.clientX - rect.left;
+            const mouseYRelative = event.clientY - rect.top;
+            chartHover.style.transform = `translate3d(${mouseXRelative + 25}px, ${mouseYRelative + 25}px, 0)`;
+        });
+
+        g.addEventListener('mouseleave', () => {
+            chartHover.style.opacity = 0;
+            chartHover.style.visibility = 'hidden';
+        });
+
+    });
+
+}
+
+```
+
+```css
+
+.budget-chart{
+  width: 15rem;
+  height: 15rem;
+  margin: 0 auto;
+  position: relative;
+  .text{
+    position: absolute;
+      top: calc(50% - 1.75rem); left: calc(50% - 2.65625rem);
+    text-align: center;
+    span{
+      display: block;
+    }
+    .total-spend{
+      color: var(--grey-500);
+    }
+  }
+}
+
+.container-chart{
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.chart{
+  transform: rotate(-90deg);
+  overflow: visible;
+}
+
+.segment{
+  &:hover{
+    cursor: pointer;
+    transition: transform 0.25s ease-in-out;
+    transform: scale(1.05);
+    transform-origin: center;
+
+  }
+}
+
+.chart-hover{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 12rem;
+  height: 8rem;
+  background: var(--white);
+  border-radius: 0.75rem;
+  box-shadow: 0.1rem 0.1rem 1rem hsla(252, 7%, 13%, 0.2);
+  padding: var(--space-16px);
+  position: absolute;
+    top: 0; left: 0;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;    
+  transition: opacity 0.5s ease-out;
+
+  .container-title{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+  }
+  .chart-icon{
+    width: 1rem;
+    height: 1rem;
+    display: inline-block;
+    border-radius: 50%;
+    margin-right: var(--space-16px);
+  }
+}
+
+
+```
+
+```html
+
+ <div class="container-chart">
+    <svg class="chart" viewBox="0 0 100 100"></svg>
+  </div>
+  <p class="text public-sans-bold text-preset-1"><span class="spend public-sans-bold text-preset-1">$338</span><span class="total-spend public-sans-regular text-preset-5">of $975 limit</span></p>
+  <div class="chart-hover" role="tooltip">
+    <div class="container-title">
+      <div class="chart-icon"></div>
+      <h3 class="chart-title category public-sans-bold text-preset-3"></h3>                    
+    </div>
+    <p class="category-amount public-sans-regular text-preset-4"></p>
+    <p class="category-total-amount public-sans-regular text-preset-4"></p>
+ </div>
+
+```
 
 ### Continued development
 
