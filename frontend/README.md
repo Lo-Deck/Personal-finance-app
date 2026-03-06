@@ -300,7 +300,7 @@ document.addEventListener('click', async (event) => {
         modalAdd.queryS ......
 ```
 
-###Pure Vanilla SVG Charting###
+###Pure Vanilla SVG Charting
 
 High-performance data visualization built without third-party dependencies. Features custom-coded circular segments, dynamic offset calculations, and hardware-accelerated tooltips for a seamless, lightweight experience.
 
