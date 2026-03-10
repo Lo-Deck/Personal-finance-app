@@ -14,9 +14,15 @@ services:
     ports:
       - "5435:5432"
     volumes:
-      - ./db/init:/docker-entrypoint-initdb.d
+      - ./backend/db/init:/docker-entrypoint-initdb.d
       - postgres_data:/var/lib/postgresql/data
 
 volumes:
   postgres_data:
 
+# Commande	Action
+# \dt	Display Tables : Liste toutes tes tables (users, budgets, etc.).
+# \d nom_table	Describe : Montre la structure d'une table (colonnes, types, foreign keys).
+# \l	List : Liste toutes les bases de données sur le serveur.
+# \q	Quit : Quitte le terminal Postgres et revient à Windows.
+# SELECT * FROM users;	Affiche toutes les lignes de la table users (N'oublie pas le ;).
