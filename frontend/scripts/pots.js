@@ -11,49 +11,39 @@ const listHTMLColorTag = document.querySelectorAll('.list-sort.color .li-sort');
 
 let data;
 
-( async () => {
+    ( async () => {
 
-    try{
+        try{
 
-        setupSideMenu()
+            setupSideMenu()
+            
+            const [ balance, pots ] = await Promise.all ([
+                getData.fetchData('http://localhost:3000/balance'),
+                getData.fetchData('http://localhost:3000/pots')
+            ]);
 
+            data = {
+                balance: balance,
+                pots: pots
+            };
 
-        // const data = await getData.fetchData('http://localhost:3000/pots');
+            listHTMLColorTag.forEach( (li) => {
+                colorTagsMap[li.dataset.sort] = li;
+            });
 
-        const [ balance, pots ] = await Promise.all ([
-            getData.fetchData('http://localhost:3000/balance'),
-            getData.fetchData('http://localhost:3000/pots')
-        ]);
+            feedPotsPage(data.pots);
 
-        data = {
-            balance: balance,
-            pots: pots
-        };
+        } catch(error) {
+            console.error('CRITICAL APP ERROR:', error.message);
+            console.error('CRITICAL APP ERROR:', error.stack);
+            document.querySelector('.container-main').innerHTML = `
+                <div class="error-message">
+                    <p style="font-size: 2rem; margin-top: 5rem; color: red;"> !!! Impossible to download data !!! </p>
+                    <button onclick="location.reload()" style="font-size: 2rem; margin-top: 1rem; padding: 0.5rem; border: 2px solid red; color: red;">Retry</button>
+                </div>`; 
+        }
 
-        // console.log('data', data);
-        
-        listHTMLColorTag.forEach( (li) => {
-            colorTagsMap[li.dataset.sort] = li;
-        });
-
-        feedPotsPage(data.pots);
-
-    } catch(error) {
-
-        console.error('CRITICAL APP ERROR:', error.message);
-        console.error('CRITICAL APP ERROR:', error.stack);
-
-        document.querySelector('.container-main').innerHTML = `
-            <div class="error-message">
-                <p style="font-size: 2rem; margin-top: 5rem; color: red;"> !!! Impossible to download data !!! </p>
-                <button onclick="location.reload()" style="font-size: 2rem; margin-top: 1rem; padding: 0.5rem; border: 2px solid red; color: red;">Retry</button>
-            </div>`; 
-
-            //****************************ATTENTION INNER HTML SECURITY******************
-
-    }
-
-})()
+    })()
 
 
 
@@ -356,7 +346,7 @@ formPot.addEventListener('submit', async (event) => {
 
             if(hasChange){
 
-                const updatedPot = await sendData(`http://localhost:3000/pots/${potId}`, potData, 'PATCH');  
+                const updatedPot = await sendData(`http://localhost:3000/pots/${potId}`, potData, 'PATCH');
 
                 if(oldPotData.theme !== updatedPot.theme){
                     const liOldTag = colorTagsMap[oldPotData.theme];

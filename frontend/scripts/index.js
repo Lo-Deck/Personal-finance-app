@@ -10,19 +10,103 @@ import { setupSideMenu, createSVGChart, goThroughFocus } from './ui-utils.js';
 
         setupSideMenu();
 
-        const [ balance, transactions, budgets, pots ] = await Promise.all([
-            getData.fetchData('http://localhost:3000/balance'),
-            getData.fetchData('http://localhost:3000/transactions'),
-            getData.fetchData('http://localhost:3000/budgets'),
-            getData.fetchData('http://localhost:3000/pots')
-        ]);
+        // const [ balance, transactions, budgets, pots ] = await Promise.all([
+        //     getData.fetchData('http://localhost:3000/balance'),
+        //     getData.fetchData('http://localhost:3000/transactions'),
+        //     getData.fetchData('http://localhost:3000/budgets'),
+        //     getData.fetchData('http://localhost:3000/pots')
+        // ]);
+
+        // const [ balance, transactions, budgets, pots ] = await Promise.all([
+        //     getData.fetchData('/finances/balance'),
+        //     getData.fetchData('/finances/transactions'),
+        //     getData.fetchData('/finances/budgets'),
+        //     getData.fetchData('http://localhost:3000/finances/pots')
+        // ]);
+
+        const dataFromServer = await getData.fetchData('/finances/all');
+
+
+        console.log('dataFromServer', dataFromServer);
+
+
+
+        /*  A METTRE DANS UI-UTILS ET APPLIQUER DANS LES AUTRES PAGES .JS */
+
+        for(const [category, data] of Object.entries(dataFromServer)){
+
+            console.log('*****************************');
+            console.log('category, data :', [category, data]);
+            console.log('data',  data);
+
+            data.forEach( (item) => {
+
+                console.log('item', item);
+
+                for(const key in item){
+
+                    const val = item[key];
+
+                    if (val !== null && val !== '' && !isNaN(Number(val))) {
+                        item[key] = Number(val);
+                    }
+                    
+                }
+                
+            })
+
+        }
+
+
+
+
+
+        // for(const value in dataFromServer){
+
+        //     console.log(value);
+   
+        // }
+
+
+        // dataFromServer.map( (object) => {
+
+        //     console.log('object', object);
+
+        //     // object[value]
+
+        //     for(const value in object){
+
+        //         console.log(value);
+                
+        //     }
+            
+
+        // });
+
+
+
+
+        // for(const value in object){
+
+        //     console.log(value);
+            
+        // }
+
 
         const data = {
-            balance: balance,
-            transactions: transactions,
-            budgets: budgets,
-            pots: pots
+            balance: dataFromServer.balance[0],
+            transactions: dataFromServer.transactions,
+            budgets: dataFromServer.budgets,
+            pots: dataFromServer.pots
         };
+
+
+        
+
+
+
+        console.log('AVANT feedIndexPage data: ', data);
+        
 
         feedIndexPage(data);
 
@@ -36,8 +120,6 @@ import { setupSideMenu, createSVGChart, goThroughFocus } from './ui-utils.js';
                 <button onclick="location.reload()" style="font-size: 2rem; margin-top: 1rem; padding: 0.5rem; border: 2px solid red; color: red;">Retry</button>
             </div>`; 
 
-            //****************************ATTENTION INNER HTML SECURITY******************
-
     }
 
 })()
@@ -50,6 +132,10 @@ function feedIndexPage(data){
     /* HEADER */
 
     const containerExpenses = document.querySelector('.container-expenses');
+
+    console.log('feedIndexPage data.balance ', data.balance);
+    console.log('feedIndexPage data.balance.current ', data.balance.current);
+    
 
     if (containerExpenses) {
         containerExpenses.querySelector('.expenses.balance .amount').textContent = `$${data.balance.current.toFixed(2)}`;

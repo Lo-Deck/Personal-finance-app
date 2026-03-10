@@ -661,14 +661,11 @@ export function createSVGChart(data, budgetAmountbyCategory){
             chartHoverCategoryAmount.textContent = `Budget Spent: $${budgetAmountbyCategory.get(budget.category)}`;
             chartHoverCategoryTotal.textContent = `Budget Maximum: $${budget.maximum}`;
 
-            rect = g.getBoundingClientRect();//AJOUT ICI
+            rect = g.getBoundingClientRect();
 
         });
 
         g.addEventListener('mousemove', (event) => {
-
-            // const rect = g.getBoundingClientRect();
-
             const mouseXRelative = event.clientX - rect.left;
             const mouseYRelative = event.clientY - rect.top;
             chartHover.style.transform = `translate3d(${mouseXRelative + 25}px, ${mouseYRelative + 25}px, 0)`;//VOIR POUR UTILISER TRANSLATE AU LIEU DE TRANSLATE3D
