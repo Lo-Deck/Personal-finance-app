@@ -94,8 +94,6 @@ async function registerUser (req, res) {
 
     } catch(error) {
 
-        /* VOIR DIFFERENT ERROR STATUS */
-
         if(error.code === '23505'){
             return res.status(409).json({ 
                 error: 'Email already exists.', 

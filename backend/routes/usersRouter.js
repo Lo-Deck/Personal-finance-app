@@ -3,10 +3,7 @@
 const { Router } = require('express')
 const router = Router()
 
-
 const { signupValidation, loginValidation, registerUser, loginUser, getMe } = require('../controllers/usersController')
-
-// const path = require('path')
 
 
 
@@ -15,8 +12,6 @@ router.post('/sign-up', signupValidation, registerUser)
 router.post('/sign-in', loginValidation, loginUser)
 
 
-
-/* CREER UN FINANCEROUTER ET GERER 4 ROUTES POUR AVOIR POTS TRANSACTIONS ... ETC REFAIRE ROUTE DANS INDEX.JS */
 
 
 router.get('/me', getMe)

@@ -77,9 +77,6 @@ async function seedUserData(userId, data){
 
 async function queryBalance(id){
     const result = await pool.query("SELECT * FROM balance where user_id = $1;", [id])
-
-    // console.log('queryBalance result.rows', result.rows);
-    
     return result.rows
 }
 
@@ -102,5 +99,21 @@ async function queryPots(id){
 
 
 
+async function addBudget(id, category, maximum, theme){
+    const result = await pool.query("INSERT INTO budgets (user_id, category, maximum, theme) VALUES ($1, $2, $3, $4) RETURNING *;", [id, category, maximum, theme])
+    return result.rows[0]
+}
 
-module.exports = { createUser, getUserByEmail, seedUserData, queryBalance, queryTransactions, queryBudgets, queryPots }
+async function updateBudget(id, userId, category, maximum, theme){
+    const result = await pool.query("UPDATE budgets SET category = $1, maximum = $2, theme = $3 WHERE id = $4 AND user_id = $5 RETURNING *;", [category, maximum, theme, id, userId])
+    return result.rows[0]
+}
+
+async function deleteBudget(id, user_id){
+    const result = await pool.query("DELETE from budgets WHERE id = $1 AND user_id = $2 RETURNING *;", [id, user_id])
+    return result.rows[0]
+}
+
+
+
+module.exports = { createUser, getUserByEmail, seedUserData, queryBalance, queryTransactions, queryBudgets, queryPots, addBudget, deleteBudget, updateBudget }
