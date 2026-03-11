@@ -763,15 +763,12 @@ export function goThroughFocus(){
 
         if(menu.length > 0){
 
-
-            // if(event.key === 'ArrowDown' || event.key === 'ArrowUp'){
             if(event.key === 'ArrowRight' || event.key === 'ArrowLeft'){
             
                 event.preventDefault();
 
                 if(menu){
 
-                    // if(event.key === 'ArrowDown'){
                     if(event.key === 'ArrowRight'){
                         currentIndex = currentIndex < menu.length-1 ? (currentIndex + 1 ) : 0;
                     }
@@ -784,10 +781,7 @@ export function goThroughFocus(){
 
                 }
 
-
             }
-
-
 
             else if (event.key === 'Enter') {
                 event.preventDefault();
@@ -803,8 +797,6 @@ export function goThroughFocus(){
 
             }
 
-
-
             else if (event.key === 'Escape') {
                 event.preventDefault();
                 menu[currentIndex].parentElement.classList.remove('active');
@@ -814,29 +806,12 @@ export function goThroughFocus(){
                 currentIndex = 0;
             }
 
-
-
         }
 
         if(arrayTabIndex.length > 0){
-
-
-
-            // if(event.key === 'ArrowRight' || event.key === 'ArrowLeft'){
-            
+    
             if(event.key === 'ArrowDown' || event.key === 'ArrowUp'){
             
-
-                // const isTextInput = document.activeElement.tagName === 'INPUT' && 
-                //        (document.activeElement.type === 'text' || 
-                //         document.activeElement.type === 'search' || 
-                //         document.activeElement.type === 'email');
-
-                // if (isTextInput) {
-                //     return;
-                // }
-
-
                 event.preventDefault();
                 if(menu.length > 0){
                     const list = menu[currentIndex].closest('.container-sort').querySelector('.list-sort');
@@ -849,7 +824,7 @@ export function goThroughFocus(){
                         btn.setAttribute('aria-expanded', 'false');
                     }
                 }
-                // if(event.key === 'ArrowRight'){
+
                 if(event.key === 'ArrowDown'){
                     horizontalIndex = horizontalIndex < arrayTabIndex.length-1 ? (horizontalIndex + 1) : 0;
                 }
@@ -871,12 +846,9 @@ export function goThroughFocus(){
                         const closeModal = !document.querySelector('dialog[open]');
 
                         if(closeModal){
-
                             horizontalIndex = indexBtnEdit;
                             takeFocus.focus(); 
-
                         }
-
 
                     }, 0);
                     
@@ -884,12 +856,52 @@ export function goThroughFocus(){
 
             }
 
-
-
-
-
         }
 
     });
 
 }
+
+
+
+
+
+/**
+ * To convert all numeric string in real number.
+ * @param {Object} dataTosanitize - Object from server.
+ */
+
+
+export function sanitizeData(dataTosanitize){
+
+    for(const [category, data] of Object.entries(dataTosanitize)){
+
+        console.log('*****************************');
+        console.log('category, data :', [category, data]);
+        console.log('data',  data);
+
+        data.forEach( (item) => {
+
+            console.log('item', item);
+
+            for(const key in item){
+
+                const val = item[key];
+
+                if (val !== null && val !== '' && !isNaN(Number(val))) {
+                    item[key] = Number(val);
+                }
+                
+            }
+            
+        })
+
+    }
+
+}
+
+
+
+
+
+

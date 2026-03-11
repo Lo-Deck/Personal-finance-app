@@ -1,6 +1,6 @@
 
 import { getData } from './data-service.js';
-import { setupSideMenu, toggleSortMenu, closeAllSortMenu, billSortBy, goThroughFocus } from './ui-utils.js';
+import { setupSideMenu, toggleSortMenu, closeAllSortMenu, billSortBy, goThroughFocus, sanitizeData } from './ui-utils.js';
 
 
 let recurringBill;
@@ -13,15 +13,20 @@ let recurringBillSort;
 
         setupSideMenu();
 
-        const data = {
-            transactions: await getData.fetchData('http://localhost:3000/transactions')
-        };
+        // const data = {
+        //     transactions: await getData.fetchData('http://localhost:3000/transactions')
+        // };
 
 
         /**********************/
         /********** VOIR POUR OLDEST ET LATEST ET TRIER A PARTIR DERNIERE DATE 14 08  ********** /
         /**********************/
 
+        const data = await getData.fetchData('/finances/transactions');
+
+        sanitizeData(data);
+
+        
 
         //extract recurring bills data
         let recurringTransactions = data.transactions.filter(transaction => transaction.recurring);

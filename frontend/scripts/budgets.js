@@ -1,7 +1,7 @@
 
 
 import { getData, sendData } from './data-service.js';
-import { setupSideMenu, toggleDropdownMenu, closeModalAddEdit, closeAllDropdowns, createListHTMLCategory, chooseLiColorCategory, createSVGChart, validateInput, goThroughFocus } from './ui-utils.js';
+import { setupSideMenu, toggleDropdownMenu, closeModalAddEdit, closeAllDropdowns, createListHTMLCategory, chooseLiColorCategory, createSVGChart, validateInput, goThroughFocus, sanitizeData } from './ui-utils.js';
 
 
 const colorTagsMap = {};//keep track of the color
@@ -17,15 +17,34 @@ let listHTMLCategoryTag;
 
         setupSideMenu();
 
+        // const [ transactions, budgets ] = await Promise.all([
+        //     getData.fetchData('http://localhost:3000/transactions'),
+        //     getData.fetchData('http://localhost:3000/budgets')
+        // ]);
+
+
         const [ transactions, budgets ] = await Promise.all([
-            getData.fetchData('http://localhost:3000/transactions'),
-            getData.fetchData('http://localhost:3000/budgets')
+            getData.fetchData('/finances/transactions'),
+            getData.fetchData('/finances/budgets')
         ]);
 
+        console.log('transactions, budgets', transactions, budgets);
+        
         const data = {
-            transactions: transactions,
-            budgets: budgets
+            transactions: transactions.transactions,
+            budgets: budgets.budgets
         };
+
+
+        console.log('data ', data);
+
+        // const data = {
+        //     transactions: await getData.fetchData('/finances/transactions'),
+        //     budgets: await getData.fetchData('/finances/budgets')
+        // };
+
+        sanitizeData(data);
+
 
         feedbudgetPage(data);
 
@@ -473,7 +492,7 @@ formPot.addEventListener('submit', async (event) => {
             const keysToCompare = Object.keys(budgetData);
             const hasChange = keysToCompare.some( key => budgetData[key] !== oldPotData[key] );
             if(hasChange){
-                const updatedPot = await sendData(`http://localhost:3000/budgets/${id}`, budgetData, 'PATCH');              
+                const updatedPot = await sendData(`/finances/updateBudget/${id}`, budgetData, 'PATCH');
                 if(oldPotData.theme !== updatedPot.theme){
                     const liOldTag = colorTagsMap[oldPotData.theme];
                     if (liOldTag) {
@@ -487,7 +506,8 @@ formPot.addEventListener('submit', async (event) => {
             }
         }
         else{
-            const newBudget = await sendData('http://localhost:3000/budgets', budgetData, 'POST');
+            // const newBudget = await sendData('http://localhost:3000/budgets', budgetData, 'POST');
+            const newBudget = await sendData('/finances/addNewBudget', budgetData, 'POST');
             window.location.reload();
         }
 
@@ -516,7 +536,8 @@ formDelete.addEventListener('submit', async (event) => {
     try{
 
         if(id){
-            const updatedPot = await sendData(`http://localhost:3000/budgets/${id}`, null, 'DELETE');
+            // const updatedPot = await sendData(`http://localhost:3000/budgets/${id}`, null, 'DELETE');
+            const updatedPot = await sendData(`/finances/budgets/${id}`, null, 'DELETE');
             articleToDelete.remove();
             articleToDelete = null;
         }

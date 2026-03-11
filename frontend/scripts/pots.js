@@ -1,7 +1,7 @@
 
 
 import { getData, sendData } from './data-service.js';
-import { setupSideMenu, addWithrawMoney, toggleDropdownMenu, closeAllDropdowns, closeModalAddEdit, chooseLiColorCategory, validateInput, goThroughFocus } from './ui-utils.js';
+import { setupSideMenu, addWithrawMoney, toggleDropdownMenu, closeAllDropdowns, closeModalAddEdit, chooseLiColorCategory, validateInput, goThroughFocus, sanitizeData } from './ui-utils.js';
 
 
 const colorTagsMap = {};//keep track of the color
@@ -17,15 +17,33 @@ let data;
 
             setupSideMenu()
             
+            // const [ balance, pots ] = await Promise.all ([
+            //     getData.fetchData('http://localhost:3000/balance'),
+            //     getData.fetchData('http://localhost:3000/pots')
+            // ]);
+
             const [ balance, pots ] = await Promise.all ([
-                getData.fetchData('http://localhost:3000/balance'),
-                getData.fetchData('http://localhost:3000/pots')
+                getData.fetchData('/finances/balance'),
+                getData.fetchData('/finances/pots')
             ]);
 
+            console.log(' [ balance, pots ] ', [ balance, pots ]);
+            
+
             data = {
-                balance: balance,
-                pots: pots
+                balance: balance.balance,
+                pots: pots.pots
             };
+
+
+            console.log('data BEFORE sanitize', data);
+
+
+            sanitizeData(data);
+            
+
+            console.log('data AFTER sanitize', data);
+            
 
             listHTMLColorTag.forEach( (li) => {
                 colorTagsMap[li.dataset.sort] = li;
@@ -52,7 +70,13 @@ function createArticle(data){
     const fragmentPot = document.createDocumentFragment();
     const templatePot = document.querySelector('#template-pot');
 
+
     data.forEach( (pot) => {
+
+        console.log('construct template pot', pot);
+        
+        console.log('construct template pot.name', pot.name);
+
 
         const clone = templatePot.content.cloneNode(true);
         const colorTheme = pot.theme;

@@ -1,6 +1,6 @@
 
 import { getData } from './data-service.js';
-import { setupSideMenu, toggleSortMenu, closeAllSortMenu, transactionSliceBy, createNavBar, choosePageNavbar, createListHTMLCategory, goThroughFocus } from './ui-utils.js';
+import { setupSideMenu, toggleSortMenu, closeAllSortMenu, transactionSliceBy, createNavBar, choosePageNavbar, createListHTMLCategory, goThroughFocus, sanitizeData } from './ui-utils.js';
 
 
 let transactions;//keep the data transactions
@@ -14,9 +14,19 @@ const containerNavPages = document.querySelector('.container-nav-pages');
 
         setupSideMenu();
 
-        const data = {
-            transactions: await getData.fetchData('http://localhost:3000/transactions')
-        };
+
+        // const data = {
+        //     // transactions: await getData.fetchData('http://localhost:3000/transactions')
+        //     transactions: await getData.fetchData('/finances/transactions')
+
+        // };
+
+        const data = await getData.fetchData('/finances/transactions');
+
+        console.log('data before sanitize', data);
+
+        sanitizeData(data);
+
 
         transactions = data.transactions.sort( (a, b) => {
             const dateA = new Date(a.date);

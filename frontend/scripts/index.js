@@ -1,7 +1,7 @@
 
 
 import { getData } from './data-service.js';
-import { setupSideMenu, createSVGChart, goThroughFocus } from './ui-utils.js';
+import { setupSideMenu, createSVGChart, goThroughFocus, sanitizeData } from './ui-utils.js';
 
 
 ( async () => {
@@ -26,72 +26,37 @@ import { setupSideMenu, createSVGChart, goThroughFocus } from './ui-utils.js';
 
         const dataFromServer = await getData.fetchData('/finances/all');
 
-
         console.log('dataFromServer', dataFromServer);
 
 
 
-        /*  A METTRE DANS UI-UTILS ET APPLIQUER DANS LES AUTRES PAGES .JS */
+        /*  A METTRE DANS UI-UTILS ET APPLIQUER DANS LES AUTRES PAGES .JS ET VOIR date TIMESTAMP DANS DB  */
 
-        for(const [category, data] of Object.entries(dataFromServer)){
+        sanitizeData(dataFromServer);
 
-            console.log('*****************************');
-            console.log('category, data :', [category, data]);
-            console.log('data',  data);
+        // for(const [category, data] of Object.entries(dataFromServer)){
 
-            data.forEach( (item) => {
+        //     console.log('*****************************');
+        //     console.log('category, data :', [category, data]);
+        //     console.log('data',  data);
 
-                console.log('item', item);
+        //     data.forEach( (item) => {
 
-                for(const key in item){
+        //         console.log('item', item);
 
-                    const val = item[key];
+        //         for(const key in item){
 
-                    if (val !== null && val !== '' && !isNaN(Number(val))) {
-                        item[key] = Number(val);
-                    }
+        //             const val = item[key];
+
+        //             if (val !== null && val !== '' && !isNaN(Number(val))) {
+        //                 item[key] = Number(val);
+        //             }
                     
-                }
+        //         }
                 
-            })
+        //     })
 
-        }
-
-
-
-
-
-        // for(const value in dataFromServer){
-
-        //     console.log(value);
-   
         // }
-
-
-        // dataFromServer.map( (object) => {
-
-        //     console.log('object', object);
-
-        //     // object[value]
-
-        //     for(const value in object){
-
-        //         console.log(value);
-                
-        //     }
-            
-
-        // });
-
-
-
-
-        // for(const value in object){
-
-        //     console.log(value);
-            
-        // }
-
 
         const data = {
             balance: dataFromServer.balance[0],
@@ -101,13 +66,8 @@ import { setupSideMenu, createSVGChart, goThroughFocus } from './ui-utils.js';
         };
 
 
+        // console.log('AVANT feedIndexPage data: ', data);
         
-
-
-
-        console.log('AVANT feedIndexPage data: ', data);
-        
-
         feedIndexPage(data);
 
     } catch(error) {
