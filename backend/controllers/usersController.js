@@ -18,28 +18,24 @@ const mockData = require('../../frontend/data.json');
 const signupValidation = [
 
     body('name').trim()
-                .isLength({min:2, max: 30}).withMessage(`Last name must be between 2 and 30 characters.`)
+                .notEmpty().withMessage("Name is required.")
+                .isLength({min:2, max: 30}).withMessage(`Name must be between 2 and 30 characters.`)
                 .escape(),
-
 
     body('email').trim()
                  .notEmpty().withMessage("Email is required.")
                  .isEmail().withMessage("Email must be properly formatted."),
 
+    body('password').notEmpty().withMessage('Password is required.')
+        .isLength({ min: 8, max: 50 }).withMessage('Password must be at leat 8 characters.'),
 
-    body('password').isLength({ min: 8, max: 50 }).withMessage('Password must be at leat 8 characters.'),
-
-    body('confirmPassword')
+    body('confirmPassword').notEmpty().withMessage('Please confirm your password.')
         .custom( (value, { req }) => {
-
             if(value !== req.body.password){
                 throw new Error('Passwords do not match')
             }
-
             return true
-
         }),
-
 
 ]
 
@@ -50,7 +46,8 @@ const loginValidation = [
         .notEmpty().withMessage("Email is required.")
         .isEmail().withMessage("Email must be properly formatted."),
 
-    body('password').isLength({ min: 8, max: 50 }).withMessage('Password must be at leat 8 characters.'),
+    body('password').notEmpty().withMessage('Password is required.')
+        .isLength({ min: 8, max: 50 }).withMessage('Password must be at leat 8 characters.'),
 
 ]
 
@@ -118,15 +115,11 @@ async function loginUser (req, res) {
     const errors = validationResult(req)
 
     if(!errors.isEmpty()){
-
         const errorMessage = errors.array()[0].msg
-
         return res.status(400).json({
             error: errorMessage,
             formData: req.body
         })
-
-
     }
 
     const { email, password } = matchedData(req)
@@ -148,15 +141,11 @@ async function loginUser (req, res) {
 
             req.session.user = { id: user.id, name: user.name, email: user.email };
 
-            // res.redirect('/')
-
             return res.status(200).json({
-
                 message: 'User login with success',
                 userId: user.id,
                 username: user.name,
                 email: user.email
-
             })
 
         }
