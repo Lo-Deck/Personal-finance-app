@@ -27,7 +27,7 @@ let data;
                 getData.fetchData('/finances/pots')
             ]);
 
-            console.log(' [ balance, pots ] ', [ balance, pots ]);
+            // console.log(' [ balance, pots ] ', [ balance, pots ]);
             
 
             data = {
@@ -36,13 +36,13 @@ let data;
             };
 
 
-            console.log('data BEFORE sanitize', data);
+            // console.log('data BEFORE sanitize', data);
 
 
             sanitizeData(data);
             
 
-            console.log('data AFTER sanitize', data);
+            // console.log('data AFTER sanitize', data);
             
 
             listHTMLColorTag.forEach( (li) => {
@@ -73,9 +73,9 @@ function createArticle(data){
 
     data.forEach( (pot) => {
 
-        console.log('construct template pot', pot);
+        // console.log('construct template pot', pot);
         
-        console.log('construct template pot.name', pot.name);
+        // console.log('construct template pot.name', pot.name);
 
 
         const clone = templatePot.content.cloneNode(true);
@@ -308,8 +308,8 @@ inputName.addEventListener('input', () => {
 
 
 
-/* SUBMIT */
 
+/* SUBMIT */
 
 const formPot = document.querySelector('#createForm');
 
@@ -345,9 +345,19 @@ formPot.addEventListener('submit', async (event) => {
 
     const formData = new FormData(form);
 
+
+        /************* ****************************** **************/
+
+    /*************   // value.replace(',', '.')   pour les chiffres   **************/
+
+    /************* ******************************* **************/
+
+   
+
     const potData = {
         name: formData.get('potName'),
-        target: Number(formData.get('maxspend')),
+        // target: Number(formData.get('maxspend')),
+        target: Number(formData.get('maxspend').replace(',', '.')),
         theme: theme
     };
 
@@ -370,7 +380,8 @@ formPot.addEventListener('submit', async (event) => {
 
             if(hasChange){
 
-                const updatedPot = await sendData(`http://localhost:3000/pots/${potId}`, potData, 'PATCH');
+                // const updatedPot = await sendData(`http://localhost:3000/pots/${potId}`, potData, 'PATCH');
+                const updatedPot = await sendData(`/finances/updatePot/${potId}`, potData, 'PATCH');
 
                 if(oldPotData.theme !== updatedPot.theme){
                     const liOldTag = colorTagsMap[oldPotData.theme];
@@ -393,7 +404,9 @@ formPot.addEventListener('submit', async (event) => {
         }
         else{ //CREATE
             potData.total = 0;
-            const newPot = await sendData('http://localhost:3000/pots', potData, 'POST');
+            // const newPot = await sendData('http://localhost:3000/pots', potData, 'POST');
+            const newPot = await sendData('/finances/addNewPot', potData, 'POST');
+
             feedPotsPage([newPot]);
         }
 
@@ -408,6 +421,7 @@ formPot.addEventListener('submit', async (event) => {
     }
     
 });
+
 
 
 
@@ -446,45 +460,77 @@ formAddWithdraw.addEventListener('submit', async (event) => {
 
 
     const formData = new FormData(form);
-    let newTotal;
+
+    // let newTotal;
 
     // console.log(data);
     
-    const balanceData = {
-        current: data.balance.current
-    };
+    // const balanceData = {
+    //     current: data.balance.current
+    // };
 
-    if(operator === 'minus'){
-        newTotal = -Number(formData.get('amountToAddWithdraw'));
-        balanceData.current += Number(formData.get('amountToAddWithdraw'));
-    }
-    else{
-        newTotal = Number(formData.get('amountToAddWithdraw'));
-        balanceData.current -= Number(formData.get('amountToAddWithdraw'));
-    }
+    // if(operator === 'minus'){
+    //     newTotal = -Number(formData.get('amountToAddWithdraw'));
+    //     // balanceData.current += Number(formData.get('amountToAddWithdraw'));
+    // }
+    // else{
+    //     newTotal = Number(formData.get('amountToAddWithdraw'));
+    //     // balanceData.current -= Number(formData.get('amountToAddWithdraw'));
+    // }
+
+    // const amountData = {
+    //     total: Math.max( 0, currentTotal + newTotal )
+    // };
+
 
     const amountData = {
-        total: Math.max( 0, currentTotal + newTotal )
+        // amount: operator === 'minus' ? -Number(formData.get('amountToAddWithdraw')) : Number(formData.get('amountToAddWithdraw'))
+        amount: operator === 'minus' ? -Number(formData.get('amountToAddWithdraw').replace(',', '.')) : Number(formData.get('amountToAddWithdraw').replace(',', '.'))
+
     };
 
-    const isTotalDifferent = reference.total !== amountData.total;
+
+    console.log('BEFORE SENDING to SERVER amountData ', amountData);
+    
+
+
+    // const isTotalDifferent = reference.total !== amountData.total;
+
+    const isTotalDifferent = reference.total !== (reference.total + amountData.amount);
+
 
     try{
 
         if(id && isTotalDifferent){
 
-            const [ updatedBalance, updatedPot ] = await Promise.all ([
-                sendData(`http://localhost:3000/balance/`, balanceData, 'PATCH'),
-                sendData(`http://localhost:3000/pots/${id}`, amountData, 'PATCH')
-            ]);
+            // const [ updatedBalance, updatedPot ] = await Promise.all ([
+            //     sendData(`http://localhost:3000/balance/`, balanceData, 'PATCH'),
+            //     sendData(`http://localhost:3000/pots/${id}`, amountData, 'PATCH')
+            // ]);
 
-            data.balance.current  = updatedBalance.current;
-    
-            const articleUpdated = createArticle([updatedPot]).firstElementChild;
+            const response = await sendData(`/finances/updateMoneypot/${id}`, amountData, 'PATCH');
 
-            if(articleUpdated){
-                articleToAddWithdraw.replaceWith(articleUpdated);                  
+            if(response && response.updatedPot){
+
+                // data.balance.current  = updatedBalance.current;
+
+                const newBalance = Number(response.updatedBalance.current);
+
+                if(!isNaN(newBalance)){
+                    data.balance.current = newBalance;
+                }
+
+                // data.balance.current = response.updatedBalance.current;
+        
+                // const articleUpdated = createArticle([updatedPot]).firstElementChild;
+                const articleUpdated = createArticle([response.updatedPot]).firstElementChild;
+
+                if(articleUpdated){
+                    articleToAddWithdraw.replaceWith(articleUpdated);                  
+                }        
+
             }
+
 
         }
 
@@ -503,6 +549,9 @@ formAddWithdraw.addEventListener('submit', async (event) => {
 
 
 
+
+
+
 const formDelete = document.querySelector('#deletePot');
 
 formDelete.addEventListener('submit', async (event) => {
@@ -513,32 +562,45 @@ formDelete.addEventListener('submit', async (event) => {
     const reference = referencePotId.get(articleToDelete);
     const id = reference.id;
 
-    const balanceData = {
-        current: data.balance.current
-    };
+    // const balanceData = {
+    //     current: data.balance.current
+    // };
 
-    balanceData.current += Number(reference.total);
+    // balanceData.current += Number(reference.total);
 
     try{
 
         if(id){
 
-            const [ updatedBalance, updatedPot ] = await Promise.all ([
-                sendData(`http://localhost:3000/balance/`, balanceData, 'PATCH'),
-                sendData(`http://localhost:3000/pots/${id}`, null, 'DELETE')
-            ]);
+            // const [ updatedBalance, updatedPot ] = await Promise.all ([
+            //     sendData(`http://localhost:3000/balance/`, balanceData, 'PATCH'),
+            //     sendData(`http://localhost:3000/pots/${id}`, null, 'DELETE')
+            // ]);
 
-            data.balance.current  = updatedBalance.current;
+            const response = await sendData(`/finances/deletePot/${id}`, null, 'DELETE');
 
-            articleToDelete.remove();
-            articleToDelete = null;
+            // if(updatedBalance){
+            //     data.balance.current  = updatedBalance.current;                
+            // }
+
+            console.log('response', response);
+            
+
+            if(response && response.deletedPot){
+
+                data.balance.current = response.updatedBalance.current;
+                articleToDelete.remove();
+                articleToDelete = null;
+
+                console.log(`Pot "${response.deletedPot.name}" has been deleted.`);
+
+            }
 
         }
 
-
     } catch(error){
         console.error('Error sending data :', error.message);
-        alert(`Impossible to create new Pot : ${error.message}`);
+        alert(`Impossible to delete Pot : ${error.message}`);
     }
 
     modalDelete.close();

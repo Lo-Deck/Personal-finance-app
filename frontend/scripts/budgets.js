@@ -478,9 +478,11 @@ formPot.addEventListener('submit', async (event) => {
 
     const budgetData = {
         category: category, 
-        maximum: Number(formData.get('maxspend')),
+        // maximum: Number(formData.get('maxspend')),
+        maximum: Number(formData.get('maxspend').replace(',', '.')),
         theme: theme
     };
+
 
     const id = modalAdd.dataset.id;
 
@@ -537,7 +539,7 @@ formDelete.addEventListener('submit', async (event) => {
 
         if(id){
             // const updatedPot = await sendData(`http://localhost:3000/budgets/${id}`, null, 'DELETE');
-            const updatedPot = await sendData(`/finances/budgets/${id}`, null, 'DELETE');
+            const updatedPot = await sendData(`/finances/deleteBudget/${id}`, null, 'DELETE');
             articleToDelete.remove();
             articleToDelete = null;
         }

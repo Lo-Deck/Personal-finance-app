@@ -876,13 +876,13 @@ export function sanitizeData(dataTosanitize){
 
     for(const [category, data] of Object.entries(dataTosanitize)){
 
-        console.log('*****************************');
-        console.log('category, data :', [category, data]);
-        console.log('data',  data);
+        // console.log('*****************************');
+        // console.log('category, data :', [category, data]);
+        // console.log('data',  data);
 
         data.forEach( (item) => {
 
-            console.log('item', item);
+            // console.log('item', item);
 
             for(const key in item){
 

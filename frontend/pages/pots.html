@@ -93,8 +93,8 @@
             <p class="char-limit public-sans-regular text-preset-5"><span class="charLeft">30</span> characters left</p>
             <p class="message-error public-sans-regular text-preset-5"></p>
           </label>
-          <label for="maxspend"><span class="text public-sans-bold text-preset-5">Target</span>
-            <input type="text" name="maxspend" id="maxspend" placeholder=" e.g. 2000" inputmode="numeric" maxlength="8" pattern="[0-9]+" class="public-sans-regular" required>
+          <label for="maxspend"><span class="text public-sans-bold text-preset-5">Target</span>    <!-- inputmode="numeric"   pattern="[0-9]+"  -->
+            <input type="text" name="maxspend" id="maxspend" placeholder=" e.g. 2000" inputmode="decimal" maxlength="8" pattern="^[0-9]+([.,][0-9]{1,2})?$" class="public-sans-regular" required>
             <p class="message-error public-sans-regular text-preset-5"></p>
           </label>
           <div class="container-sort">
@@ -155,7 +155,7 @@
           <div class="container-withdraw">
             <form id="addWithdrawForm" method="dialog" class="search-field" novalidate>
               <label for="amountToAddWithdraw"><span class="text public-sans-bold text-preset-5"></span> 
-                <input type="text" name="amountToAddWithdraw" id="amountToAddWithdraw" placeholder=" e.g. 2000" inputmode="numeric" maxlength="8" pattern="[0-9]+" class="public-sans-regular" required>
+                <input type="text" name="amountToAddWithdraw" id="amountToAddWithdraw" placeholder=" e.g. 2000" inputmode="decimal" maxlength="8" pattern="^[0-9]+([.,][0-9]{1,2})?$" class="public-sans-regular" required>
                 <p class="message-error public-sans-regular text-preset-5"></p>
               </label>
               <button type="submit" class="button button-submit-modal public-sans-bold text-preset-4"></button>
