@@ -1,9 +1,6 @@
 
 const db = require('../db/queries')
-
 const { body, validationResult, matchedData } = require('express-validator')
-
-
 
 
 const validBudget = [
@@ -19,9 +16,6 @@ const validBudget = [
     body('theme').trim().notEmpty().escape()
 
 ]
-
-
-
 
 
 const validPot = [
@@ -55,8 +49,6 @@ const validAmount = [
 
 
 
-
-
 async function getBalanceDB (req, res) {
 
     const userId = req.session.user.id;
@@ -71,7 +63,7 @@ async function getBalanceDB (req, res) {
     } catch(error){
 
         return res.status(500).json({
-            error: 'Server error: Unable to process registration.'
+            error: 'Unable to reach server.'
         })
 
     }
@@ -85,12 +77,11 @@ async function getTransactionsDB (req, res) {
     const userId = req.session.user.id;
 
     try{
-
+        // throw new Error('Simulation crash DB');
         const transactions = await db.queryTransactions(userId);
         return res.status(200).json({
             transactions
         })
-
 
     } catch(error){
 
@@ -132,7 +123,7 @@ async function getPotsDB (req, res) {
     const userId = req.session.user.id;
 
     try{
-
+        // throw new Error('Simulation crash DB');
         const pots = await db.queryPots(userId)
         return res.status(200).json({
             pots
@@ -155,6 +146,7 @@ async function getAllFinanceData(req,res){
     const userId = req.session.user.id;
 
     try {
+
         const [balance, transactions, budgets, pots] = await Promise.all([
             db.queryBalance(userId),
             db.queryTransactions(userId),
@@ -170,7 +162,9 @@ async function getAllFinanceData(req,res){
         });
 
     } catch(error) {
-        return res.status(500).json({ error: 'Erreur serveur' })
+        return res.status(500).json({  
+            error: 'Unable to reach server.'
+        })
     }
     
 }
@@ -183,7 +177,6 @@ async function getAllFinanceData(req,res){
 async function addBudgets(req, res){
 
     const userId = req.session.user.id
-
 
     const errors = validationResult(req)
 
@@ -201,8 +194,10 @@ async function addBudgets(req, res){
     try{
 
         const newBudgets = await db.addBudget(userId, category, Number(maximum), theme)
+        // const newBudgets = null
 
         if (!newBudgets) {
+            // return res.status(404).json({ error: "Budget not created" })
             return res.status(404).json({ error: "Budget not created" })
         }
 
@@ -212,7 +207,8 @@ async function addBudgets(req, res){
         })
 
     } catch(error) {
-        return res.status(500).json({ error: 'Error server' })
+        // console.error('CRASH DÉTAILLÉ DU SERVEUR :', error);
+        return res.status(500).json({ error: 'Can\'t communicate with server' })
     }
 
 }
@@ -222,7 +218,6 @@ async function updateBudget(req, res){
 
     const userId = req.session.user.id
     const budgetId = req.params.id
-
 
     const errors = validationResult(req)
 
@@ -234,7 +229,6 @@ async function updateBudget(req, res){
         })
     }
 
-
     const { category, maximum, theme } = matchedData(req);
 
     try{
@@ -242,7 +236,7 @@ async function updateBudget(req, res){
         const updatedBudget = await db.updateBudget(budgetId, userId, category, Number(maximum), theme);
 
         if (!updatedBudget) {
-            return res.status(404).json({ error: "Budget not found" })
+            return res.status(404).json({ error: "Budget not updated" })
         }
 
         return res.status(200).json({
@@ -251,7 +245,7 @@ async function updateBudget(req, res){
         })
 
     } catch(error) {
-        return res.status(500).json({ error: 'Error server' })
+        return res.status(500).json({ error: 'Can\'t communicate with server' })
     }
 
 }
@@ -265,7 +259,8 @@ async function deleteBudget(req, res){
     try{
 
         const deletedBudgets = await db.deleteBudget(budgetId, userId)
-
+        // console.log('deletedBudgets', deletedBudgets);
+        
         if (!deletedBudgets) {
             return res.status(404).json({ error: "Budget not found or unauthorized" });
         }
@@ -276,7 +271,7 @@ async function deleteBudget(req, res){
         })
 
     } catch(error) {
-        return res.status(500).json({ error: 'Error server' })
+        return res.status(500).json({ error: 'Can\'t communicate with server' })
     }
 
 }
@@ -288,7 +283,6 @@ async function deleteBudget(req, res){
 async function addPot(req, res){
 
     const userId = req.session.user.id
-
 
     const errors = validationResult(req)
 
@@ -306,18 +300,23 @@ async function addPot(req, res){
     try{
 
         const newPot = await db.addPot(userId, name, Number(target), theme)
+        // const newPot = null
 
         if (!newPot) {
             return res.status(404).json({ error: "Pot not created" })
         }
 
-        return res.status(200).json(
-            // message: 'Pot created with success',
+        return res.status(200).json({
+            message: 'Pot created with success',
             newPot
-        )
+        })
+
+        // return res.status(200).json(
+        //     newPot
+        // )
 
     } catch(error) {
-        return res.status(500).json({ error: 'Error server' })
+        return res.status(500).json({ error: 'Can\'t communicate with server' })
     }
 
 }
@@ -345,18 +344,24 @@ async function updatePot(req, res){
     try{
 
         const updatedPot = await db.updatePot(potId, userId, name, Number(target), theme)
+        // const updatedPot = null
+
 
         if (!updatedPot) {
             return res.status(404).json({ error: "Pot not found" })
         }
 
-        return res.status(200).json(
-            // message: 'Pot updated with success',
+        return res.status(200).json({
+            message: 'Pot updated with success',
             updatedPot
-        )
+        })
+
+        // return res.status(200).json(
+        //     updatedPot
+        // )
 
     } catch(error) {
-        return res.status(500).json({ error: 'Error server' });
+        return res.status(500).json({ error: 'Can\'t communicate with server' });
     }
 
 }
@@ -371,18 +376,24 @@ async function deletePot(req, res){
     try{
 
         const deletedPot = await db.deletePot(potId, userId)
+        // const deletedPot = null
+
 
         if (!deletedPot) {
             return res.status(404).json({ error: "Budget not found or unauthorized" });
         }
 
-        return res.status(200).json(
-            // message: 'Budget deleted with success',
+        return res.status(200).json({
+            message: 'Budget deleted with success',
             deletedPot
-        )
+        })
+
+        // return res.status(200).json(
+        //     deletedPot
+        // )
 
     } catch(error) {
-        return res.status(500).json({ error: 'Error server' })
+        return res.status(500).json({ error: 'Can\'t communicate with server' })
     }
 
 }
@@ -397,7 +408,6 @@ async function updateMoneyPot(req, res){
     const userId = req.session.user.id
     const potId = req.params.id
 
-
     const errors = validationResult(req)
 
     if(!errors.isEmpty()){
@@ -411,18 +421,19 @@ async function updateMoneyPot(req, res){
 
     const { amount } = matchedData(req)
 
-    console.log('BEFORE SEND TO DB amount ', amount);
+    // console.log('BEFORE SEND TO DB amount ', amount);
     
-
     try{
 
         const updatedMoneyPot = await db.updateMoneyPot(Number(amount), potId, userId)
+        // const updatedMoneyPot = null
+
 
         if (!updatedMoneyPot) {
             return res.status(404).json({ error: "Pot not found" })
         }
 
-        console.log('SEND TO FRONT  updatedMoneyPot', updatedMoneyPot);
+        // console.log('SEND TO FRONT  updatedMoneyPot', updatedMoneyPot);
         
         return res.status(200).json(
             updatedMoneyPot
@@ -430,7 +441,7 @@ async function updateMoneyPot(req, res){
 
     } catch(error) {
         // return res.status(500).json({ error: 'Error server' });
-        return res.status(500).json({ error: error.message });
+        return res.status(500).json({ error: 'Can\'t communicate with server' });
     }
 
 }
