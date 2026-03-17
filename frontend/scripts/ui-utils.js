@@ -693,7 +693,7 @@ export function validateInput(input, element){
 
     if (input.validity.valueMissing) {
         element.classList.add('error');
-        element.querySelector('.message-error').textContent = `This field is required`;
+        element.querySelector('.message-error').textContent = `This field is required`;  
         return false;
     }
 
@@ -871,27 +871,17 @@ export function goThroughFocus(){
  * @param {Object} dataTosanitize - Object from server.
  */
 
-
 export function sanitizeData(dataTosanitize){
 
     for(const [category, data] of Object.entries(dataTosanitize)){
 
-        // console.log('*****************************');
-        // console.log('category, data :', [category, data]);
-        // console.log('data',  data);
-
         data.forEach( (item) => {
 
-            // console.log('item', item);
-
             for(const key in item){
-
                 const val = item[key];
-
                 if (val !== null && val !== '' && !isNaN(Number(val))) {
                     item[key] = Number(val);
                 }
-                
             }
             
         })
@@ -903,5 +893,58 @@ export function sanitizeData(dataTosanitize){
 
 
 
+/**
+ * To show/hide password.
+ */
+
+export function showPassword(){
+
+    const btnShowPassword = document.querySelectorAll('.show-password');
+    const inputPassword = document.querySelectorAll('.password');
+
+    btnShowPassword.forEach( (btn, index) => {
+
+        btn.addEventListener('click', (event) =>     {        
+            
+            event.preventDefault();
+
+            if (inputPassword[index].type === 'password') {
+                inputPassword[index].type = 'text';
+                btn.querySelector('img').src = '/assets/images/icon-show-password.svg';
+            } else {
+                inputPassword[index].type = 'password';
+                btn.querySelector('img').src = '/assets/images/icon-hide-password.svg';
+            }}
+
+        ) 
+
+    });
+
+}
 
 
+
+
+
+export function logout(){
+
+    const logoutLink = document.querySelector('.link-logout');
+
+    logoutLink.addEventListener('click', async (e) => {
+        e.preventDefault();
+        
+        try {
+            const response = await fetch('/users/log-out', {
+                method: 'POST'
+            });
+
+            if (response.ok) {
+                window.location.href = '/sign-in';
+            }
+        } catch (error) {
+            console.error('Logout failed', error);
+        }
+    });
+
+
+}

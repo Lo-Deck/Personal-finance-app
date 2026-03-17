@@ -14,19 +14,11 @@ const containerNavPages = document.querySelector('.container-nav-pages');
 
         setupSideMenu();
 
-
-        // const data = {
-        //     // transactions: await getData.fetchData('http://localhost:3000/transactions')
-        //     transactions: await getData.fetchData('/finances/transactions')
-
-        // };
-
         const data = await getData.fetchData('/finances/transactions');
 
-        console.log('data before sanitize', data);
+        // console.log('data before sanitize', data);
 
         sanitizeData(data);
-
 
         transactions = data.transactions.sort( (a, b) => {
             const dateA = new Date(a.date);
@@ -40,13 +32,31 @@ const containerNavPages = document.querySelector('.container-nav-pages');
 
         console.error('CRITICAL APP ERROR:', error.message);
         console.error('CRITICAL APP ERROR:', error.stack);
-        document.querySelector('.container-main').innerHTML = `
-            <div class="error-message">
-                <p style="font-size: 2rem; margin-top: 5rem; color: red;"> !!! Impossible to download data !!! </p>
-                <button onclick="location.reload()" style="font-size: 2rem; margin-top: 1rem; padding: 0.5rem; border: 2px solid red; color: red;">Retry</button>
-            </div>`; 
 
-            //****************************ATTENTION INNER HTML SECURITY******************
+        const container = document.querySelector('.container-main');
+        container.innerHTML = '';
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-message';
+
+        const p = document.createElement('p');
+        p.textContent = '!!! Impossible to download data !!!';
+        p.style.fontSize = '2rem';
+        p.style.marginTop = '5rem';
+        p.style.color = 'red';
+
+        const button = document.createElement('button');
+        button.textContent = 'Retry';
+        button.style.fontSize = '2rem';
+        button.style.marginTop = '1rem';
+        button.style.padding = '0.5rem';
+        button.style.border = '2px solid red';
+        button.style.color = 'red';
+        button.onclick = () => location.reload();
+
+        errorDiv.appendChild(p);
+        errorDiv.appendChild(button);
+        container.appendChild(errorDiv);
+
 
     }
 
@@ -186,5 +196,4 @@ if(searchByName){
 /**** FOCUS ****/
 
 goThroughFocus();
-
 

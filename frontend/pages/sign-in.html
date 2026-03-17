@@ -24,19 +24,23 @@
 
         <h1 class="title public-sans-bold text-preset-1">Login</h1>
 
-        <form method="" id="sign-in" class="login-signup">
+        <form method="" id="sign-in" class="login-signup" novalidate>
 
-          <label for="email" class="public-sans-bold text-preset-5">Email</label>
-          <input type="email" name="email" id="email" placeholder="" class="public-sans-regular">
+          <label for="email" class="public-sans-bold text-preset-5"><span class="text public-sans-bold text-preset-5">Email</span> 
+            <input type="email" name="email" id="email" placeholder="" class="public-sans-regular" required>
+            <p class="message-error public-sans-regular text-preset-5"></p>
+          </label>
 
           <div class="container-password">
-            <label for="password" class="public-sans-bold text-preset-5">Password</label>
-            <input type="password" name="password" id="password" placeholder="" class="public-sans-regular">
-            <button class="show-password"><img src="/assets/images/icon-hide-password.svg" alt="show password"></button>           
+            <label for="password" class="public-sans-bold text-preset-5"><span class="text public-sans-bold text-preset-5">Password</span> 
+              <input type="password" name="password" id="password" placeholder="" class="password public-sans-regular" required>
+              <button class="show-password"><img src="/assets/images/icon-hide-password.svg" alt="show password"></button>
+              <p class="message-error public-sans-regular text-preset-5"></p>
+            </label>
           </div>
 
           <button type="submit" class="button public-sans-bold text-preset-4">Login</button>
-          <p class="text public-sans-regular text-preset-4">Need to create an account? <a href="/pages/signup.html" class="public-sans-bold text-preset-4">Sign Up</a></p>
+          <p class="text public-sans-regular text-preset-4">Need to create an account? <a href="/pages/sign-up.html" class="public-sans-bold text-preset-4">Sign Up</a></p>
         
         </form>        
 

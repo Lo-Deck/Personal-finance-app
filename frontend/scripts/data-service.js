@@ -1,29 +1,104 @@
 
 
-export const getData = {
+// export const getData = {
 
-    cachedData : null,
+//     cachedData : null,
 
-    async fetchData(url) {
+//     async fetchData(url) {
 
-        if(this.cachedData){
-            // console.log('data retrieved from cache');
-            return this.cachedData;
-        }
+//         if(this.cachedData){
+//             // console.log('data retrieved from cache');
+//             return this.cachedData;
+//         }
         
+//         const response = await fetch(url);
+
+//         if(!response.ok){
+//             throw new Error (`Erreur HTTP: ${response.status}`);
+//         }
+
+//         this.cachedData = await response.json();
+
+//         return this.cachedData;
+
+//     }
+
+// };
+
+
+
+// export const getData = {
+//     async fetchData(url) {
+//         // 1. Essayer de récupérer dans le localStorage
+//         const local = localStorage.getItem('app_data_' + url);
+//         if (local) return JSON.parse(local);
+
+//         // 2. Sinon, fetch
+//         const response = await fetch(url);
+//         if (!response.ok) throw new Error(`Erreur: ${response.status}`);
+        
+//         const data = await response.json();
+        
+//         // 3. Sauvegarder dans le localStorage pour le prochain rechargement
+//         localStorage.setItem('app_data_' + url, JSON.stringify(data));
+        
+//         return data;
+//     },
+
+//     // Appelle ça dans ton pots.js après un PATCH réussi
+//     clearCache() {
+//         localStorage.clear(); // Ou localStorage.removeItem('app_data_...');
+//     }
+// };
+
+
+
+
+// export const getData = {
+//     async fetchData(url) {
+//         const response = await fetch(url);
+//         if(!response.ok) {
+//             throw new Error(`Erreur HTTP: ${response.status}`);
+//         }
+//         return await response.json(); 
+//     }
+// };
+
+
+
+export const getData = {
+    async fetchData(url) {
         const response = await fetch(url);
-
-        if(!response.ok){
-            throw new Error (`Erreur HTTP: ${response.status}`);
+        if (!response.ok) {
+            const data = await response.json();
+            // throw new Error(data.error);
+            throw new Error(`Error HTTP: ${response.status}: ${response.statusText}, ${data.error}`);
         }
-
-        this.cachedData = await response.json();
-
-        return this.cachedData;
-
+        return await response.json();
     }
-
 };
+
+
+// export const getData = {
+//     async fetchData(url) {
+//         const response = await fetch(url);
+//         if (!response.ok) {
+//             // let errorMessage = 'An unknown error occurred';
+//             try {
+//                 const data = await response.json();
+//                 // console.log('data error', data);
+//                 errorMessage = data.error || responseStatus;
+//             } catch (e) {
+//                 errorMessage = `Error HTTP:${response.status}: ${errorMessage}`;
+//             }
+//             throw new Error(errorMessage);
+//             // throw new Error(`Error HTTP:${response.status}: ${response.statusText}`);
+//         }
+//         return await response.json();
+//     }
+// };
+
+
 
 
 
@@ -52,33 +127,32 @@ export async function sendData(url, dataToInsert, method){
             config.body = JSON.stringify(dataToInsert);
         }
 
-        // const response = await fetch(url, {
-        //     method: method,
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify(dataToInsert)
-        // });
 
         const response = await fetch(url, config);
         // console.log("2. Réponse reçue, status:", response.status);
 
-        if(!response.ok){
-            throw new Error(`Erreur Serveur: ${response.status} ${response.statusText}`);
-        }
+        console.log('response', response);
 
+        // console.log('response text', response.text());
+
+        const data = await response.json();
+
+        console.log('data fetch', data);
+        
+        
+        if(!response.ok){
+            // const data = await response.json();
+            throw new Error(`Erreur Serveur: ${response.status} ${response.statusText}, ${data.error}`);
+        }
 
     /***********************************************/
     /********** A CONTROLER LORS DUN DELETE ************/
     /***********************************************/
-
         // if (response.status === 204 || method === 'DELETE') { A VOIR SI FONCTIONNEL
         //     return { success: true }; 
         // }
+        // const data = await response.json();
 
-        const data = await response.json();
-
-        // console.log('3. Update successful:', data);
 
         return data;
 

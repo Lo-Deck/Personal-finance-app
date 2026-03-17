@@ -17,34 +17,21 @@ let listHTMLCategoryTag;
 
         setupSideMenu();
 
-        // const [ transactions, budgets ] = await Promise.all([
-        //     getData.fetchData('http://localhost:3000/transactions'),
-        //     getData.fetchData('http://localhost:3000/budgets')
-        // ]);
-
-
         const [ transactions, budgets ] = await Promise.all([
             getData.fetchData('/finances/transactions'),
             getData.fetchData('/finances/budgets')
         ]);
 
-        console.log('transactions, budgets', transactions, budgets);
+        // console.log('transactions, budgets', transactions, budgets);
         
         const data = {
             transactions: transactions.transactions,
             budgets: budgets.budgets
         };
 
-
-        console.log('data ', data);
-
-        // const data = {
-        //     transactions: await getData.fetchData('/finances/transactions'),
-        //     budgets: await getData.fetchData('/finances/budgets')
-        // };
+        // console.log('data ', data);
 
         sanitizeData(data);
-
 
         feedbudgetPage(data);
 
@@ -52,13 +39,32 @@ let listHTMLCategoryTag;
 
         console.error('CRITICAL APP ERROR:', error.message);
         console.error('CRITICAL APP ERROR:', error.stack);
-        document.querySelector('.container-main').innerHTML = `
-            <div class="error-message">
-                <p style="font-size: 2rem; margin-top: 5rem; color: red;"> !!! Impossible to download data !!! </p>
-                <button onclick="location.reload()" style="font-size: 2rem; margin-top: 1rem; padding: 0.5rem; border: 2px solid red; color: red;">Retry</button>
-            </div>`; 
 
-            //****************************ATTENTION INNER HTML SECURITY******************
+        const container = document.querySelector('.container-main');
+        container.innerHTML = '';
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-message';
+
+        const p = document.createElement('p');
+        p.textContent = '!!! Impossible to download data !!!';
+        p.style.fontSize = '2rem';
+        p.style.marginTop = '5rem';
+        p.style.color = 'red';
+
+        const button = document.createElement('button');
+        button.textContent = 'Retry';
+        button.style.fontSize = '2rem';
+        button.style.marginTop = '1rem';
+        button.style.padding = '0.5rem';
+        button.style.border = '2px solid red';
+        button.style.color = 'red';
+        button.onclick = () => location.reload();
+
+        errorDiv.appendChild(p);
+        errorDiv.appendChild(button);
+        container.appendChild(errorDiv);
+
+
 
     }
 
@@ -106,13 +112,13 @@ function feedbudgetPage(data){
     //list under the svg chart
     const budgetCategories = data.budgets.map(budget => budget.category);
     const categorySet = new Set(budgetCategories);
-    const amountByCategory = data.transactions.reduce( (acc, transaction) => {
 
+    const amountByCategory = data.transactions.reduce( (acc, transaction) => {
         if (categorySet.has(transaction.category)) {
-            return acc + transaction.amount;
+            // console.log('category', transaction.category, 'transaction.amount', transaction.amount);
+            return acc + Math.abs(transaction.amount);/********** MODIF ICI MIS MATH.ABS POUR CORRIGER MONTANT *************************/
         }
         return acc;
-
     }, 0);
 
     const budgetsTotal = document.querySelector('.section-budgets .text');
@@ -465,7 +471,7 @@ formPot.addEventListener('submit', async (event) => {
     }
 
     console.log('VALID FORM');
-    
+
     const formData = new FormData(form);
     console.log('formData', formData);
 
@@ -494,8 +500,8 @@ formPot.addEventListener('submit', async (event) => {
             const keysToCompare = Object.keys(budgetData);
             const hasChange = keysToCompare.some( key => budgetData[key] !== oldPotData[key] );
             if(hasChange){
-                const updatedPot = await sendData(`/finances/updateBudget/${id}`, budgetData, 'PATCH');
-                if(oldPotData.theme !== updatedPot.theme){
+                const updatedBudget = await sendData(`/finances/updateBudget/${id}`, budgetData, 'PATCH');
+                if(oldPotData.theme !== updatedBudget.theme){
                     const liOldTag = colorTagsMap[oldPotData.theme];
                     if (liOldTag) {
                         liOldTag.classList.remove('used');
@@ -503,19 +509,31 @@ formPot.addEventListener('submit', async (event) => {
                         if (statusLabel) statusLabel.textContent = '';
                     }
                 }
-                window.location.reload();
+
+                alert(`${updatedBudget.message} : ${updatedBudget.updatedBudget.category} `);
+
                 articleToEdit = null;
+                window.location.reload();
+
             }
         }
         else{
             // const newBudget = await sendData('http://localhost:3000/budgets', budgetData, 'POST');
             const newBudget = await sendData('/finances/addNewBudget', budgetData, 'POST');
+
+            alert(`${newBudget.message} : ${newBudget.newBudgets.category} `);
+
             window.location.reload();
         }
 
     } catch(error) {
+
+        console.log('error', error);
+
         console.error('Error sending data :', error.message);
-        alert(`Impossible to create new Pot : ${error.message}`);
+        // alert(`Impossible to create new Budget : ${error.message}`);
+        alert(`${error.message}`);
+
     }
 
     modalAdd.querySelector('#createForm').reset();
@@ -538,8 +556,10 @@ formDelete.addEventListener('submit', async (event) => {
     try{
 
         if(id){
-            // const updatedPot = await sendData(`http://localhost:3000/budgets/${id}`, null, 'DELETE');
-            const updatedPot = await sendData(`/finances/deleteBudget/${id}`, null, 'DELETE');
+            const deletedBudget = await sendData(`/finances/deleteBudget/${id}`, null, 'DELETE');
+
+            alert(`${deletedBudget.message} : ${deletedBudget.deletedBudgets.category} `);
+
             articleToDelete.remove();
             articleToDelete = null;
         }
@@ -571,4 +591,5 @@ labels.forEach( (label) =>  {
 /**** FOCUS ****/
 
 goThroughFocus();
+
 

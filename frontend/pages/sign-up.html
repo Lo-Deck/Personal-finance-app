@@ -24,28 +24,61 @@
 
         <h1 class="title public-sans-bold text-preset-1">Sign Up</h1>
 
-        <form method="" id="sign-up" class="login-signup">
+        <form method="" id="sign-up" class="login-signup" novalidate>
 
-          <label for="name" class="public-sans-bold text-preset-5">Name</label>
-          <input type="text" name="name" id="name" placeholder="" class="public-sans-regular">
+          <!-- <label for="email" class="public-sans-bold text-preset-5"><span class="text public-sans-bold text-preset-5">Email</span> 
+            <input type="email" name="email" id="email" placeholder="" class="public-sans-regular" required>
+            <p class="message-error public-sans-regular text-preset-5"></p>
+          </label> -->
 
-          <label for="email" class="public-sans-bold text-preset-5">Email</label>
-          <input type="email" name="email" id="email" placeholder="" class="public-sans-regular">
+          <!-- <label for="name" class="public-sans-bold text-preset-5">Name</label>
+          <input type="text" name="name" id="name" placeholder="" class="public-sans-regular"> -->
 
-          <div class="container-password">
+          <label for="name" class="public-sans-bold text-preset-5"><span>Name</span> 
+            <input type="text" name="name" id="name" placeholder="" class="public-sans-regular" required>
+            <p class="message-error public-sans-regular text-preset-5"></p>
+          </label>
+
+          <!-- <label for="email" class="public-sans-bold text-preset-5">Email</label>
+          <input type="email" name="email" id="email" placeholder="" class="public-sans-regular"> -->
+
+          <label for="email" class="public-sans-bold text-preset-5"><span class="text public-sans-bold text-preset-5">Email</span> 
+            <input type="email" name="email" id="email" placeholder="" class="public-sans-regular" required>
+            <p class="message-error public-sans-regular text-preset-5"></p>
+          </label>
+
+          <!-- <div class="container-password">
             <label for="password" class="public-sans-bold text-preset-5">Create Password</label>
             <input type="password" name="password" id="password" placeholder="" class="public-sans-regular">
             <button class="show-password"><img src="/assets/images/icon-hide-password.svg" alt="show password"></button>           
-          </div>
+          </div> -->
 
           <div class="container-password">
+            <label for="password" class="public-sans-bold text-preset-5"><span class="text public-sans-bold text-preset-5">Create Password</span> 
+              <input type="password" name="password" id="password" placeholder="" class="password public-sans-regular" required>
+              <button class="show-password"><img src="/assets/images/icon-hide-password.svg" alt="show password"></button>
+              <p class="message-error public-sans-regular text-preset-5"></p>
+            </label>
+          </div>
+
+          <!-- <div class="container-password">
             <label for="confirmPassword" class="public-sans-bold text-preset-5">Confirm Password</label>
             <input type="password" name="confirmPassword" id="confirmPassword" placeholder="" class="public-sans-regular">
             <button class="show-password"><img src="/assets/images/icon-hide-password.svg" alt="show password"></button>           
-          </div>
+          </div> -->
 
-          <button type="submit" class="button button-modal public-sans-bold text-preset-4">Create Account</button>
+           <div class="container-password">
+            <label for="confirmPassword" class="public-sans-bold text-preset-5"><span>Confirm Password</span> 
+              <input type="password" name="confirmPassword" id="confirmPassword" placeholder="" class="password public-sans-regular" required>
+              <button class="show-password"><img src="/assets/images/icon-hide-password.svg" alt="show password"></button>  
+              <p class="message-error public-sans-regular text-preset-5"></p>
+            </label>
+          </div> 
+
+
+          <button type="submit" class="button button-modal public-sans-bold text-preset-4">Create Account</button>  
           <p class="text public-sans-regular text-preset-4">Already have an account? <a href="/pages/sign-in.html" class="public-sans-bold text-preset-4">Sign-in</a></p>
+        
         </form>  
 
       </main>

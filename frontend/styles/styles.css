@@ -256,7 +256,7 @@ a{
 
 .container-header{
 
-  order: 2;/********* A NETTOYER  *********/
+ /*  order: 2; *//********* A NETTOYER  *********/
 
 
   grid-area: header;
@@ -322,6 +322,7 @@ a{
       }
     }
   }
+
 
   .button-extend-menu{
     display: none;
@@ -492,7 +493,7 @@ a{
 
 .container-main{
 
-  order: 1;
+  /* order: 1; */
 
   grid-area: main;
   max-width: var(--size343to688);
@@ -514,8 +515,13 @@ a{
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  position: relative;
+
   .title{
-    margin: clamp(1.5rem, 0.5458rem + 4.0712vw, 2.5rem) 0 clamp(1.75rem, 1.0344rem + 3.0534vw, 2.5rem);    
+    margin: clamp(1.5rem, 0.5458rem + 4.0712vw, 2.5rem) 0 clamp(1.75rem, 1.0344rem + 3.0534vw, 2.5rem);
+   
+
   }
   .button{
       background: var(--grey-900);
@@ -533,6 +539,54 @@ a{
   }
 
 }
+
+
+.container-logout{
+  background: var(--grey-900);
+  border-radius: 50%;
+  width: 3rem;
+  height: 3rem;
+  color: #b3b3b3;
+  a{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding-left: 0.75rem;
+  }
+  svg{
+    fill: #b3b3b3;
+    flex-shrink: 0;
+    /* width: 2rem;
+    height: 2rem; */
+  }
+  .text{
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    background: var(--grey-900);
+    white-space: nowrap;
+    margin-right: 1.5rem;
+    transition: opacity 0.2s ease;
+  }
+  &:hover{
+    width: 8rem; border-radius: 2rem;
+    .text{
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transition: opacity 0.2s ease;
+    }
+  }
+
+}
+
+
+
+
+
+
 
 .container-expenses{
   margin-bottom: var(--space-32px);
@@ -1196,8 +1250,6 @@ body:has(dialog[open]) {
       &:focus{
 
           /* outline: none; */
-
-
       }
   }
   .container-sort{
@@ -1494,9 +1546,32 @@ body:has(dialog[open]) {
     display: block;
     color: var(--grey-500);
     margin-bottom: var(--space-04px);
+
+
+    .message-error{
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    color: var(--secondary-red);
+    position: absolute;        
+    top: 0; right: 0;
+    }
+    &.error{
+      input{
+        border: 0.0625rem solid var(--secondary-red);
+      }
+      .message-error{
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+      }
+    }
+
+
     &::after{
       display: none;
     }    
+
   }
   input{
     width: 100%;
@@ -1514,8 +1589,15 @@ body:has(dialog[open]) {
     margin-top: var(--space-20px);
   }
   .show-password{
+
+    width: 1rem;
+    height: 0.75rem;
+
     position: absolute;
-      top: 2.5rem; right: 1rem;
+      /* top: 2.5rem; right: 1rem; */
+      top: calc(50% - 0.25rem); right: 1rem;
+      /* top: calc(50% ); right: 1rem; */
+
   }
   .text{
     margin-top: var(--space-32px);
@@ -1529,4 +1611,22 @@ body:has(dialog[open]) {
 }
 
 
+/* 
+.login-signup label.error {
+    color: var(--secondary-red);
+}
 
+.login-signup label.error input {
+    border-color: var(--secondary-red);
+}
+
+
+
+.login-signup label .message-error {
+    display: block;
+    color: var(--secondary-red);
+    text-align: right;
+    margin-top: -0.75rem; 
+    margin-bottom: 0.5rem;
+    min-height: 1rem;
+} */

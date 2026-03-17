@@ -1,7 +1,7 @@
 
 
 import { getData } from './data-service.js';
-import { setupSideMenu, createSVGChart, goThroughFocus, sanitizeData } from './ui-utils.js';
+import { setupSideMenu, createSVGChart, goThroughFocus, sanitizeData, logout } from './ui-utils.js';
 
 
 ( async () => {
@@ -10,53 +10,11 @@ import { setupSideMenu, createSVGChart, goThroughFocus, sanitizeData } from './u
 
         setupSideMenu();
 
-        // const [ balance, transactions, budgets, pots ] = await Promise.all([
-        //     getData.fetchData('http://localhost:3000/balance'),
-        //     getData.fetchData('http://localhost:3000/transactions'),
-        //     getData.fetchData('http://localhost:3000/budgets'),
-        //     getData.fetchData('http://localhost:3000/pots')
-        // ]);
-
-        // const [ balance, transactions, budgets, pots ] = await Promise.all([
-        //     getData.fetchData('/finances/balance'),
-        //     getData.fetchData('/finances/transactions'),
-        //     getData.fetchData('/finances/budgets'),
-        //     getData.fetchData('http://localhost:3000/finances/pots')
-        // ]);
-
         const dataFromServer = await getData.fetchData('/finances/all');
 
-        console.log('dataFromServer', dataFromServer);
-
-
-
-        /*  A METTRE DANS UI-UTILS ET APPLIQUER DANS LES AUTRES PAGES .JS ET VOIR date TIMESTAMP DANS DB  */
+        // console.log('dataFromServer', dataFromServer);
 
         sanitizeData(dataFromServer);
-
-        // for(const [category, data] of Object.entries(dataFromServer)){
-
-        //     console.log('*****************************');
-        //     console.log('category, data :', [category, data]);
-        //     console.log('data',  data);
-
-        //     data.forEach( (item) => {
-
-        //         console.log('item', item);
-
-        //         for(const key in item){
-
-        //             const val = item[key];
-
-        //             if (val !== null && val !== '' && !isNaN(Number(val))) {
-        //                 item[key] = Number(val);
-        //             }
-                    
-        //         }
-                
-        //     })
-
-        // }
 
         const data = {
             balance: dataFromServer.balance[0],
@@ -74,11 +32,32 @@ import { setupSideMenu, createSVGChart, goThroughFocus, sanitizeData } from './u
 
         console.error('CRITICAL APP ERROR:', error.message);
         console.error('CRITICAL APP ERROR:', error.stack);
-        document.querySelector('.container-main').innerHTML = `
-            <div class="error-message">
-                <p style="font-size: 2rem; margin-top: 5rem; color: red;"> !!! Impossible to download data !!! </p>
-                <button onclick="location.reload()" style="font-size: 2rem; margin-top: 1rem; padding: 0.5rem; border: 2px solid red; color: red;">Retry</button>
-            </div>`; 
+        console.log('Message ERROR SERVER', error);
+        
+        const container = document.querySelector('.container-main');
+        container.innerHTML = '';
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-message';
+
+        const p = document.createElement('p');
+        p.textContent = '!!! Impossible to download data !!!';
+        p.style.fontSize = '2rem';
+        p.style.marginTop = '5rem';
+        p.style.color = 'red';
+
+        const button = document.createElement('button');
+        button.textContent = 'Retry';
+        button.style.fontSize = '2rem';
+        button.style.marginTop = '1rem';
+        button.style.padding = '0.5rem';
+        button.style.border = '2px solid red';
+        button.style.color = 'red';
+        button.onclick = () => location.reload();
+
+        errorDiv.appendChild(p);
+        errorDiv.appendChild(button);
+        container.appendChild(errorDiv);
+
 
     }
 
@@ -93,8 +72,8 @@ function feedIndexPage(data){
 
     const containerExpenses = document.querySelector('.container-expenses');
 
-    console.log('feedIndexPage data.balance ', data.balance);
-    console.log('feedIndexPage data.balance.current ', data.balance.current);
+    // console.log('feedIndexPage data.balance ', data.balance);
+    // console.log('feedIndexPage data.balance.current ', data.balance.current);
     
 
     if (containerExpenses) {
@@ -177,7 +156,7 @@ function feedIndexPage(data){
     const amountByCategory = data.transactions.reduce( (acc, transaction) => {
 
         if (categorySet.has(transaction.category)) {
-            return acc + transaction.amount;
+            return acc + Math.abs(transaction.amount);
         }
         return acc;
 
@@ -257,3 +236,10 @@ function feedIndexPage(data){
 /**** FOCUS ****/
 
 goThroughFocus();
+
+
+logout();
+
+
+
+

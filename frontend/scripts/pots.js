@@ -11,57 +11,66 @@ const listHTMLColorTag = document.querySelectorAll('.list-sort.color .li-sort');
 
 let data;
 
-    ( async () => {
+( async () => {
 
-        try{
+    try{
 
-            setupSideMenu()
-            
-            // const [ balance, pots ] = await Promise.all ([
-            //     getData.fetchData('http://localhost:3000/balance'),
-            //     getData.fetchData('http://localhost:3000/pots')
-            // ]);
+        setupSideMenu()
 
-            const [ balance, pots ] = await Promise.all ([
-                getData.fetchData('/finances/balance'),
-                getData.fetchData('/finances/pots')
-            ]);
+        const [ balance, pots ] = await Promise.all ([
+            getData.fetchData('/finances/balance'),
+            getData.fetchData('/finances/pots')
+        ]);
 
-            // console.log(' [ balance, pots ] ', [ balance, pots ]);
-            
+        data = {
+            balance: balance.balance,
+            pots: pots.pots
+        };
 
-            data = {
-                balance: balance.balance,
-                pots: pots.pots
-            };
+        sanitizeData(data);
+        
+        listHTMLColorTag.forEach( (li) => {
+            colorTagsMap[li.dataset.sort] = li;
+        });
 
+        feedPotsPage(data.pots);
 
-            // console.log('data BEFORE sanitize', data);
+    } catch(error) {
+        console.error('CRITICAL APP ERROR:', error.message);
+        console.error('CRITICAL APP ERROR:', error.stack);
+        // document.querySelector('.container-main').innerHTML = `
+        //     <div class="error-message">
+        //         <p style="font-size: 2rem; margin-top: 5rem; color: red;"> !!! Impossible to download data !!! </p>
+        //         <button onclick="location.reload()" style="font-size: 2rem; margin-top: 1rem; padding: 0.5rem; border: 2px solid red; color: red;">Retry</button>
+        //     </div>`; 
 
+        const container = document.querySelector('.container-main');
+        container.innerHTML = '';
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-message';
 
-            sanitizeData(data);
-            
+        const p = document.createElement('p');
+        p.textContent = '!!! Impossible to download data !!!';
+        p.style.fontSize = '2rem';
+        p.style.marginTop = '5rem';
+        p.style.color = 'red';
 
-            // console.log('data AFTER sanitize', data);
-            
+        const button = document.createElement('button');
+        button.textContent = 'Retry';
+        button.style.fontSize = '2rem';
+        button.style.marginTop = '1rem';
+        button.style.padding = '0.5rem';
+        button.style.border = '2px solid red';
+        button.style.color = 'red';
+        button.onclick = () => location.reload();
 
-            listHTMLColorTag.forEach( (li) => {
-                colorTagsMap[li.dataset.sort] = li;
-            });
+        errorDiv.appendChild(p);
+        errorDiv.appendChild(button);
+        container.appendChild(errorDiv);
 
-            feedPotsPage(data.pots);
+    }
 
-        } catch(error) {
-            console.error('CRITICAL APP ERROR:', error.message);
-            console.error('CRITICAL APP ERROR:', error.stack);
-            document.querySelector('.container-main').innerHTML = `
-                <div class="error-message">
-                    <p style="font-size: 2rem; margin-top: 5rem; color: red;"> !!! Impossible to download data !!! </p>
-                    <button onclick="location.reload()" style="font-size: 2rem; margin-top: 1rem; padding: 0.5rem; border: 2px solid red; color: red;">Retry</button>
-                </div>`; 
-        }
-
-    })()
+})()
 
 
 
@@ -70,13 +79,7 @@ function createArticle(data){
     const fragmentPot = document.createDocumentFragment();
     const templatePot = document.querySelector('#template-pot');
 
-
     data.forEach( (pot) => {
-
-        // console.log('construct template pot', pot);
-        
-        // console.log('construct template pot.name', pot.name);
-
 
         const clone = templatePot.content.cloneNode(true);
         const colorTheme = pot.theme;
@@ -319,17 +322,13 @@ formPot.addEventListener('submit', async (event) => {
     event.stopPropagation();
 
     const form = event.target;
-
     const label = form.querySelectorAll('label');
-    
     const inputs = form.querySelectorAll('input');
-
     const results = Array.from(inputs).map( (input, index) => {
         return validateInput(input, label[index]);
     });
 
     const isValid = results.every(res => res === true);
-
     if(!isValid){
         console.log('INVALID FORM');
         return;
@@ -345,18 +344,8 @@ formPot.addEventListener('submit', async (event) => {
 
     const formData = new FormData(form);
 
-
-        /************* ****************************** **************/
-
-    /*************   // value.replace(',', '.')   pour les chiffres   **************/
-
-    /************* ******************************* **************/
-
-   
-
     const potData = {
         name: formData.get('potName'),
-        // target: Number(formData.get('maxspend')),
         target: Number(formData.get('maxspend').replace(',', '.')),
         theme: theme
     };
@@ -380,10 +369,26 @@ formPot.addEventListener('submit', async (event) => {
 
             if(hasChange){
 
-                // const updatedPot = await sendData(`http://localhost:3000/pots/${potId}`, potData, 'PATCH');
+                // const updatedPot = await sendData(`/finances/updatePot/${potId}`, potData, 'PATCH');
+
+                // if(oldPotData.theme !== updatedPot.theme){
+                //     const liOldTag = colorTagsMap[oldPotData.theme];
+                //     if (liOldTag) {
+                //         liOldTag.classList.remove('used');
+                //         const statusLabel = liOldTag.querySelector('.isUsed');
+                //         if (statusLabel) statusLabel.textContent = '';
+                //     }
+                // }
+
+                // const articleUpdated = createArticle([updatedPot]).firstElementChild;
+                // if(articleUpdated){
+                //     articleToEdit.replaceWith(articleUpdated);                  
+                // }   
+
+
                 const updatedPot = await sendData(`/finances/updatePot/${potId}`, potData, 'PATCH');
 
-                if(oldPotData.theme !== updatedPot.theme){
+                if(oldPotData.theme !== updatedPot.updatedPot.theme){
                     const liOldTag = colorTagsMap[oldPotData.theme];
                     if (liOldTag) {
                         liOldTag.classList.remove('used');
@@ -392,10 +397,14 @@ formPot.addEventListener('submit', async (event) => {
                     }
                 }
 
-                const articleUpdated = createArticle([updatedPot]).firstElementChild;
+                const articleUpdated = createArticle([updatedPot.updatedPot]).firstElementChild;
                 if(articleUpdated){
                     articleToEdit.replaceWith(articleUpdated);                  
                 }   
+
+
+                alert(`${updatedPot.message} : ${updatedPot.updatedPot.name} `);
+
 
             }
 
@@ -404,10 +413,11 @@ formPot.addEventListener('submit', async (event) => {
         }
         else{ //CREATE
             potData.total = 0;
-            // const newPot = await sendData('http://localhost:3000/pots', potData, 'POST');
             const newPot = await sendData('/finances/addNewPot', potData, 'POST');
 
-            feedPotsPage([newPot]);
+            alert(`${newPot.message} : ${newPot.newPot.name} `);
+
+            feedPotsPage([newPot.newPot]);
         }
 
         modalAdd.querySelector('#createForm').reset();
@@ -461,40 +471,13 @@ formAddWithdraw.addEventListener('submit', async (event) => {
 
     const formData = new FormData(form);
 
-    // let newTotal;
-
-    // console.log(data);
-    
-    // const balanceData = {
-    //     current: data.balance.current
-    // };
-
-    // if(operator === 'minus'){
-    //     newTotal = -Number(formData.get('amountToAddWithdraw'));
-    //     // balanceData.current += Number(formData.get('amountToAddWithdraw'));
-    // }
-    // else{
-    //     newTotal = Number(formData.get('amountToAddWithdraw'));
-    //     // balanceData.current -= Number(formData.get('amountToAddWithdraw'));
-    // }
-
-    // const amountData = {
-    //     total: Math.max( 0, currentTotal + newTotal )
-    // };
-
-
     const amountData = {
-        // amount: operator === 'minus' ? -Number(formData.get('amountToAddWithdraw')) : Number(formData.get('amountToAddWithdraw'))
         amount: operator === 'minus' ? -Number(formData.get('amountToAddWithdraw').replace(',', '.')) : Number(formData.get('amountToAddWithdraw').replace(',', '.'))
-
     };
 
 
     console.log('BEFORE SENDING to SERVER amountData ', amountData);
     
-
-
-    // const isTotalDifferent = reference.total !== amountData.total;
 
     const isTotalDifferent = reference.total !== (reference.total + amountData.amount);
 
@@ -503,16 +486,9 @@ formAddWithdraw.addEventListener('submit', async (event) => {
 
         if(id && isTotalDifferent){
 
-            // const [ updatedBalance, updatedPot ] = await Promise.all ([
-            //     sendData(`http://localhost:3000/balance/`, balanceData, 'PATCH'),
-            //     sendData(`http://localhost:3000/pots/${id}`, amountData, 'PATCH')
-            // ]);
-
             const response = await sendData(`/finances/updateMoneypot/${id}`, amountData, 'PATCH');
 
             if(response && response.updatedPot){
-
-                // data.balance.current  = updatedBalance.current;
 
                 const newBalance = Number(response.updatedBalance.current);
 
@@ -520,9 +496,6 @@ formAddWithdraw.addEventListener('submit', async (event) => {
                     data.balance.current = newBalance;
                 }
 
-                // data.balance.current = response.updatedBalance.current;
-        
-                // const articleUpdated = createArticle([updatedPot]).firstElementChild;
                 const articleUpdated = createArticle([response.updatedPot]).firstElementChild;
 
                 if(articleUpdated){
@@ -562,37 +535,23 @@ formDelete.addEventListener('submit', async (event) => {
     const reference = referencePotId.get(articleToDelete);
     const id = reference.id;
 
-    // const balanceData = {
-    //     current: data.balance.current
-    // };
-
-    // balanceData.current += Number(reference.total);
-
     try{
 
         if(id){
 
-            // const [ updatedBalance, updatedPot ] = await Promise.all ([
-            //     sendData(`http://localhost:3000/balance/`, balanceData, 'PATCH'),
-            //     sendData(`http://localhost:3000/pots/${id}`, null, 'DELETE')
-            // ]);
-
             const response = await sendData(`/finances/deletePot/${id}`, null, 'DELETE');
 
-            // if(updatedBalance){
-            //     data.balance.current  = updatedBalance.current;                
-            // }
-
             console.log('response', response);
-            
 
             if(response && response.deletedPot){
 
-                data.balance.current = response.updatedBalance.current;
+                data.balance.current = response.deletedPot.updatedBalance.current;
                 articleToDelete.remove();
                 articleToDelete = null;
 
-                console.log(`Pot "${response.deletedPot.name}" has been deleted.`);
+                console.log(`Pot "${response.deletedPot.deletedPot.name}" has been deleted.`);
+
+                alert(`${response.message} : ${response.deletedPot.deletedPot.name} `);
 
             }
 
@@ -626,4 +585,3 @@ labels.forEach( (label) =>  {
 /**** FOCUS ****/
 
 goThroughFocus();
-
