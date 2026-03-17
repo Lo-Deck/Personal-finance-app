@@ -116,6 +116,10 @@ async function updateBudget(id, userId, category, maximum, theme){
 
 async function deleteBudget(id, user_id){
     const result = await pool.query("DELETE from budgets WHERE id = $1 AND user_id = $2 RETURNING *;", [id, user_id])
+
+    console.log('result rows', result.rows);
+    console.log('result rows [0]', result.rows[0]);
+
     return result.rows[0]
 }
 
