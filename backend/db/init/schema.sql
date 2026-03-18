@@ -1,5 +1,8 @@
 
 
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+
 CREATE TABLE "session" (
   "sid" varchar NOT NULL COLLATE "default",
   "sess" json NOT NULL,
@@ -8,14 +11,12 @@ CREATE TABLE "session" (
 WITH (OIDS=FALSE);
 
 ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
-
 CREATE INDEX "IDX_session_expire" ON "session" ("expire");
 
 
 
-
 CREATE TABLE IF NOT EXISTS users (
-    id SERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL
@@ -24,7 +25,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 
 CREATE TABLE IF NOT EXISTS balance (
-    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
     current NUMERIC(12, 2) NOT NULL DEFAULT 0,
     income NUMERIC(12, 2) NOT NULL DEFAULT 0,
     expenses NUMERIC(12, 2) NOT NULL DEFAULT 0,
@@ -34,8 +35,8 @@ CREATE TABLE IF NOT EXISTS balance (
 
 
 CREATE TABLE IF NOT EXISTS transactions (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
     avatar TEXT,
     name TEXT NOT NULL,
     category TEXT NOT NULL,
@@ -47,8 +48,8 @@ CREATE TABLE IF NOT EXISTS transactions (
 
 
 CREATE TABLE IF NOT EXISTS budgets (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
     category TEXT NOT NULL,
     maximum NUMERIC(12, 2) NOT NULL,
     theme TEXT NOT NULL
@@ -57,8 +58,8 @@ CREATE TABLE IF NOT EXISTS budgets (
 
 
 CREATE TABLE IF NOT EXISTS pots (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
     name TEXT NOT NULL,
     target NUMERIC(12, 2) NOT NULL,
     total NUMERIC(12, 2) NOT NULL DEFAULT 0,

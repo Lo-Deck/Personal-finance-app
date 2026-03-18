@@ -69,15 +69,6 @@ async function seedUserData(userId, data){
 }
 
 
-/*************************************************************/
-
-/*  CONTROLLER LES ROUTES DE QUERIES A FRONT GERER ET DISPLAY ERROR  
-VOIR AUSSI POUR COLOR THEME QUI NE SEST PAS MIS A JOUR LORS DU CHANGEMENT EDIT POT COULEUR BLUE */
-
-/*************************************************************/
-
-
-
 //fetch data
 
 async function queryBalance(id){
@@ -116,10 +107,6 @@ async function updateBudget(id, userId, category, maximum, theme){
 
 async function deleteBudget(id, user_id){
     const result = await pool.query("DELETE from budgets WHERE id = $1 AND user_id = $2 RETURNING *;", [id, user_id])
-
-    console.log('result rows', result.rows);
-    console.log('result rows [0]', result.rows[0]);
-
     return result.rows[0]
 }
 
@@ -129,7 +116,6 @@ async function deleteBudget(id, user_id){
 
 async function addPot(user_id, name, target, theme){
     const result = await pool.query("INSERT INTO pots (user_id, name, target, theme) VALUES ($1, $2, $3, $4) RETURNING *;", [user_id, name, target, theme])
-    // console.log('queries addPot result:', result)
     return result.rows[0]
 }
 
@@ -161,9 +147,6 @@ async function deletePot(potId, user_id){
 
         await client.query('COMMIT')
 
-        // console.log('deletePot.rows[0]', deletePot.rows[0])
-        // console.log('updateBalance.rows[0]', updateBalance.rows[0])
-
         return {
             deletedPot: deletePot.rows[0],
             updatedBalance: updateBalance.rows[0]
@@ -181,7 +164,6 @@ async function deletePot(potId, user_id){
     }
 
 }
-
 
 
 
@@ -206,9 +188,6 @@ async function updateMoneyPot(amount, potId, user_id){
 
         await client.query('COMMIT')
 
-        // console.log('QUERIES SEND TO CONTROLLER updatedPot.rows[0]', updatedPot.rows[0]);
-        // console.log('QUERIES SEND TO CONTROLLER updatedBalance.rows[0]', updatedBalance.rows[0]);
-        
         return {
             updatedPot: updatedPot.rows[0],
             updatedBalance: updatedBalance.rows[0]

@@ -1,18 +1,8 @@
 
-
-
 const db = require('../db/queries')
-
 const bcrypt = require('bcryptjs')
-
 const { body, validationResult, matchedData } = require('express-validator')
-
-
-
 const mockData = require('../../frontend/data.json');
-
-// console.log('mockData', mockData);
-
 
 
 const signupValidation = [
@@ -27,7 +17,7 @@ const signupValidation = [
                  .isEmail().withMessage("Email must be properly formatted."),
 
     body('password').notEmpty().withMessage('Password is required.')
-        .isLength({ min: 8, max: 50 }).withMessage('Password must be at leat 8 characters.'),
+        .isLength({ min: 8, max: 128 }).withMessage('Password must be at leat 8 characters.'),
 
     body('confirmPassword').notEmpty().withMessage('Please confirm your password.')
         .custom( (value, { req }) => {
@@ -47,12 +37,9 @@ const loginValidation = [
         .isEmail().withMessage("Email must be properly formatted."),
 
     body('password').notEmpty().withMessage('Password is required.')
-        .isLength({ min: 8, max: 50 }).withMessage('Password must be at leat 8 characters.'),
+        .isLength({ min: 8, max: 128 }).withMessage('Password must be at leat 8 characters.'),
 
 ]
-
-
-
 
 
 
@@ -75,18 +62,13 @@ async function registerUser (req, res) {
         const hashedpasword = await bcrypt.hash(password, 10)
         const newUser = await db.createUser(name, email, hashedpasword)
 
-        console.log('get newUser from DB in fonction registerUser ', newUser);
-
-
         //MockData
-        await db.seedUserData(newUser.id, mockData);
+        await db.seedUserData(newUser.id, mockData)
 
         res.status(201).json({
             message: 'User created successfully',
             user: newUser
         })
-
-
 
 
     } catch(error) {
@@ -95,7 +77,7 @@ async function registerUser (req, res) {
             return res.status(409).json({ 
                 error: 'Email already exists.', 
                 formData: req.body 
-            });
+            })
         }
 
         return res.status(500).json({
@@ -106,8 +88,6 @@ async function registerUser (req, res) {
     }
 
 }
-
-
 
 
 async function loginUser (req, res) {
@@ -149,7 +129,6 @@ async function loginUser (req, res) {
             })
 
         }
-
         else {
 
             return res.status(401).json({
@@ -184,7 +163,6 @@ async function logOutUser(req, res){
 }
 
 
-
 async function getMe(req, res){
 
     if(req.session && req.session.user){
@@ -198,7 +176,6 @@ async function getMe(req, res){
     }
 
 }
-
 
 
 module.exports = { signupValidation, loginValidation, registerUser, loginUser, logOutUser, getMe }

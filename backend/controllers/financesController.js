@@ -1,6 +1,6 @@
 
 const db = require('../db/queries')
-const { body, validationResult, matchedData } = require('express-validator')
+const { body, param, validationResult, matchedData } = require('express-validator')
 
 
 const validBudget = [
@@ -31,7 +31,7 @@ const validPot = [
             .isLength({min:1, max: 10}).withMessage(`Input must be between 1 and 10 characters.`)
             .escape(),
 
-    body('theme').trim().notEmpty().escape()
+    body('theme').trim().notEmpty().escape(),
 
 ]
 
@@ -46,6 +46,11 @@ const validAmount = [
 
 ]
 
+const validId = [
+
+    param('id').isUUID(4).withMessage('Resource ID must be a valid UUID'),
+    
+]
 
 
 
@@ -77,7 +82,6 @@ async function getTransactionsDB (req, res) {
     const userId = req.session.user.id;
 
     try{
-        // throw new Error('Simulation crash DB');
         const transactions = await db.queryTransactions(userId);
         return res.status(200).json({
             transactions
@@ -123,7 +127,6 @@ async function getPotsDB (req, res) {
     const userId = req.session.user.id;
 
     try{
-        // throw new Error('Simulation crash DB');
         const pots = await db.queryPots(userId)
         return res.status(200).json({
             pots
@@ -194,10 +197,8 @@ async function addBudgets(req, res){
     try{
 
         const newBudgets = await db.addBudget(userId, category, Number(maximum), theme)
-        // const newBudgets = null
 
         if (!newBudgets) {
-            // return res.status(404).json({ error: "Budget not created" })
             return res.status(404).json({ error: "Budget not created" })
         }
 
@@ -207,7 +208,6 @@ async function addBudgets(req, res){
         })
 
     } catch(error) {
-        // console.error('CRASH DÉTAILLÉ DU SERVEUR :', error);
         return res.status(500).json({ error: 'Can\'t communicate with server' })
     }
 
@@ -256,10 +256,14 @@ async function deleteBudget(req, res){
     const userId = req.session.user.id
     const budgetId = req.params.id
 
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ error: errors.array()[0].msg })
+    }
+
     try{
 
         const deletedBudgets = await db.deleteBudget(budgetId, userId)
-        // console.log('deletedBudgets', deletedBudgets);
         
         if (!deletedBudgets) {
             return res.status(404).json({ error: "Budget not found or unauthorized" });
@@ -294,13 +298,11 @@ async function addPot(req, res){
         })
     }
 
-
     const { name, target, theme } = matchedData(req)
 
     try{
 
         const newPot = await db.addPot(userId, name, Number(target), theme)
-        // const newPot = null
 
         if (!newPot) {
             return res.status(404).json({ error: "Pot not created" })
@@ -310,10 +312,6 @@ async function addPot(req, res){
             message: 'Pot created with success',
             newPot
         })
-
-        // return res.status(200).json(
-        //     newPot
-        // )
 
     } catch(error) {
         return res.status(500).json({ error: 'Can\'t communicate with server' })
@@ -327,7 +325,6 @@ async function updatePot(req, res){
 
     const userId = req.session.user.id
     const potId = req.params.id
-
 
     const errors = validationResult(req)
 
@@ -344,8 +341,6 @@ async function updatePot(req, res){
     try{
 
         const updatedPot = await db.updatePot(potId, userId, name, Number(target), theme)
-        // const updatedPot = null
-
 
         if (!updatedPot) {
             return res.status(404).json({ error: "Pot not found" })
@@ -355,10 +350,6 @@ async function updatePot(req, res){
             message: 'Pot updated with success',
             updatedPot
         })
-
-        // return res.status(200).json(
-        //     updatedPot
-        // )
 
     } catch(error) {
         return res.status(500).json({ error: 'Can\'t communicate with server' });
@@ -373,11 +364,14 @@ async function deletePot(req, res){
     const userId = req.session.user.id
     const potId = req.params.id
 
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ error: errors.array()[0].msg })
+    }
+
     try{
 
         const deletedPot = await db.deletePot(potId, userId)
-        // const deletedPot = null
-
 
         if (!deletedPot) {
             return res.status(404).json({ error: "Budget not found or unauthorized" });
@@ -387,10 +381,6 @@ async function deletePot(req, res){
             message: 'Budget deleted with success',
             deletedPot
         })
-
-        // return res.status(200).json(
-        //     deletedPot
-        // )
 
     } catch(error) {
         return res.status(500).json({ error: 'Can\'t communicate with server' })
@@ -418,29 +408,21 @@ async function updateMoneyPot(req, res){
         })
     }
 
-
     const { amount } = matchedData(req)
 
-    // console.log('BEFORE SEND TO DB amount ', amount);
-    
     try{
 
         const updatedMoneyPot = await db.updateMoneyPot(Number(amount), potId, userId)
-        // const updatedMoneyPot = null
-
 
         if (!updatedMoneyPot) {
             return res.status(404).json({ error: "Pot not found" })
         }
 
-        // console.log('SEND TO FRONT  updatedMoneyPot', updatedMoneyPot);
-        
         return res.status(200).json(
             updatedMoneyPot
         )
 
     } catch(error) {
-        // return res.status(500).json({ error: 'Error server' });
         return res.status(500).json({ error: 'Can\'t communicate with server' });
     }
 
@@ -450,5 +432,5 @@ async function updateMoneyPot(req, res){
 
 
 
-module.exports = { getBalanceDB, getTransactionsDB, getBudgetsDB, getPotsDB, getAllFinanceData, validBudget, addBudgets, deleteBudget, updateBudget, validPot, addPot, updatePot, deletePot, validAmount, updateMoneyPot }
+module.exports = { getBalanceDB, getTransactionsDB, getBudgetsDB, getPotsDB, getAllFinanceData, validBudget, addBudgets, deleteBudget, updateBudget, validPot, addPot, updatePot, deletePot, validAmount, updateMoneyPot, validId }
 

@@ -6,24 +6,63 @@ const app = express()
 
 const path = require('path')
 
-app.use(express.json());
+const helmet = require('helmet')
 
+app.use(helmet())
+app.use(express.json())
 
 const pool = require('./db/pool')
-
-
 const usersRouter = require('./routes/usersRouter')
-
 const financesRouter = require('./routes/financesRouter')
-
-
-
 const isAuth = require('./middleware/authMiddleware')
+
+
+
+
+
+/*************************************************************/
+
+/* 
+VOIR AUSSI POUR COLOR THEME QUI NE SEST PAS MIS A JOUR LORS DU CHANGEMENT EDIT POT COULEUR BLUE */
+
+/*************************************************************/
+
+/******* ************************** *******/
+
+/******* SECURITE HELMET + LIMIT REQUEST (node rate-limit) + FONCTION POUR LIMITER REQUEST  *******/
+
+/******* UUID *******/
+
+/******* SYSTEM DE POPUP POUR CONFIRM ADD POT BUDGET OU ERROR *******/
+/******* ************************** *******/
+
+
+
+const rateLimit = require('express-rate-limit')
+
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: 'Too many request from this address, try it later.',
+  standardHeaders: true, 
+  legacyHeaders: false,
+})
+
+
+
+
+
+
+app.use(express.static(path.join(__dirname, '..', 'frontend')))
+
+app.use(generalLimiter)
+
 
 
 
 const session = require('express-session')
 const pgSession = require('connect-pg-simple')(session);
+
 
 
 //set express-session
@@ -47,24 +86,18 @@ app.use(session({
 
 
 app.use('/users', usersRouter)
-
 app.use('/finances', financesRouter)
 
 
-app.use(express.static(path.join(__dirname, '..', 'frontend')))
-
+// app.use(express.static(path.join(__dirname, '..', 'frontend')))
 
 app.get('/sign-in', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'frontend', 'pages','sign-in.html'))
 })
 
-
 app.get('/sign-up', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'frontend', 'pages','sign-up.html'))
 })
-
-
-
 
 
 //pages
@@ -93,17 +126,12 @@ app.get('/recurring', isAuth, (req, res) => {
 
 
 
-
-
 const PORT = process.env.PORT || 3000
 
 app.listen(PORT, (error) => {
-
     if(error){
         console.log('Error Server listening:', error)
         return
     }
-
     console.log(`Server listening on PORT: ${PORT}`)
-
 })
