@@ -17,25 +17,9 @@ const financesRouter = require('./routes/financesRouter')
 const isAuth = require('./middleware/authMiddleware')
 
 
-
-
-
 /*************************************************************/
-
-/* 
-VOIR AUSSI POUR COLOR THEME QUI NE SEST PAS MIS A JOUR LORS DU CHANGEMENT EDIT POT COULEUR BLUE */
-
-/*************************************************************/
-
+/******* VOIR GETME SI UTIL *******/
 /******* ************************** *******/
-
-/******* SECURITE HELMET + LIMIT REQUEST (node rate-limit) + FONCTION POUR LIMITER REQUEST  *******/
-
-/******* UUID *******/
-
-/******* SYSTEM DE POPUP POUR CONFIRM ADD POT BUDGET OU ERROR *******/
-/******* ************************** *******/
-
 
 
 const rateLimit = require('express-rate-limit')
@@ -49,20 +33,12 @@ const generalLimiter = rateLimit({
 })
 
 
-
-
-
-
 app.use(express.static(path.join(__dirname, '..', 'frontend')))
-
 app.use(generalLimiter)
-
-
 
 
 const session = require('express-session')
 const pgSession = require('connect-pg-simple')(session);
-
 
 
 //set express-session
@@ -87,9 +63,6 @@ app.use(session({
 
 app.use('/users', usersRouter)
 app.use('/finances', financesRouter)
-
-
-// app.use(express.static(path.join(__dirname, '..', 'frontend')))
 
 app.get('/sign-in', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'frontend', 'pages','sign-in.html'))

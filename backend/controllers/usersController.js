@@ -163,6 +163,37 @@ async function logOutUser(req, res){
 }
 
 
+async function deleteUser(req, res){
+
+    const userId = req.session.user.id;
+
+    try{
+
+        const user = await db.deleteUser(userId)
+
+        if (user) {
+
+            req.session.destroy( (error) => {
+                if(error){
+                    return res.status(500).json({ error: 'Impossible to disconnect' })
+                }
+                res.clearCookie('connect.sid')
+                // return res.redirect('/sign-up')
+                return res.status(200).json({ success: true })
+            })
+
+        }
+        else{
+            return res.status(404).json({ error: 'User not found' })
+        }
+
+    } catch(error){
+        return res.status(500).json({ error: 'Impossible to delete user' })
+    }
+
+}
+
+
 async function getMe(req, res){
 
     if(req.session && req.session.user){
@@ -178,4 +209,4 @@ async function getMe(req, res){
 }
 
 
-module.exports = { signupValidation, loginValidation, registerUser, loginUser, logOutUser, getMe }
+module.exports = { signupValidation, loginValidation, registerUser, loginUser, logOutUser, deleteUser, getMe }

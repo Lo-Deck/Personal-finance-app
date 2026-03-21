@@ -18,6 +18,17 @@ async function getUserByEmail(email){
 
 
 
+
+async function deleteUser(id){
+    const result = await pool.query("DELETE FROM users WHERE id=$1 RETURNING *", [id])
+    console.log(result.rows[0])
+    console.log(result.rows)
+    return result.rows[0]
+}
+
+
+
+
 //mockData
 
 async function seedUserData(userId, data){
@@ -209,6 +220,4 @@ async function updateMoneyPot(amount, potId, user_id){
 
 
 
-
-
-module.exports = { createUser, getUserByEmail, seedUserData, queryBalance, queryTransactions, queryBudgets, queryPots, addBudget, deleteBudget, updateBudget, addPot, updatePot, deletePot, updateMoneyPot }
+module.exports = { createUser, getUserByEmail, seedUserData, queryBalance, queryTransactions, queryBudgets, queryPots, addBudget, deleteBudget, updateBudget, addPot, updatePot, deletePot, updateMoneyPot, deleteUser }
