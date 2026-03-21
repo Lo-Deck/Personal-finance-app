@@ -52,17 +52,36 @@
 // };
 
 
+// const CacheManager = {
+//     // Récupérer une donnée (soit du cache, soit du serveur)
+//     async getOrFetch(key, url) {
+//         const cachedData = sessionStorage.getItem(key);
 
-
-// export const getData = {
-//     async fetchData(url) {
-//         const response = await fetch(url);
-//         if(!response.ok) {
-//             throw new Error(`Erreur HTTP: ${response.status}`);
+//         if (cachedData) {
+//             console.log(`[Cache] Chargement de ${key} depuis le stockage local`);
+//             return JSON.parse(cachedData);
 //         }
-//         return await response.json(); 
+
+//         console.log(`[Server] Récupération de ${key} depuis le serveur...`);
+//         const response = await fetch(url);
+//         const data = await response.json();
+
+//         // On enregistre dans le cache pour la prochaine fois
+//         sessionStorage.setItem(key, JSON.stringify(data));
+//         return data;
+//     },
+
+//     // Vider une clé spécifique (à appeler après un POST, PUT ou DELETE)
+//     clear(key) {
+//         sessionStorage.removeItem(key);
+//     },
+
+//     // Tout vider (utile lors du Logout)
+//     clearAll() {
+//         sessionStorage.clear();
 //     }
 // };
+
 
 
 
@@ -71,32 +90,11 @@ export const getData = {
         const response = await fetch(url);
         if (!response.ok) {
             const data = await response.json();
-            // throw new Error(data.error);
             throw new Error(`Error HTTP: ${response.status}: ${response.statusText}, ${data.error}`);
         }
         return await response.json();
     }
 };
-
-
-// export const getData = {
-//     async fetchData(url) {
-//         const response = await fetch(url);
-//         if (!response.ok) {
-//             // let errorMessage = 'An unknown error occurred';
-//             try {
-//                 const data = await response.json();
-//                 // console.log('data error', data);
-//                 errorMessage = data.error || responseStatus;
-//             } catch (e) {
-//                 errorMessage = `Error HTTP:${response.status}: ${errorMessage}`;
-//             }
-//             throw new Error(errorMessage);
-//             // throw new Error(`Error HTTP:${response.status}: ${response.statusText}`);
-//         }
-//         return await response.json();
-//     }
-// };
 
 
 
@@ -115,7 +113,6 @@ export async function sendData(url, dataToInsert, method){
 
     try{
 
-        // console.log("1. Entrée dans sendData");
         const config = {
             method: method,
             headers: {
@@ -127,32 +124,13 @@ export async function sendData(url, dataToInsert, method){
             config.body = JSON.stringify(dataToInsert);
         }
 
-
         const response = await fetch(url, config);
-        // console.log("2. Réponse reçue, status:", response.status);
-
-        console.log('response', response);
-
-        // console.log('response text', response.text());
 
         const data = await response.json();
 
-        console.log('data fetch', data);
-        
-        
         if(!response.ok){
-            // const data = await response.json();
             throw new Error(`Erreur Serveur: ${response.status} ${response.statusText}, ${data.error}`);
         }
-
-    /***********************************************/
-    /********** A CONTROLER LORS DUN DELETE ************/
-    /***********************************************/
-        // if (response.status === 204 || method === 'DELETE') { A VOIR SI FONCTIONNEL
-        //     return { success: true }; 
-        // }
-        // const data = await response.json();
-
 
         return data;
 

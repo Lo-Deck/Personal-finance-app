@@ -1,7 +1,7 @@
 
 
 import { getData, sendData } from './data-service.js';
-import { setupSideMenu, toggleDropdownMenu, closeModalAddEdit, closeAllDropdowns, createListHTMLCategory, chooseLiColorCategory, createSVGChart, validateInput, goThroughFocus, sanitizeData } from './ui-utils.js';
+import { setupSideMenu, toggleDropdownMenu, closeModalAddEdit, closeAllDropdowns, createListHTMLCategory, chooseLiColorCategory, createSVGChart, validateInput, goThroughFocus, sanitizeData, displayPopup } from './ui-utils.js';
 
 
 const colorTagsMap = {};//keep track of the color
@@ -22,14 +22,10 @@ let listHTMLCategoryTag;
             getData.fetchData('/finances/budgets')
         ]);
 
-        // console.log('transactions, budgets', transactions, budgets);
-        
         const data = {
             transactions: transactions.transactions,
             budgets: budgets.budgets
         };
-
-        // console.log('data ', data);
 
         sanitizeData(data);
 
@@ -63,8 +59,6 @@ let listHTMLCategoryTag;
         errorDiv.appendChild(p);
         errorDiv.appendChild(button);
         container.appendChild(errorDiv);
-
-
 
     }
 
@@ -492,6 +486,9 @@ formPot.addEventListener('submit', async (event) => {
 
     const id = modalAdd.dataset.id;
 
+    const submitBtn = form.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+
     try{
 
         if(id){
@@ -510,28 +507,32 @@ formPot.addEventListener('submit', async (event) => {
                     }
                 }
 
-                alert(`${updatedBudget.message} : ${updatedBudget.updatedBudget.category} `);
+                // alert(`${updatedBudget.message} : ${updatedBudget.updatedBudget.category} `);
 
+                console.log('updatedBudget', updatedBudget);
+                
                 articleToEdit = null;
-                window.location.reload();
 
+                await displayPopup( `Budget Updated`, `${updatedBudget.updatedBudget.category}`, updatedBudget.updatedBudget.theme);
+                window.location.reload();
+                
+            }
+            else{
+                submitBtn.disabled = false;
             }
         }
         else{
-            // const newBudget = await sendData('http://localhost:3000/budgets', budgetData, 'POST');
             const newBudget = await sendData('/finances/addNewBudget', budgetData, 'POST');
-
-            alert(`${newBudget.message} : ${newBudget.newBudgets.category} `);
-
+            // alert(`${newBudget.message} : ${newBudget.newBudgets.category} `);
+            await displayPopup( `Budget created`, `${newBudget.newBudgets.category}`, newBudget.newBudgets.theme);
             window.location.reload();
         }
 
     } catch(error) {
 
-        console.log('error', error);
-
-        console.error('Error sending data :', error.message);
-        // alert(`Impossible to create new Budget : ${error.message}`);
+        // console.log('error', error);
+        // console.error('Error sending data :', error.message);
+        submitBtn.disabled = false;
         alert(`${error.message}`);
 
     }
@@ -551,25 +552,42 @@ formDelete.addEventListener('submit', async (event) => {
     event.stopPropagation();
 
     const reference = referenceBudgetId.get(articleToDelete);
-    const id = reference.id;
+
+    // const id = reference.id;
+    const id = reference ? reference.id : null;
+
+    if(!id) {
+        console.error("No ID found for deletion");
+        modalDelete.close();
+        return; 
+    }
+
+    const submitBtn = event.target.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
 
     try{
 
-        if(id){
+        // if(id){
             const deletedBudget = await sendData(`/finances/deleteBudget/${id}`, null, 'DELETE');
 
-            alert(`${deletedBudget.message} : ${deletedBudget.deletedBudgets.category} `);
+            // alert(`${deletedBudget.message} : ${deletedBudget.deletedBudgets.category} `);
 
             articleToDelete.remove();
             articleToDelete = null;
-        }
+
+            await displayPopup( `Budget deleted`, `${deletedBudget.deletedBudgets.category}`, deletedBudget.deletedBudgets.theme);
+
+            window.location.reload();
+
+        // }
 
     } catch(error){
         console.error('Error sending data :', error.message);
-        alert(`Impossible to create new Pot : ${error.message}`);
+        submitBtn.disabled = false;
+        alert(`Impossible to delete budget : ${error.message}`);
     }
 
-    window.location.reload();
+    // window.location.reload();
     modalDelete.close();
 
 });

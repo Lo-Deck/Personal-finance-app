@@ -69,11 +69,11 @@ function feedTransactionPage(transactions){
 
     let extractCategory = cat.get('cat');
 
-    if(!extractCategory){
+    if(!extractCategory){//modificate url without reloading pages
     
-        extractCategory = 'All Transactions'; 
+        extractCategory = 'All Transactions';
         const url = new URL(location);     
-        console.log('url', url);
+        // console.log('url', url);
         url.searchParams.set("cat", extractCategory);
         history.replaceState({}, "", url);
 

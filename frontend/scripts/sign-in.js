@@ -49,3 +49,17 @@ formSignUp.addEventListener('submit', async (event) => {
     }
 
 })
+
+
+
+
+/****INPUT****/
+
+const labels = document.querySelectorAll('label');
+
+labels.forEach( (label) =>  {
+    const input = label.querySelector('input');
+    input.addEventListener('input', () => {
+        label.classList.remove('error');
+    });
+});

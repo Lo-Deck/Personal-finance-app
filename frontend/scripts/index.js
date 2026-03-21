@@ -1,7 +1,6 @@
 
-
-import { getData } from './data-service.js';
-import { setupSideMenu, createSVGChart, goThroughFocus, sanitizeData, logout } from './ui-utils.js';
+import { getData, sendData } from './data-service.js';
+import { setupSideMenu, createSVGChart, goThroughFocus, sanitizeData, logout, displayPopup } from './ui-utils.js';
 
 
 ( async () => {
@@ -11,8 +10,6 @@ import { setupSideMenu, createSVGChart, goThroughFocus, sanitizeData, logout } f
         setupSideMenu();
 
         const dataFromServer = await getData.fetchData('/finances/all');
-
-        // console.log('dataFromServer', dataFromServer);
 
         sanitizeData(dataFromServer);
 
@@ -75,7 +72,6 @@ function feedIndexPage(data){
     // console.log('feedIndexPage data.balance ', data.balance);
     // console.log('feedIndexPage data.balance.current ', data.balance.current);
     
-
     if (containerExpenses) {
         containerExpenses.querySelector('.expenses.balance .amount').textContent = `$${data.balance.current.toFixed(2)}`;
         containerExpenses.querySelector('.expenses.income .amount').textContent = `$${data.balance.income.toFixed(2)}`;
@@ -233,12 +229,109 @@ function feedIndexPage(data){
 }
 
 
+/*LISTENER*/
+
+const userOptions = document.querySelector('.list-options');
+const modalLogout = document.querySelector('.modal-logout');
+const modalDelete = document.querySelector('.modal-delete-user');
+
+document.addEventListener('click', async (event) => {
+
+    const btnUserOptions = event.target.closest('.container-logout');
+    const btnDeleteUser = event.target.closest('.delete-user');
+    const btnLogout = event.target.closest('.link-logout');
+
+    // if(btnUserOptions && !btnDeleteUser && !btnLogout){
+    if(btnUserOptions){
+        // console.log("OPTIONS");
+        userOptions.classList.toggle('active');
+    }
+    else{
+        userOptions.classList.remove('active');
+    }
+
+    if(btnDeleteUser){
+        // console.log("deleteUser");
+        event.preventDefault();
+        modalDelete.showModal();
+    }
+
+    if(btnLogout){
+        // console.log("logout");
+        event.preventDefault();
+        modalLogout.showModal();
+    }
+
+});
+
+
+/* SUBMIT */
+
+const formUserLogout = document.querySelector('#user-logout');
+
+formUserLogout.addEventListener('submit', async (event) => {
+
+    event.preventDefault();
+    // event.stopPropagation();
+    // logout();
+
+    modalLogout.close();
+
+    try {
+        const response = await fetch('/users/log-out', {
+            method: 'POST'
+        });
+
+        if (response.ok) {
+            window.location.href = '/sign-in';
+        }
+    } catch (error) {
+        console.error('Logout failed', error);
+    }
+
+});
+
+
+
+
+
+const formUserDelete = document.querySelector('#user-delete');
+
+formUserDelete.addEventListener('submit', async (event) => {
+
+    event.preventDefault();
+
+    modalDelete.close();
+
+    try {
+
+        const deletedUser = await sendData(`/users/delete-user`, null, 'DELETE');
+        // const deletedUser = null;
+
+
+        if(deletedUser){
+            window.location.href = '/sign-up';
+        }
+        else{
+            throw Error('Impossible to delete user')
+        }
+
+    } catch (error) {
+        console.error('Delete user failed', );
+        displayPopup('Delete user', 'This action has failed', "red");
+    }
+
+});
+
+
+
+
 /**** FOCUS ****/
 
 goThroughFocus();
 
 
-logout();
+// logout();
 
 
 

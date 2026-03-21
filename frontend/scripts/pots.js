@@ -1,7 +1,7 @@
 
 
 import { getData, sendData } from './data-service.js';
-import { setupSideMenu, addWithrawMoney, toggleDropdownMenu, closeAllDropdowns, closeModalAddEdit, chooseLiColorCategory, validateInput, goThroughFocus, sanitizeData } from './ui-utils.js';
+import { setupSideMenu, addWithrawMoney, toggleDropdownMenu, closeAllDropdowns, closeModalAddEdit, chooseLiColorCategory, validateInput, goThroughFocus, sanitizeData, displayPopup } from './ui-utils.js';
 
 
 const colorTagsMap = {};//keep track of the color
@@ -36,13 +36,8 @@ let data;
         feedPotsPage(data.pots);
 
     } catch(error) {
-        console.error('CRITICAL APP ERROR:', error.message);
-        console.error('CRITICAL APP ERROR:', error.stack);
-        // document.querySelector('.container-main').innerHTML = `
-        //     <div class="error-message">
-        //         <p style="font-size: 2rem; margin-top: 5rem; color: red;"> !!! Impossible to download data !!! </p>
-        //         <button onclick="location.reload()" style="font-size: 2rem; margin-top: 1rem; padding: 0.5rem; border: 2px solid red; color: red;">Retry</button>
-        //     </div>`; 
+        // console.error('CRITICAL APP ERROR:', error.message);
+        // console.error('CRITICAL APP ERROR:', error.stack);
 
         const container = document.querySelector('.container-main');
         container.innerHTML = '';
@@ -350,12 +345,12 @@ formPot.addEventListener('submit', async (event) => {
         theme: theme
     };
 
+    // const potId = modalAdd.dataset.id;
+    
+    const potId = modalAdd ? modalAdd.dataset.id : null;
 
-    const potId = modalAdd.dataset.id;
-
-    /************* ****************************** **************/
-    /************* BLOQUER APPUIE SUBMIT AVEC DISABLED ET VOIR FONCTION TEMPS POUR LIMITER SUBMIT **************/
-    /************* ******************************* **************/
+    const submitBtn = event.target.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
 
     try{
 
@@ -368,23 +363,6 @@ formPot.addEventListener('submit', async (event) => {
             const hasChange = keysToCompare.some( key => potData[key] !== oldPotData[key] );
 
             if(hasChange){
-
-                // const updatedPot = await sendData(`/finances/updatePot/${potId}`, potData, 'PATCH');
-
-                // if(oldPotData.theme !== updatedPot.theme){
-                //     const liOldTag = colorTagsMap[oldPotData.theme];
-                //     if (liOldTag) {
-                //         liOldTag.classList.remove('used');
-                //         const statusLabel = liOldTag.querySelector('.isUsed');
-                //         if (statusLabel) statusLabel.textContent = '';
-                //     }
-                // }
-
-                // const articleUpdated = createArticle([updatedPot]).firstElementChild;
-                // if(articleUpdated){
-                //     articleToEdit.replaceWith(articleUpdated);                  
-                // }   
-
 
                 const updatedPot = await sendData(`/finances/updatePot/${potId}`, potData, 'PATCH');
 
@@ -402,11 +380,12 @@ formPot.addEventListener('submit', async (event) => {
                     articleToEdit.replaceWith(articleUpdated);                  
                 }   
 
-
-                alert(`${updatedPot.message} : ${updatedPot.updatedPot.name} `);
-
-
+                // alert(`${updatedPot.message} : ${updatedPot.updatedPot.name} `);
+                await displayPopup( `Pot edited`, `${updatedPot.updatedPot.name}`, updatedPot.updatedPot.theme);
+                
             }
+
+            submitBtn.disabled = false;
 
             articleToEdit = null;
 
@@ -415,7 +394,10 @@ formPot.addEventListener('submit', async (event) => {
             potData.total = 0;
             const newPot = await sendData('/finances/addNewPot', potData, 'POST');
 
-            alert(`${newPot.message} : ${newPot.newPot.name} `);
+            submitBtn.disabled = false;
+
+            // alert(`${newPot.message} : ${newPot.newPot.name} `);
+            await displayPopup( `Pot created`, `${newPot.newPot.name}`, newPot.newPot.theme);
 
             feedPotsPage([newPot.newPot]);
         }
@@ -427,7 +409,8 @@ formPot.addEventListener('submit', async (event) => {
 
     } catch(error){
         console.error('Error sending data :', error.message);
-        alert(`Impossible to create new Pot : ${error.message}`);
+        submitBtn.disabled = false;
+        alert(`An error occurred with the Pot: ${error.message}`);
     }
     
 });
@@ -445,12 +428,19 @@ formAddWithdraw.addEventListener('submit', async (event) => {
     event.stopPropagation();
 
     const form = event.target;
-
     const reference = referencePotId.get(articleToAddWithdraw);
-    const id = reference.id;
+
+    // const id = reference.id;
+    const id = reference ? reference.id : null;
+
+    if(!id) {
+        console.error("No ID found for deletion");
+        modalAddwithdrawMoney.close();
+        return; 
+    }
+
     const currentTotal = reference.total;
     const operator =  modalAddwithdrawMoney.dataset.operator;//plus or minus
-
 
     const label = form.querySelectorAll('label');
     const inputs = form.querySelectorAll('input');
@@ -462,25 +452,20 @@ formAddWithdraw.addEventListener('submit', async (event) => {
     const isValid = results.every(res => res === true);
 
     if(!isValid){
-        console.log('INVALID FORM');
         return;
     }
 
-    console.log('VALID FORM');
-
-
     const formData = new FormData(form);
-
     const amountData = {
         amount: operator === 'minus' ? -Number(formData.get('amountToAddWithdraw').replace(',', '.')) : Number(formData.get('amountToAddWithdraw').replace(',', '.'))
     };
 
-
-    console.log('BEFORE SENDING to SERVER amountData ', amountData);
+    // console.log('BEFORE SENDING to SERVER amountData ', amountData);
     
-
     const isTotalDifferent = reference.total !== (reference.total + amountData.amount);
 
+    const submitBtn = event.target.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
 
     try{
 
@@ -491,25 +476,28 @@ formAddWithdraw.addEventListener('submit', async (event) => {
             if(response && response.updatedPot){
 
                 const newBalance = Number(response.updatedBalance.current);
-
                 if(!isNaN(newBalance)){
                     data.balance.current = newBalance;
                 }
 
                 const articleUpdated = createArticle([response.updatedPot]).firstElementChild;
-
                 if(articleUpdated){
                     articleToAddWithdraw.replaceWith(articleUpdated);                  
                 }        
 
+                submitBtn.disabled = false;
+
             }
 
-
+        }
+        else{
+            submitBtn.disabled = false;
         }
 
     } catch(error) {
         console.error('Error sending data :', error.message);
-        alert(`Impossible to create new Pot : ${error.message}`);
+        submitBtn.disabled = false;
+        alert(`Impossible to update money pot : ${error.message}`);
     }
 
     articleToAddWithdraw = null;
@@ -533,32 +521,40 @@ formDelete.addEventListener('submit', async (event) => {
     event.stopPropagation();
 
     const reference = referencePotId.get(articleToDelete);
-    const id = reference.id;
+
+    const id = reference ? reference.id : null;
+
+    if(!id) {
+        console.error("No ID found for deletion");
+        modalDelete.close();
+        return;
+    }
+
+    const submitBtn = event.target.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
 
     try{
 
-        if(id){
-
+        // if(id){
             const response = await sendData(`/finances/deletePot/${id}`, null, 'DELETE');
-
-            console.log('response', response);
+            // console.log('response', response);
 
             if(response && response.deletedPot){
 
                 data.balance.current = response.deletedPot.updatedBalance.current;
                 articleToDelete.remove();
                 articleToDelete = null;
-
-                console.log(`Pot "${response.deletedPot.deletedPot.name}" has been deleted.`);
-
-                alert(`${response.message} : ${response.deletedPot.deletedPot.name} `);
-
+                submitBtn.disabled = false;
+                // alert(`${response.message} : ${response.deletedPot.deletedPot.name} `);
+                await displayPopup( `Pot deleted`, `${response.deletedPot.deletedPot.name}`, response.deletedPot.deletedPot.theme);
+                
             }
 
-        }
+        // }
 
     } catch(error){
         console.error('Error sending data :', error.message);
+        submitBtn.disabled = false;
         alert(`Impossible to delete Pot : ${error.message}`);
     }
 

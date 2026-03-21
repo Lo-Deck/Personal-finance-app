@@ -864,8 +864,6 @@ export function goThroughFocus(){
 
 
 
-
-
 /**
  * To convert all numeric string in real number.
  * @param {Object} dataTosanitize - Object from server.
@@ -889,8 +887,6 @@ export function sanitizeData(dataTosanitize){
     }
 
 }
-
-
 
 
 /**
@@ -924,7 +920,9 @@ export function showPassword(){
 
 
 
-
+/**
+ * To logout.
+ */
 
 export function logout(){
 
@@ -948,3 +946,31 @@ export function logout(){
 
 
 }
+
+
+/**
+ * To display a message.
+ */
+
+export function displayPopup(title, message, theme) {
+
+    return new Promise((resolve) => {
+
+        const modalPopup = document.querySelector('.modal-popup');
+        modalPopup.querySelector('.title').textContent = title;
+        modalPopup.querySelector('.message').textContent = message;
+
+        modalPopup.querySelector('.color-tag').style.backgroundColor = theme;
+        modalPopup.showModal();
+
+        setTimeout(() => {
+            modalPopup.close();
+            resolve();
+        }, 1500);
+
+    });
+
+}
+
+
+
