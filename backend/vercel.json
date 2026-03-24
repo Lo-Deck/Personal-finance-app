@@ -12,6 +12,10 @@
   ],
   "routes": [
     {
+      "src": "/(styles|scripts|assets|pages)/(.*)",
+      "dest": "../frontend/$1/$2"
+    },
+    {
       "src": "/(.*)",
       "dest": "app.js"
     }
