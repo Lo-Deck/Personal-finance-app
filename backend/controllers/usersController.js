@@ -2,7 +2,10 @@
 const db = require('../db/queries')
 const bcrypt = require('bcryptjs')
 const { body, validationResult, matchedData } = require('express-validator')
-const mockData = require('../../frontend/data.json');
+
+const mockData = require('../../frontend/data2.json')
+// const mockData = require('../data/data.json')
+
 
 
 const signupValidation = [
