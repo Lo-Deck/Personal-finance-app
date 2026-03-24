@@ -16,8 +16,6 @@ const containerNavPages = document.querySelector('.container-nav-pages');
 
         const data = await getData.fetchData('/finances/transactions');
 
-        // console.log('data before sanitize', data);
-
         sanitizeData(data);
 
         transactions = data.transactions.sort( (a, b) => {

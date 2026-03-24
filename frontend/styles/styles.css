@@ -47,9 +47,7 @@
   /*SIZE*/
 
   --font-20to32: clamp(1.25rem, 0.5344rem + 3.0534vw, 2rem);
-
   --font20to24: clamp(1.25rem, 1.0115rem + 1.0178vw, 1.5rem);
-
 
   --space-48px: 3rem;  
   --space-40px: 2.5rem;  
@@ -85,28 +83,11 @@ body{
   color: var(--grey-900);
   background: var(--beige-100);
 
-
-
-  /* display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: repeat(2, min-content);
-  grid-template-areas:  "main"
-                        "header";
-  align-content: space-between; */
-
-
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 1fr auto;
   grid-template-areas:  "main"
                         "header";
-
-  /* gap: 0;
-  margin: 0; */
-  
-  /* align-content: space-between; */
-  /* align-items: stretch;  */
-
 
   @media screen and (min-width: 72.5rem){
     display: grid;
@@ -114,7 +95,6 @@ body{
     grid-template-rows: 1fr;
     grid-template-areas:  "header  main";
   }
-
 
 }
 
@@ -537,135 +517,6 @@ a{
 }
 
 
-
-
-
-
-
-
-/* .container-logout{
-  background: var(--grey-900);
-  border-radius: 50%;
-  width: 3rem;
-  height: 3rem;
-  color: #b3b3b3;
-
-  a{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    padding-left: 0.75rem;
-  }
-  svg{
-    fill: #b3b3b3;
-    flex-shrink: 0;
-  }
-  .text{
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    background: var(--grey-900);
-    white-space: nowrap;
-    margin-right: 1.5rem;
-    transition: opacity 0.2s ease;
-  }
-  &:hover{
-    width: 8rem; border-radius: 2rem;
-    .text{
-      opacity: 1;
-      visibility: visible;
-      pointer-events: auto;
-      transition: opacity 0.2s ease;
-    }
-  }
-} */
-
-
-
-/* .container-logout{
-  background: var(--grey-900);
-  border-radius: 50%;
-  color: #b3b3b3;
-  width: 3rem;
-  height: 3rem;
-  padding: 0.75rem;
-
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  position: relative;
-  z-index: 10;
-
-  .options{
-
-  }
-
-  .option-link{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-
-    width: 12rem;
-  }
-  .hidden{
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-  }
-
-  svg{
-    stroke: #b3b3b3; 
-    flex-shrink: 0;
-    margin-right: 0.25rem;
-  }
-
-  .option-link:nth-child(3) svg{
-    fill: #b3b3b3;
-  }
-
-  .text{
-    background: var(--grey-900);
-    white-space: nowrap;
-    transition: opacity 0.4s ease;
-  }
-
-  &::before {
-    content: "";
-    position: absolute;
-      top: 0; right: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--grey-900);
-    border-radius: 2rem;
-    z-index: -1;
-    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-radius 0.2s;
-    transform-origin: 100% 0;
-    will-change: transform; 
-  }
-
-  &:hover::before {
-    transform: scaleX(2.5) scaleY(2.5); 
-    border-radius: 1rem;
-    border-radius: 0.25rem;
-  }
-
-  &:hover{
-    .hidden{
-      opacity: 1;
-      visibility: visible;
-      pointer-events: auto;
-      transition: opacity 0.5s ease;
-    }
-  }
-
-} */
-
-
-
 .container-logout{
   background: var(--grey-900);
   border-radius: 50%;
@@ -675,18 +526,11 @@ a{
   padding: 0.75rem;
   position: relative;
   z-index: 10;
-  .hidden{
-    /* opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transform: scale(0, 0); */
-  }
   .list-options{
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
     transform: scale(0, 0);
-
     display: flex;
     flex-direction: column; 
     gap: 0.75rem;
@@ -696,7 +540,6 @@ a{
     padding: 0.75rem;
     position: absolute;
       top: 0; right: 0;
-
     &.active{
       opacity: 1;
       visibility: visible;
@@ -705,7 +548,6 @@ a{
       transform-origin: top right;
       transition: transform 0.2s ease;
     }
-
   }
   .li-option{
     display: flex;
@@ -726,26 +568,11 @@ a{
     }
   }
 
-  /* &:hover .hidden{
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    transform: scale(1, 1);
-    transform-origin: top right;
-    transition: transform 0.2s ease;
-  } */
-
   &:hover{
     cursor: pointer;
   }
 
 }
-
-
-
-
-
-
 
 
 .container-expenses{
@@ -1071,7 +898,7 @@ a{
     top: 0; left: 0;
   /* A AJOUTER SUR SAFARI PPOUR EST UN COMPORTEMENT SMOOTH */
   pointer-events: none;
-  opacity: 0;/* Play with element for hover, use the composite only */
+  opacity: 0;
   visibility: hidden;    
   /* will-change: transform; Indique au navigateur d'isoler cet élément sur sa propre couche attention a utilisation
   A utiliser pour animation ou element qui ont probleme de performance */
@@ -1101,7 +928,6 @@ a{
 
 .article-recurring{
   margin-bottom: var(--size24to32); 
-  /* @media screen and (min-width: 70rem){ */  
   @media screen and (min-width: 72.5rem){
     grid-column: 2;
     grid-row: 5 / -1;
@@ -1654,7 +1480,6 @@ body:has(dialog[open]) {
     margin-top: auto;
     order: 2;
   }
-  /* @media screen and (min-width: 70rem) { */
   @media screen and (min-width: 72.5rem){
     flex-direction: row;
     justify-content: center;
@@ -1679,7 +1504,6 @@ body:has(dialog[open]) {
       margin-bottom: var(--space-24px);
     }
   }
-  /* @media screen and (min-width: 70rem) { */
   @media screen and (min-width: 72.5rem){
     flex-direction: column;
     justify-content: space-between;
@@ -1707,7 +1531,6 @@ body:has(dialog[open]) {
   .title{
     margin-bottom: var(--space-32px);
   }
-  /* @media screen and (min-width: 70rem) { */
   @media screen and (min-width: 72.5rem){
     margin: 0 2rem 0 0;
   }
@@ -1761,15 +1584,10 @@ body:has(dialog[open]) {
     margin-top: var(--space-20px);
   }
   .show-password{
-
     width: 1rem;
     height: 0.75rem;
-
     position: absolute;
-      /* top: 2.5rem; right: 1rem; */
       top: calc(50% - 0.25rem); right: 1rem;
-      /* top: calc(50% ); right: 1rem; */
-
   }
   .text{
     margin-top: var(--space-32px);
@@ -1781,24 +1599,3 @@ body:has(dialog[open]) {
     }
   }
 }
-
-
-/* 
-.login-signup label.error {
-    color: var(--secondary-red);
-}
-
-.login-signup label.error input {
-    border-color: var(--secondary-red);
-}
-
-
-
-.login-signup label .message-error {
-    display: block;
-    color: var(--secondary-red);
-    text-align: right;
-    margin-top: -0.75rem; 
-    margin-bottom: 0.5rem;
-    min-height: 1rem;
-} */

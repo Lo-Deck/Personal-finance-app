@@ -570,8 +570,6 @@ formDelete.addEventListener('submit', async (event) => {
         // if(id){
             const deletedBudget = await sendData(`/finances/deleteBudget/${id}`, null, 'DELETE');
 
-            // alert(`${deletedBudget.message} : ${deletedBudget.deletedBudgets.category} `);
-
             articleToDelete.remove();
             articleToDelete = null;
 

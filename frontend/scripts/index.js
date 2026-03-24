@@ -69,9 +69,6 @@ function feedIndexPage(data){
 
     const containerExpenses = document.querySelector('.container-expenses');
 
-    // console.log('feedIndexPage data.balance ', data.balance);
-    // console.log('feedIndexPage data.balance.current ', data.balance.current);
-    
     if (containerExpenses) {
         containerExpenses.querySelector('.expenses.balance .amount').textContent = `$${data.balance.current.toFixed(2)}`;
         containerExpenses.querySelector('.expenses.income .amount').textContent = `$${data.balance.income.toFixed(2)}`;
@@ -306,8 +303,6 @@ formUserDelete.addEventListener('submit', async (event) => {
     try {
 
         const deletedUser = await sendData(`/users/delete-user`, null, 'DELETE');
-        // const deletedUser = null;
-
 
         if(deletedUser){
             window.location.href = '/sign-up';
