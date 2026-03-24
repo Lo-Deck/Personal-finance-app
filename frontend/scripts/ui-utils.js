@@ -697,6 +697,12 @@ export function validateInput(input, element){
         return false;
     }
 
+    if(input.validity.typeMismatch){
+        element.classList.add('error');
+        element.querySelector('.message-error').textContent = `Please enter a valid email address`;
+        return false;
+    }
+
     if (input.validity.patternMismatch) {
         element.classList.add('error');
         element.querySelector('.message-error').textContent = `Please enter a valid pattern`;
