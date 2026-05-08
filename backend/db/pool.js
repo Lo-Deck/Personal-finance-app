@@ -11,23 +11,6 @@ const pool = new Pool({
 })
 
 
-// const pool = new Pool({
-//     host: process.env.POSTGRES_HOST || 'localhost',
-//     user: process.env.POSTGRES_USER,
-//     database: process.env.POSTGRES_DB,
-//     password: process.env.POSTGRES_PASSWORD,
-//     port: process.env.POSTGRES_PORT || 5432,
-//     ssl: {
-//         rejectUnauthorized: false // Obligatoire pour Neon sur Vercel/Cloud
-//     }
-// })
-// POSTGRES_HOST=localhost
-// POSTGRES_USER=lolosuperuser
-// POSTGRES_DB=db_finance_app
-// POSTGRES_PASSWORD=12345678
-// POSTGRES_PORT=5435
-
-
 pool.query('SELECT current_database(), now()' , (err, res) => {
 
     if(err){
