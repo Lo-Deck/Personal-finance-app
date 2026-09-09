@@ -54,7 +54,7 @@ async function registerUser (req, res) {
         const errorMessage = errors.array()[0].msg
         return res.status(400).json({
             error: errorMessage,
-            formData: req.body
+            // formData: req.body
         })
     }
 
@@ -79,7 +79,7 @@ async function registerUser (req, res) {
         if(error.code === '23505'){
             return res.status(409).json({ 
                 error: 'Email already exists.', 
-                formData: req.body 
+                formData: req.body
             })
         }
 
@@ -101,7 +101,7 @@ async function loginUser (req, res) {
         const errorMessage = errors.array()[0].msg
         return res.status(400).json({
             error: errorMessage,
-            formData: req.body
+            // formData: req.body
         })
     }
 
