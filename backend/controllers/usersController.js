@@ -78,14 +78,14 @@ async function registerUser (req, res) {
 
         if(error.code === '23505'){
             return res.status(409).json({ 
-                error: 'Email already exists.', 
-                formData: req.body
+                error: 'Email or passwords incorrects.', 
+                // formData: req.body
             })
         }
 
         return res.status(500).json({
             error: 'Server error: Unable to process registration.',
-            formData: req.body
+            // formData: req.body
         })
 
     }
@@ -113,7 +113,7 @@ async function loginUser (req, res) {
 
         if (!user) {
             return res.status(401).json({
-                error: 'Wrong user'
+                error: 'Email or password incorrects'
             })
         }
 
@@ -144,7 +144,7 @@ async function loginUser (req, res) {
 
         return res.status(500).json({
             error: 'Error impossible to reach the server',
-            formData: req.body 
+            // formData: req.body 
         })
 
     }
